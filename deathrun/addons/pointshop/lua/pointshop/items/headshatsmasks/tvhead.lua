@@ -1,0 +1,11 @@
+ITEM.Name = "TV Head"
+ITEM.Price = 1000
+ITEM.Model = "models/props_c17/tv_monitor01.mdl"
+ITEM.Attachment = "eyes"
+
+function ITEM:ModifyClientsideModel(ply, model, pos, ang)
+    model:SetModelScale(0.8, 0)
+    pos = pos + (ang:Right() * -2) + (ang:Forward() * -3) + (ang:Up() * 0.5)
+
+    return model, pos, ang
+end
