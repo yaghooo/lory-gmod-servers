@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+    deathrun:
+        image: "ceifa/gmod-server:latest"
+        ports: 
+            - "27015:27015"
+            - "27015:27015/udp"
+            - "27005:27005"
+        volumes:
+            - ./deathrun/addons:/server/garrysmod/addons
+            - ./deathrun/gamemodes:/server/garrysmod/gamemodes
+            - ./deathrun/data:/server/garrysmod/data
+            - ./deathrun/cfg/server.cfg:/server/garrysmod/cfg/server.cfg
+            - ./deathrun/sv.db:/server/garrysmod/sv.db
+        environment:
+            - PRODUCTION=1
+            - HOSTNAME=[BR] Lory | Deathrun
+            - MAXPLAYERS=24
+            - GAMEMODE=deathrun
+            - MAP=deathrun_atomic_warfare
+            - ARGS=+host_workshop_collection 382793424
+        restart: always
+        tty: true
+        networks:
+            - lory
+
+networks:
+    lory:
