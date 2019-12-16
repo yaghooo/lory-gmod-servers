@@ -1,7 +1,7 @@
 FROM ceifa/gmod-server:latest
 
-ADD ../shared /server/garrysmod
-ADD ./src /server/garrysmod
+ADD ./shared /server/garrysmod
+ADD ./murder/src /server/garrysmod
 
 ENV HOSTNAME="[BR] Lory | Murder ~ Divirta-se!"
 # ENV ARGS="+host_workshop_collection 382793424"

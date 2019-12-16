@@ -28,7 +28,6 @@ services:
         volumes:
             - ./murder/src/addons:/server/garrysmod/addons
             - ./murder/src/gamemodes:/server/garrysmod/gamemodes
-            - ./murder/src/cfg/server.cfg:/server/garrysmod/cfg/server.cfg
             - ./stateful/murder/data:/server/garrysmod/data
             - ./stateful/murder/sv.db:/server/garrysmod/sv.db
         environment:
