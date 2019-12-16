@@ -16,6 +16,7 @@ services:
             - PRODUCTION=1
         restart: always
         tty: true
+        build: .
         networks:
             - lory
 
@@ -34,6 +35,7 @@ services:
             - PRODUCTION=1
         restart: always
         tty: true
+        build: .
         networks:
             - lory
 
