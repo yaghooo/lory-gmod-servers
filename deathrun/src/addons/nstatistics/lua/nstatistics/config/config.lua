@@ -19,7 +19,7 @@ table.Merge(
 		PrintWarningMessages = true,
 		-- Links to your steam groups
 		SteamGroups = {
-			"https://steamcommunity.com/groups/devxservers"
+			"https://steamcommunity.com/groups/loryservers"
 		},
 		-- MySQL settings
 

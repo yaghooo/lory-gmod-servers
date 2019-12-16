@@ -7,11 +7,30 @@ services:
             - "27015:27015/udp"
             - "27005:27005"
         volumes:
-            - ./deathrun/addons:/server/garrysmod/addons
-            - ./deathrun/gamemodes:/server/garrysmod/gamemodes
-            - ./deathrun/data:/server/garrysmod/data
-            - ./deathrun/cfg/server.cfg:/server/garrysmod/cfg/server.cfg
-            - ./deathrun/sv.db:/server/garrysmod/sv.db
+            - ./deathrun/src/addons:/server/garrysmod/addons
+            - ./deathrun/src/gamemodes:/server/garrysmod/gamemodes
+            - ./deathrun/src/cfg/server.cfg:/server/garrysmod/cfg/server.cfg
+            - ./stateful/deathrun/data:/server/garrysmod/data
+            - ./stateful/deathrun/sv.db:/server/garrysmod/sv.db
+        environment:
+            - PRODUCTION=1
+        restart: always
+        tty: true
+        networks:
+            - lory
+
+    murder:
+        image: "ceifa/lory-gmod-murder"
+        ports: 
+            - "27015:27015"
+            - "27015:27015/udp"
+            - "27005:27005"
+        volumes:
+            - ./murder/src/addons:/server/garrysmod/addons
+            - ./murder/src/gamemodes:/server/garrysmod/gamemodes
+            - ./murder/src/cfg/server.cfg:/server/garrysmod/cfg/server.cfg
+            - ./stateful/murder/data:/server/garrysmod/data
+            - ./stateful/murder/sv.db:/server/garrysmod/sv.db
         environment:
             - PRODUCTION=1
         restart: always

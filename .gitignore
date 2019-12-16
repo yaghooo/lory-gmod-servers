@@ -1,5 +1,1 @@
-# Data folders
-data
-
-# Local server database
-sv.db
+./stateful

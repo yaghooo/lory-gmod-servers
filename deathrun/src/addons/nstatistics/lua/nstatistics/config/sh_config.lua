@@ -10,7 +10,7 @@ NSTATISTICS.config = {
 	-- IDs and names of your servers.
 	-- This table should be the same on all your servers. IDs should be unique and belongs to the interval [0, 65535]
 	Servers = {
-		[1] = "DEVX Deathrun"
+		[1] = "Lory Deathrun"
 	},
 	-- Server ID from the table above
 	ThisServer = 1,
