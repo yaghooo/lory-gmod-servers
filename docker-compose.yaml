@@ -5,10 +5,9 @@ services:
         ports: 
             - "27015:27015"
             - "27015:27015/udp"
-            - "27005:27005"
         volumes:
-            - ./deathrun/src/addons:/server/garrysmod/addons
-            - ./deathrun/src/gamemodes:/server/garrysmod/gamemodes
+            # - ./deathrun/src/addons:/server/garrysmod/addons
+            # - ./deathrun/src/gamemodes:/server/garrysmod/gamemodes
             - ./deathrun/src/cfg/server.cfg:/server/garrysmod/cfg/server.cfg
             - ./stateful/deathrun/data:/server/garrysmod/data
             - ./stateful/deathrun/sv.db:/server/garrysmod/sv.db
@@ -16,28 +15,31 @@ services:
             - PRODUCTION=1
         restart: always
         tty: true
-        build: .
+        build:
+            context: .
+            dockerfile: ./deathrun/Dockerfile
         networks:
             - lory
 
-    murder:
-        image: "ceifa/lory-gmod-murder"
-        ports: 
-            - "27015:27015"
-            - "27015:27015/udp"
-            - "27005:27005"
-        volumes:
-            - ./murder/src/addons:/server/garrysmod/addons
-            - ./murder/src/gamemodes:/server/garrysmod/gamemodes
-            - ./stateful/murder/data:/server/garrysmod/data
-            - ./stateful/murder/sv.db:/server/garrysmod/sv.db
-        environment:
-            - PRODUCTION=1
-        restart: always
-        tty: true
-        build: .
-        networks:
-            - lory
+    # murder:
+    #     image: "ceifa/lory-gmod-murder"
+    #     ports: 
+    #         - "27016:27015"
+    #         - "27016:27015/udp"
+    #     volumes:
+    #         - ./murder/src/addons:/server/garrysmod/addons
+    #         - ./murder/src/gamemodes:/server/garrysmod/gamemodes
+    #         - ./stateful/murder/data:/server/garrysmod/data
+    #         - ./stateful/murder/sv.db:/server/garrysmod/sv.db
+    #     environment:
+    #         - PRODUCTION=1
+    #     restart: always
+    #     tty: true
+    #     build:
+    #         context: .
+    #         dockerfile: ./murder/Dockerfile
+    #     networks:
+    #         - lory
 
 networks:
     lory:
