@@ -84,9 +84,9 @@ function Player:PS_PlayerInitialSpawn()
             self:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
             local amt = PS.Config.PointsOverTimeAmount * 0.5
 
-            if string.match(string.lower(self:GetName()), "devx") then
+            if string.match(string.lower(self:GetName()), "lory") then
                 self:PS_GivePoints(amt)
-                self:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag DEVX!")
+                self:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
             end
 
             if self:IsUserGroup("vip") then
