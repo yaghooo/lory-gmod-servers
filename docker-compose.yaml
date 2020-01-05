@@ -3,14 +3,15 @@ services:
     deathrun:
         image: "ceifa/lory-gmod-deathrun"
         ports: 
-            - "27015:27015"
-            - "27015:27015/udp"
+            - "27016:27016"
+            - "27016:27016/udp"
         volumes:
             - ./stateful/deathrun/data:/server/garrysmod/data
             - ./stateful/deathrun/sv.db:/server/garrysmod/sv.db
             - ./stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
+            - PORT=27016
         restart: always
         tty: true
         build:
@@ -22,14 +23,15 @@ services:
     murder:
         image: "ceifa/lory-gmod-murder"
         ports: 
-            - "27016:27015"
-            - "27016:27015/udp"
+            - "27017:27017"
+            - "27017:27017/udp"
         volumes:
             - ./stateful/murder/data:/server/garrysmod/data
             - ./stateful/murder/sv.db:/server/garrysmod/sv.db
             - ./stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
+            - PORT=27017
         restart: always
         tty: true
         build:

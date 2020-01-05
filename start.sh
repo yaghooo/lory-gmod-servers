@@ -10,11 +10,18 @@ if [ "$(docker ps -a -q -f name="${NAME}" --format '{{.Names}}')" == "${NAME}" ]
     docker rm "${NAME}"
 fi
 
+mkdir ./stateful/$1
+cp -r ./shared/* ./stateful/$1/
+cp -r ./$1/src/* ./stateful/$1/
+touch ./stateful/$1/sv.db
+
 # START CONTAINER
 docker run \
     -p 27015:27015/udp \
     -p 27015:27015 \
-    -p 27005:27005/udp \
+    -v $PWD/stateful/$1/data:/server/garrysmod/data \
+    -v $PWD/stateful/$1/sv.db:/server/garrysmod/sv.db \
+    -v $PWD/stateful/cache:/server/garrysmod/cache \
     -it \
     --name "${NAME}" \
     ceifa/"${NAME}"
