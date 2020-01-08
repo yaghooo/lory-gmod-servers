@@ -17,7 +17,7 @@ local steamgroup =
     CATEGORY_NAME,
     "ulx steamgroup",
     function(ply)
-        openUrl(ply, "http://steamcommunity.com/groups/loryservers")
+        openUrl(ply, "http://steamcommunity.com/groups/lorybr")
     end,
     {"!steam", "!group", "!grupo"}
 )
@@ -29,7 +29,7 @@ local discord =
     CATEGORY_NAME,
     "ulx discord",
     function(ply)
-        openUrl(ply, "https://discord.gg/4xDjk5U")
+        openUrl(ply, "https://discord.gg/6aWsG6U")
     end,
     {"!discord"}
 )
@@ -41,12 +41,24 @@ local rules =
     CATEGORY_NAME,
     "ulx rules",
     function(ply)
-        openUrl(ply, "https://google.com/")
+        openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/1735508423601696637/")
     end,
     {"!rules", "!regras"}
 )
 rules:defaultAccess(ULib.ACCESS_ALL)
 rules:help("Ver as regras.")
+
+local vip =
+    ulx.command(
+    CATEGORY_NAME,
+    "ulx vip",
+    function(ply)
+        openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/1735508423601693879/")
+    end,
+    {"!vip", "!doador"}
+)
+vip:defaultAccess(ULib.ACCESS_ALL)
+vip:help("Ver informações sobre o vip.")
 
 function openUrl(ply, url)
     ply:SendLua(string.format([[gui.OpenURL("%s")]], url))
