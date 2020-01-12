@@ -118,6 +118,8 @@ function REWARD_ITEM:SetItem(index, item)
     button:SetPos(self:GetWide() - button:GetWide() - parent.ElementPadding, self:GetTall() / 2 - button:GetTall() / 2)
 
     function button:DoClick()
+        if item.Passive then return end
+
         REWARDS.Prizes[item.Id].Waiting = true
         net.Start("rewards_redeem")
             net.WriteString(item.Id)
@@ -129,7 +131,7 @@ function REWARD_ITEM:SetItem(index, item)
             button:SetEnabled(false)
         else
             button:SetText(REWARDS.Prizes[item.Id].Status)
-            button:SetEnabled(REWARDS.Prizes[item.Id].Status == "RESGATAR")
+            button:SetEnabled(REWARDS.Prizes[item.Id].Status == "RESGATAR" or REWARDS.Prizes[item.Id].Status == "ELEGIVEL")
         end
     end
 end
