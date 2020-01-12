@@ -55,7 +55,7 @@ local vip =
     function(ply)
         openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/1735508423601693879/")
     end,
-    {"!vip", "!doador"}
+    {"!vip", "!doador", "!doar", "!donate"}
 )
 vip:defaultAccess(ULib.ACCESS_ALL)
 vip:help("Ver informações sobre o vip.")
