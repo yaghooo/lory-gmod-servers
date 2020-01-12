@@ -15,7 +15,7 @@ PS.Config.AdminCanAccessAdminTab = false -- Can Admins access the Admin tab?
 PS.Config.SuperAdminCanAccessAdminTab = true -- Can SuperAdmins access the Admin tab?
 PS.Config.CanPlayersGiveItems = true
 PS.Config.CanPlayersGivePoints = true -- Can players give points away to other players?
-PS.Config.PointsName = "Judeu" -- What are the points called?
+PS.Config.PointsName = "Pedra" -- What are the points called?
 PS.Config.SortItemsBy = "Name" -- How are items sorted? Set to 'Price' to sort by price.
 -- Edit below if you know what you're doing
 PS.Config.CalculateBuyPrice = function(ply, item) return item.Price end
