@@ -5,10 +5,17 @@ PRIZE.GroupId = "lorybr"
 PRIZE.Points = 3000
 
 function PRIZE:GetStatus(ply)
-    return ply:GetPData("rewards:steam") or "RESGATAR"
+    local status = ply:GetPData("rewards:steam") or "RESGATAR"
+
+    if status == "VERIFICANDO" and not ply.SteamPrizeSessionLock then
+        ply:RemovePData("rewards:steam")
+    end
+
+    return status
 end
 
 function PRIZE:Redeem(ply)
+    ply.SteamPrizeSessionLock = true
     ply:SetPData("rewards:steam", "VERIFICANDO")
 
     self:FindSteamUser(ply, 1, function()
@@ -20,10 +27,12 @@ function PRIZE:Redeem(ply)
         ply:PS_Notify("Você resgatou " .. self.Points .. " " .. PS.Config.PointsName .. " e ganhou uma " .. loot.Name .. " por entrar no nosso grupo steam!")
 
         REWARDS:SendPrizes(ply)
+    end, function()
+        ply:RemovePData("rewards:steam")
     end)
 end
 
-function PRIZE:FindSteamUser(ply, page, callback)
+function PRIZE:FindSteamUser(ply, page, onsuccess, onerror)
     local url = "https://steamcommunity.com/groups/" .. self.GroupId .. "/memberslistxml/?xml=1&p=" .. page .. "&c=" .. CurTime()
 
     http.Fetch(url, function(body, len, headers, code)
@@ -33,17 +42,21 @@ function PRIZE:FindSteamUser(ply, page, callback)
 
             for k in string.gmatch(body, sid64Pattern) do
                 if k == sid64 then
-                    return callback()
+                    return onsuccess()
                 end
             end
 
             if string.match(body, "nextPageLink") then
                 self:FindSteamUser(ply, page + 1)
+            else
+                onerror()
             end
         else
             error("Error when trying to get status for user on steam group " .. self.GroupId .. " (Code: " .. code .. ")")
+            onerror()
         end
     end, function(err)
         error("Error when trying to get status for user on steam group " .. self.GroupId)
+        onerror()
     end)
 end

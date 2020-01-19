@@ -17,13 +17,10 @@ function REWARDS:ToggleRewardsMenu()
 	-- Wait prizes for load
 	if not REWARDS.Prizes then return end
 
-	if not REWARDS.ShopMenu then
-		REWARDS.ShopMenu = vgui.Create("RewardsMenu")
-		gui.EnableScreenClicker(true)
+	if not REWARDS.Page or not REWARDS.Page:IsValid() then
+		REWARDS.Page = REWARDS:OpenPage()
 	else
-		REWARDS.ShopMenu:Remove()
-		REWARDS.ShopMenu = nil
-		gui.EnableScreenClicker(false)
+		REWARDS.Page:Close()
 	end
 end
 
@@ -44,7 +41,7 @@ net.Receive("rewards_prizes", function()
 		if prizesToClaim != 0 then
 			local plural = prizesToClaim == 1 and "" or "s"
 			local parse = {
-				THEME.PrimaryColor,
+				THEME.Color.Primary,
 				"Você tem " .. prizesToClaim .. " prêmio" .. plural .. " para resgatar! Digite " .. chatCommand .. " ou aperte " .. buttonCommand .. "."
 			}
 			chat.AddText(unpack(parse))

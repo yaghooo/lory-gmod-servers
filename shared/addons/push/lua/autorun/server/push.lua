@@ -30,10 +30,11 @@ hook.Add("KeyPress", "Pushing", function(ply, key)
             local ent = ply:GetEyeTrace().Entity
 
             if IsValid(ply) and IsValid(ent) and ply:IsPlayer() and ent:IsPlayer() and ent:Alive() then
-                local isEntityClose = ply:GetPos():Distance(ent:GetPos()) <= 100
-                local isEntityWalking = ent:GetMoveType() == MOVETYPE_WALK
+                local isEntityClose = ply:GetPos():Distance(ent:GetPos()) <= 200
+                local entMoveType = ent:GetMoveType()
+                local isMoveTypeValid = entMoveType ~= MOVETYPE_OBSERVER and entMoveType ~= MOVETYPE_LADDER
 
-                if isEntityClose and isEntityWalking then
+                if isEntityClose and isMoveTypeValid then
                     local entityHasAntiPush = PS and ent:PS_HasItemEquipped("antipush")
                     local playerHasAntiAntiPush = PS and ply:PS_HasItemEquipped("antiantipush")
 
