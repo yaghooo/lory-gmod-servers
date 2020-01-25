@@ -39,6 +39,12 @@ function PS:FindCategoryByName(cat_name)
     return false
 end
 
+function PS:GetPointsText(points)
+    local text = string.Comma(points) .. " "
+    text = text .. (points == 1 and PS.Config.PointsName or PS.Config.PointsName .. "s")
+    return text
+end
+
 -- Initialization
 function PS:Initialize()
     if SERVER then
@@ -79,7 +85,6 @@ function PS:LoadItems()
             CATEGORY.Order = 0
             CATEGORY.AllowedEquipped = -1
             CATEGORY.AllowedUserGroups = {}
-            CATEGORY.CanPlayerSee = function() return true end
 
             if SERVER then
                 AddCSLuaFile("pointshop/items/" .. category .. "/__category.lua")
@@ -103,7 +108,6 @@ function PS:LoadItems()
                     ITEM.__index = ITEM
                     ITEM.ID = string.gsub(string.lower(name), ".lua", "")
                     ITEM.Category = CATEGORY.Name
-                    ITEM.Price = 0
                     -- model and material are missing but there's no way around it, there's a check below anyway
                     ITEM.AdminOnly = false
                     ITEM.AllowedUserGroups = {} -- this will fail the #ITEM.AllowedUserGroups test and continue
@@ -115,6 +119,10 @@ function PS:LoadItems()
                     ITEM.CanPlayerHolster = true
                     ITEM.ModifyClientsideModel = function(s, ply, model, pos, ang) return model, pos, ang end
                     include("pointshop/items/" .. category .. "/" .. name)
+
+                    if not ITEM.Price and CATEGORY.GetPrice then
+                        ITEM.Price = CATEGORY:GetPrice(ITEM)
+                    end
 
                     if not ITEM.Name then
                         ErrorNoHalt("[POINTSHOP] Item missing name: " .. category .. "/" .. name .. "\n")

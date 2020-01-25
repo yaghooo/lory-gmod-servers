@@ -1,7 +1,7 @@
 ITEM.Name = "Love Trail"
 ITEM.Price = 3000
 ITEM.Material = "trails/love.vmt"
-ITEM.AllowedUserGroups = {"superadmin", "owner", "vip", "Admin"}
+ITEM.AllowedUserGroups = {"superadmin", "vip", "admin"}
 ITEM.NoPreview = true
 
 function ITEM:OnEquip(ply, modifications)

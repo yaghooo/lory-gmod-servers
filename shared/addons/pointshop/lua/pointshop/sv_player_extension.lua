@@ -84,7 +84,7 @@ function Player:PS_PlayerInitialSpawn()
             self:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
             local amt = PS.Config.PointsOverTimeAmount * 0.5
 
-            if string.match(string.lower(self:GetName()), "lory") then
+            if self:PS_IsElegibleForDouble() then
                 self:PS_GivePoints(amt)
                 self:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
             end
@@ -146,6 +146,10 @@ end
 
 function Player:PS_HasPoints(points)
     return self.PS_Points >= points
+end
+
+function Player:PS_IsElegibleForDouble()
+    return string.match(string.lower(self:GetName()), "lory")
 end
 
 -- give/take items
@@ -421,12 +425,6 @@ function Player:PS_CanEquipItem(ITEM)
     local CATEGORY = PS:FindCategoryByName(ITEM.Category)
 
     if CATEGORY.AllowedUserGroups and #CATEGORY.AllowedUserGroups > 0 and not table.HasValue(CATEGORY.AllowedUserGroups, self:GetUserGroup()) then
-        self:PS_Notify("Você precisa ser vip para usar isso!")
-
-        return false
-    end
-
-    if CATEGORY.CanPlayerSee and not CATEGORY:CanPlayerSee(self) then
         self:PS_Notify("Você precisa ser vip para usar isso!")
 
         return false

@@ -28,7 +28,7 @@ hook.Add("PostPlayerDraw", "DrawTextHat", function(ply)
             ang:RotateAroundAxis(ang:Forward(), 90)
             ang:RotateAroundAxis(ang:Right(), 90)
             cam.Start3D2D(pos, Angle(0, ang.y, 90), 0.1)
-            draw.DrawText(modifications.text, "PS_Heading", 2, 2, modifications.color or color_white, TEXT_ALIGN_CENTER)
+            draw.DrawText(modifications.text, THEME.Font.Coolvetica30, 2, 2, modifications.color or color_white, TEXT_ALIGN_CENTER)
             cam.End3D2D()
         end
     end

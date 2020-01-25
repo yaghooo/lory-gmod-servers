@@ -192,6 +192,9 @@ function GM:PreDrawViewModel(vm, ply, wep)
     if ply:GetObserverMode() == OBS_MODE_CHASE or ply:GetObserverMode() == OBS_MODE_ROAMING then
         return true
     elseif not IsValid(wep) or not wep.PreDrawViewModel then
+        if vm then
+            vm:SetMaterial(nil)
+        end
         return false
     else
         return wep:PreDrawViewModel(vm, wep, ply)

@@ -65,7 +65,7 @@ function DOWNLOADER:CheckUnusedPlayermodels()
     for k, model in pairs(models) do
         model = string.lower(model)
 
-        if not string.StartWith(model, "models/player") then
+        if not string.StartWith(model, "models/player/group") then
             local found = false
 
             for _, psItem in pairs(PS.Items) do

@@ -106,11 +106,9 @@ end)
 net.Receive("PS_GivePoints", function(length, ply)
     local other = net.ReadEntity()
     local points = net.ReadInt(32)
-    if not PS.Config.AdminCanAccessAdminTab and not PS.Config.SuperAdminCanAccessAdminTab then return end
-    local admin_allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin()
-    local super_admin_allowed = PS.Config.SuperAdminCanAccessAdminTab and ply:IsSuperAdmin()
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
 
-    if (admin_allowed or super_admin_allowed) and other and points and IsValid(other) and other:IsPlayer() then
+    if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_GivePoints(points)
         other:PS_Notify(ply:Nick(), " deu a você ", points, " ", PS.Config.PointsName, ".")
         ply:Log("Gave %s points to %s with steamid %s", points, other:Nick(), other:SteamID())
@@ -120,11 +118,9 @@ end)
 net.Receive("PS_TakePoints", function(length, ply)
     local other = net.ReadEntity()
     local points = net.ReadInt(32)
-    if not PS.Config.AdminCanAccessAdminTab and not PS.Config.SuperAdminCanAccessAdminTab then return end
-    local admin_allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin()
-    local super_admin_allowed = PS.Config.SuperAdminCanAccessAdminTab and ply:IsSuperAdmin()
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
 
-    if (admin_allowed or super_admin_allowed) and other and points and IsValid(other) and other:IsPlayer() then
+    if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_TakePoints(points)
         other:PS_Notify(ply:Nick(), " pegou ", points, " ", PS.Config.PointsName, " de você.")
         ply:Log("Take %s points from %s with steamid %s", points, other:Nick(), other:SteamID())
@@ -134,11 +130,9 @@ end)
 net.Receive("PS_SetPoints", function(length, ply)
     local other = net.ReadEntity()
     local points = net.ReadInt(32)
-    if not PS.Config.AdminCanAccessAdminTab and not PS.Config.SuperAdminCanAccessAdminTab then return end
-    local admin_allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin()
-    local super_admin_allowed = PS.Config.SuperAdminCanAccessAdminTab and ply:IsSuperAdmin()
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
 
-    if (admin_allowed or super_admin_allowed) and other and points and IsValid(other) and other:IsPlayer() then
+    if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_SetPoints(points)
         other:PS_Notify(ply:Nick(), " setou seu saldo de ", PS.Config.PointsName, " para ", points, ".")
         ply:Log("Set points for %s with steamid %s to %s", other:Nick(), other:SteamID(), points)
@@ -149,11 +143,9 @@ end)
 net.Receive("PS_GiveItem", function(length, ply)
     local other = net.ReadEntity()
     local item_id = net.ReadString()
-    if not PS.Config.AdminCanAccessAdminTab and not PS.Config.SuperAdminCanAccessAdminTab then return end
-    local admin_allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin()
-    local super_admin_allowed = PS.Config.SuperAdminCanAccessAdminTab and ply:IsSuperAdmin()
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
 
-    if (admin_allowed or super_admin_allowed) and other and item_id and PS.Items[item_id] and IsValid(other) and other:IsPlayer() and not other:PS_HasItem(item_id) then
+    if allowed and other and item_id and PS.Items[item_id] and IsValid(other) and other:IsPlayer() and not other:PS_HasItem(item_id) then
         other:PS_GiveItem(item_id)
         ply:Log("Gave item %s to %s with steamid %s", PS.Items[item_id].Name, other:Nick(), other:SteamID())
     end
@@ -162,11 +154,9 @@ end)
 net.Receive("PS_TakeItem", function(length, ply)
     local other = net.ReadEntity()
     local item_id = net.ReadString()
-    if not PS.Config.AdminCanAccessAdminTab and not PS.Config.SuperAdminCanAccessAdminTab then return end
-    local admin_allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin()
-    local super_admin_allowed = PS.Config.SuperAdminCanAccessAdminTab and ply:IsSuperAdmin()
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
 
-    if (admin_allowed or super_admin_allowed) and other and item_id and PS.Items[item_id] and IsValid(other) and other:IsPlayer() and other:PS_HasItem(item_id) then
+    if allowed and other and item_id and PS.Items[item_id] and IsValid(other) and other:IsPlayer() and other:PS_HasItem(item_id) then
         -- holster it first without notificaiton
         other.PS_Items[item_id].Equipped = false
         local ITEM = PS.Items[item_id]
@@ -211,7 +201,7 @@ hook.Add("PlayerDisconnected", "PS_PlayerDisconnected", function(ply)
     ply:PS_PlayerDisconnected()
 end)
 
-hook.Add("OnStartRound", "PS_DropLootables", function()
+timer.Simple(60 * 2, function()
     local lootables = {}
 
     for _, v in pairs(PS.Items) do
@@ -222,6 +212,12 @@ hook.Add("OnStartRound", "PS_DropLootables", function()
 
     for _, v in pairs(player.GetAll()) do
         if not IsValid(v) or v.Spectating then return end
+
+        local chance = PS.Config.LootChance
+        if v:PS_IsElegibleForDouble() then
+            chance = chance * 1.5
+        end
+
         local drop = math.random() <= PS.Config.LootChance
 
         if drop then

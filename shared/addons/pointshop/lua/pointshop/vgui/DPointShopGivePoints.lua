@@ -1,24 +1,30 @@
 local PANEL = {}
 
 function PANEL:Init()
-    self.StartTime = CurTime()
-    self:SetTitle("Doar " .. PS.Config.PointsName)
-    self:SetSize(300, 160)
-    self:SetDeleteOnClose(true)
-    self:SetBackgroundBlur(true)
+    self:SetSize(400, 200)
+    self:MakePopup()
     self:SetDrawOnTop(true)
-    local DLabel = vgui.Create("DLabel", self)
-    DLabel:SetText("Jogador:")
-    DLabel:Dock(TOP)
-    DLabel:DockMargin(4, 0, 4, 4)
-    DLabel:SizeToContents()
-    self.SelectedUserUniqueId = nil
-    self.DComboBox = vgui.Create("DComboBox", self)
-    self.DComboBox:SetValue("Selecionar jogador")
-    self.DComboBox:SetTall(24)
-    self.DComboBox:Dock(TOP)
 
-    self.DComboBox.OnSelect = function(s, i, val, data)
+    self:RenderPlayerInput()
+    self:RenderPointsInput()
+    self:RenderSubmitButton()
+end
+
+function PANEL:RenderPlayerInput()
+    local playerLabel = vgui.Create("DLabel", self)
+    playerLabel:SetText("Jogador:")
+    playerLabel:Dock(TOP)
+    playerLabel:DockMargin(self.ContainerPadding, self.HeaderSize - 10, self.ContainerPadding, 4)
+    playerLabel:SizeToContents()
+
+    self.SelectedUserUniqueId = nil
+    local players = vgui.Create("DComboBox", self)
+    players:SetValue("Selecionar jogador")
+    players:SetTall(24)
+    players:DockMargin(self.ContainerPadding, 0, self.ContainerPadding, 4)
+    players:Dock(TOP)
+
+    players.OnSelect = function(s, i, val, data)
         if data then
             self.SelectedUserUniqueId = data
         end
@@ -26,114 +32,76 @@ function PANEL:Init()
         self:Update()
     end
 
-    self:FillPlayers()
-    local DLabelPoints = vgui.Create("DLabel", self)
-    DLabelPoints:SetText(PS.Config.PointsName .. ":")
-    DLabelPoints:Dock(TOP)
-    DLabelPoints:DockMargin(4, 2, 4, 4)
-    DLabelPoints:SizeToContents()
-    self.DNumberWang = vgui.Create("DNumberWang", self)
-    self.DNumberWang:SetTextColor(color_black)
-    self.DNumberWang:SetTall(24)
-    self.DNumberWang:Dock(TOP)
+    for _, ply in pairs(player.GetAll()) do
+        if ply ~= LocalPlayer() then
+            players:AddChoice(ply:Nick(), ply:SteamID64())
+        end
+    end
+end
 
-    self.DNumberWang.OnValueChanged = function(s, value)
+function PANEL:RenderPointsInput()
+    local pointsLabel = vgui.Create("DLabel", self)
+    pointsLabel:SetText(PS.Config.PointsName .. ":")
+    pointsLabel:Dock(TOP)
+    pointsLabel:DockMargin(self.ContainerPadding, 10, self.ContainerPadding, 4)
+    pointsLabel:SizeToContents()
+
+    self.PointsInput = vgui.Create("DNumberWang", self)
+    self.PointsInput:SetTextColor(color_black)
+    self.PointsInput:SetTall(24)
+    self.PointsInput:DockMargin(self.ContainerPadding, 0, self.ContainerPadding, 4)
+    self.PointsInput:Dock(TOP)
+    self.PointsInput:SetKeyboardInputEnabled(true)
+
+    self.PointsInput.OnValueChanged = function(s, value)
         self.SelectedValue = tonumber(value)
         self:Update()
     end
+end
 
-    local DPanel = vgui.Create("DPanel", self)
-    DPanel:SetPaintBackground(false)
-    DPanel:DockMargin(0, 5, 0, 0)
-    DPanel:Dock(BOTTOM)
-    local DButtonCancel = vgui.Create("DButton", DPanel)
-    DButtonCancel:SetText("")
-    DButtonCancel:DockMargin(4, 0, 0, 0)
-    DButtonCancel:Dock(RIGHT)
+function PANEL:RenderSubmitButton()
+    local submitContainer = vgui.Create("DPanel", self)
+    submitContainer:SetPaintBackground(false)
+    submitContainer:DockMargin(0, 0, self.ContainerPadding, self.ContainerPadding)
+    submitContainer:Dock(BOTTOM)
 
-    DButtonCancel.DoClick = function()
+    self.SubmitButton = vgui.Create("DButton", submitContainer)
+    self.SubmitButton:SetText("")
+    self.SubmitButton:SetDisabled(true)
+    self.SubmitButton:Dock(RIGHT)
+    self.SubmitButton:SetSize(100, self.SubmitButton:GetTall())
+
+    self.SubmitButton.DoClick = function()
+        local other = player.GetBySteamID64(self.SelectedUserUniqueId)
+
+        if not IsValid(other) then return end -- player could have left
+
+        net.Start("PS_SendPoints")
+        net.WriteEntity(other)
+        net.WriteInt(self.SelectedValue, 32)
+        net.SendToServer()
         self:Close()
     end
 
-    function DButtonCancel:Paint(w, h)
-        draw.RoundedBox(0, 0, 0, w, h, Color(219, 105, 105))
-        draw.RoundedBox(0, 1, 1, w - 2, h - 2, ColorAlpha(color_white, 10))
-        draw.RoundedBox(0, 2, 2, w - 4, h - 4, Color(232, 90, 90))
-        draw.SimpleText("CANCELAR", "PS_CatName", w / 2, h / 2, ColorAlpha(color_white, 150), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    end
-
-    self.DButtonDone = vgui.Create("DButton", DPanel)
-    self.DButtonDone:SetText("")
-    self.DButtonDone:SetDisabled(true)
-    self.DButtonDone:DockMargin(0, 0, 4, 0)
-    self.DButtonDone:Dock(RIGHT)
-
-    self.DButtonDone.DoClick = function()
-        self:Submit()
-        self:Close()
-    end
-
-    function self.DButtonDone:Paint(w, h)
+    function self.SubmitButton:Paint(w, h)
         local opc = self:GetDisabled() and 50 or 150
-        draw.RoundedBox(0, 0, 0, w, h, Color(123, 227, 149, opc))
+        draw.RoundedBox(0, 0, 0, w, h, ColorAlpha(THEME.Color.Success, opc))
         draw.RoundedBox(0, 1, 1, w - 2, h - 2, ColorAlpha(color_white, 10))
-        draw.RoundedBox(0, 2, 2, w - 4, h - 4, Color(123, 227, 149, opc))
+        draw.RoundedBox(0, 2, 2, w - 4, h - 4, ColorAlpha(THEME.Color.Success, opc))
         draw.SimpleText("Enviar", "PS_CatName", w / 2, h / 2, ColorAlpha(color_white, opc), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
-
-    function self.btnClose:Paint(w, h)
-        draw.RoundedBox(0, 0, 0, w, h - 10, Color(219, 105, 105))
-        draw.RoundedBox(0, 1, 1, w - 2, h - 12, Color(232, 90, 90))
-        draw.SimpleText("X", "PS_CatName", w / 2, h / 2 - 5, ColorAlpha(color_white, 150), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    end
-
-    self.btnMaxim.Paint = function() end
-    self.btnMinim.Paint = function() end
-    self:Center()
-    self:MakePopup()
-end
-
-function PANEL:FillPlayers()
-    for _, ply in pairs(player.GetAll()) do
-        if ply ~= LocalPlayer() then
-            self.DComboBox:AddChoice(ply:Nick(), ply:UniqueID())
-        end
-    end
-end
-
-function PANEL:Paint(w, h)
-    Derma_DrawBackgroundBlur(self, self.StartTime)
-    draw.RoundedBox(0, 0, 0, w, h, Color(57, 61, 72))
-    draw.RoundedBox(0, 1, 1, w - 2, h - 2, ColorAlpha(color_white, 10))
-    draw.RoundedBox(0, 2, 2, w - 4, h - 4, Color(57, 61, 72))
-end
-
-function PANEL:Submit()
-    local other = false
-
-    for _, ply in pairs(player.GetAll()) do
-        if tonumber(ply:UniqueID()) == tonumber(self.SelectedUserUniqueId) then
-            other = ply
-            break
-        end
-    end
-
-    if not other then return end -- player could have left
-    net.Start("PS_SendPoints")
-    net.WriteEntity(other)
-    net.WriteInt(self.SelectedValue, 32)
-    net.SendToServer()
 end
 
 function PANEL:Update()
     if not self.SelectedUserUniqueId then
-        self.DButtonDone:SetDisabled(true)
+        self.SubmitButton:SetDisabled(true)
     elseif not self.SelectedValue or self.SelectedValue < 1 or self.SelectedValue > LocalPlayer():PS_GetPoints() then
-        self.DNumberWang:SetTextColor(Color(180, 0, 0, 255))
-        self.DButtonDone:SetDisabled(true)
+        self.PointsInput:SetTextColor(Color(180, 0, 0, 255))
+        self.SubmitButton:SetDisabled(true)
     else
-        self.DButtonDone:SetDisabled(false)
+        self.PointsInput:SetTextColor(color_black)
+        self.SubmitButton:SetDisabled(false)
     end
 end
 
-vgui.Register("DPointShopGivePoints", PANEL, "DFrame")
+vgui.Register("DPointShopGivePoints", PANEL, THEME.Component.Page)

@@ -62,3 +62,18 @@ function CATEGORY:GetItemList(case)
 
     return itemList
 end
+
+function CATEGORY:GetPrice(item)
+    if item.PossibleItems then
+        local total = 0
+        for k, v in pairs(item.PossibleItems) do
+            if not string.StartWith(k, "points:") then
+                total = total + PS.Items[k].Price
+            end
+        end
+
+        return math.Round(total / table.Count(item.PossibleItems) / 1000 / 2) * 100
+    end
+
+    return 5000
+end

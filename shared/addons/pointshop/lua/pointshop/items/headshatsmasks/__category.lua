@@ -1,4 +1,4 @@
-CATEGORY.Name = "Chapéus, Cabeças e Máscaras"
+CATEGORY.Name = "Chapéus e mascaras"
 CATEGORY.Icon = "emoticon_smile"
 CATEGORY.AllowedEquipped = 2
 CATEGORY.Order = 2

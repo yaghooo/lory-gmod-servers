@@ -23,13 +23,10 @@ local invalidplayeritems = {}
 
 -- menu stuff
 function PS:ToggleMenu()
-    if not PS.ShopMenu then
+    if not PS.ShopMenu or not PS.ShopMenu:IsValid() then
         PS.ShopMenu = vgui.Create("DPointShopMenu")
-        gui.EnableScreenClicker(true)
     else
-        PS.ShopMenu:Remove()
-        PS.ShopMenu = nil
-        gui.EnableScreenClicker(false)
+        PS.ShopMenu:Close()
     end
 end
 
