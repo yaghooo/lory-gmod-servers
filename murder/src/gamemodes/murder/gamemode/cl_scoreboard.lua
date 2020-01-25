@@ -305,7 +305,7 @@ function GM:ScoreboardShow()
         function menu.Credits:Paint()
         end
 
-        local name = Label(GetHostName() or "DEVX", menu.Credits)
+        local name = Label(GetHostName() or "LORY", menu.Credits)
         name:Dock(LEFT)
         name:SetFont("MersRadial")
         name:SetTextColor(team.GetColor(2))

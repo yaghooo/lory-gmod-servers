@@ -209,12 +209,12 @@ function MENU:RenderItems()
         end
 
         for k, item in SortedPairsByMemberValue(PS.Items, PS.Config.SortItemsBy) do
-            if item.Category == category.Name then
-                if isInventory and client:PS_HasItem(k) and category.CanHaveMultiples then
+            if item.Category == category.Name and (category.CanHaveMultiples or isInventory == client:PS_HasItem(k)) then
+                if isInventory and category.CanHaveMultiples and client:PS_HasItem(k) then
                     for i = 1, #userItems[k] do
                         addItem(item)
                     end
-                elseif not isInventory or not category.CanHaveMultiples then
+                elseif not inv or not CATEGORY.CanHaveMultiples then
                     addItem(item)
                 end
             end
