@@ -201,7 +201,7 @@ hook.Add("PlayerDisconnected", "PS_PlayerDisconnected", function(ply)
     ply:PS_PlayerDisconnected()
 end)
 
-timer.Simple(60 * 2, function()
+timer.Create("PS_Loots", 60 * 3, 0, function()
     local lootables = {}
 
     for _, v in pairs(PS.Items) do
