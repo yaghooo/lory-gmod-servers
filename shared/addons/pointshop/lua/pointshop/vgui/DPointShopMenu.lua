@@ -214,7 +214,7 @@ function MENU:RenderItems()
                     for i = 1, #userItems[k] do
                         addItem(item)
                     end
-                elseif not inv or not CATEGORY.CanHaveMultiples then
+                elseif not isInventory or not CATEGORY.CanHaveMultiples then
                     addItem(item)
                 end
             end

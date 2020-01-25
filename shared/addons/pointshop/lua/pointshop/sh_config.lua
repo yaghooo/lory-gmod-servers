@@ -20,9 +20,7 @@ PS.Config.SortItemsBy = "Name" -- How are items sorted? Set to 'Price' to sort b
 PS.Config.CalculateBuyPrice = function(ply, item) return item.Price end
 
 PS.Config.CalculateSellPrice = function(ply, item)
-    if item.Category == "Facas" then
-        return math.Round(item.Price * 0.15)
-    elseif item.Category == "Caixas" then
+    if item.Category == "Facas" or item.Category == "Caixas" then
         return math.Round(item.Price * 0.1)
     end
 

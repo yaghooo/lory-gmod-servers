@@ -20,25 +20,27 @@ services:
         networks:
             - lory
 
-    # murder:
-    #     image: "ceifa/lory-gmod-murder"
-    #     ports: 
-    #         - "27017:27017"
-    #         - "27017:27017/udp"
-    #     volumes:
-    #         - ./stateful/murder/data:/server/garrysmod/data
-    #         - ./stateful/murder/sv.db:/server/garrysmod/sv.db
-    #         - ./stateful/cache:/server/garrysmod/cache
-    #     environment:
-    #         - PRODUCTION=1
-    #         - PORT=27017
-    #     restart: always
-    #     tty: true
-    #     build:
-    #         context: .
-    #         dockerfile: ./murder/Dockerfile
-    #     networks:
-    #         - lory
+    murder:
+        image: "ceifa/lory-gmod-murder"
+        ports: 
+            - "27018:27018"
+            - "27018:27018/udp"
+        volumes:
+            - ./stateful/murder/data:/server/garrysmod/data
+            - ./stateful/murder/sv.db:/server/garrysmod/sv.db
+            - ./stateful/murder/addons:/server/garrysmod/addons
+            - ./stateful/murder/gamemodes:/server/garrysmod/gamemodes
+            - ./stateful/cache:/server/garrysmod/cache
+        environment:
+            - PRODUCTION=0
+            - PORT=27018
+        restart: always
+        tty: true
+        build:
+            context: .
+            dockerfile: ./murder/Dockerfile
+        networks:
+            - lory
 
 networks:
     lory:
