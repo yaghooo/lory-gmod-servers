@@ -34,5 +34,5 @@ ITEM.PossibleItems = {
     ["csgo_daggers_tiger"] = 10,
     ["csgo_daggers_ultraviolet"] = 10,
     ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:1000"] = 210
 }

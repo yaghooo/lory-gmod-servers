@@ -34,6 +34,6 @@ ITEM.PossibleItems = {
     ["csgo_flip_slaughter"] = 10,
     ["csgo_flip_tiger"] = 10,
     ["csgo_flip_ultraviolet"] = 10,
-    ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:200"] = 520,
+    ["points:1000"] = 260
 }

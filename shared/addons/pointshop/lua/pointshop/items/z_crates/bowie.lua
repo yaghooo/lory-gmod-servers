@@ -31,6 +31,6 @@ ITEM.PossibleItems = {
     ["csgo_bowie_slaughter"] = 10,
     ["csgo_bowie_tiger"] = 10,
     ["csgo_bowie_ultraviolet"] = 10,
-    ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:200"] = 460,
+    ["points:1000"] = 230
 }

@@ -36,5 +36,5 @@ ITEM.PossibleItems = {
     ["csgo_gut_tiger"] = 10,
     ["csgo_gut_ultraviolet"] = 10,
     ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:1000"] = 270
 }

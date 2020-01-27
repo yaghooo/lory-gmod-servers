@@ -32,6 +32,6 @@ ITEM.PossibleItems = {
     ["csgo_huntsman_slaughter"] = 10,
     ["csgo_huntsman_tiger"] = 10,
     ["csgo_huntsman_ultraviolet"] = 10,
-    ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:200"] = 480,
+    ["points:1000"] = 240
 }

@@ -32,7 +32,7 @@ services:
             - ./stateful/murder/gamemodes:/server/garrysmod/gamemodes
             - ./stateful/cache:/server/garrysmod/cache
         environment:
-            - PRODUCTION=0
+            - PRODUCTION=1
             - PORT=27018
         restart: always
         tty: true

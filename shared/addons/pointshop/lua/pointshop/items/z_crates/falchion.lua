@@ -31,6 +31,6 @@ ITEM.PossibleItems = {
     ["csgo_falchion_slaughter"] = 10,
     ["csgo_falchion_tiger"] = 10,
     ["csgo_falchion_ultraviolet"] = 10,
-    ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:200"] = 460,
+    ["points:1000"] = 230
 }

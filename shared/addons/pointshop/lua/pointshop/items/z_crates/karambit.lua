@@ -35,6 +35,6 @@ ITEM.PossibleItems = {
     ["csgo_karambit_slaughter"] = 10,
     ["csgo_karambit_tiger"] = 10,
     ["csgo_karambit_ultraviolet"] = 10,
-    ["points:200"] = 500,
-    ["points:1000"] = 200
+    ["points:200"] = 540,
+    ["points:1000"] = 270
 }
