@@ -5,7 +5,7 @@ GM.MurdererWeight = CreateConVar("mu_murder_weight_multiplier", 2, bit.bor(FCVAR
 
 function PlayerMeta:SetMurderer(murderer)
     local defaultKnives = {"csgo_default_knife", "csgo_default_t"}
-    self.CurrentMurderKnife = self.MurderKnife or table.Random(defaultKnives)
+    self.CurrentMurderKnife = self.CustomKnife or table.Random(defaultKnives)
     self.Murderer = murderer
 
     if murderer then

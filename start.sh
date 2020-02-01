@@ -20,11 +20,11 @@ touch ./stateful/$1/sv.db
 docker run \
     -p 27016:27016/udp \
     -p 27016:27016 \
-    -v $PWD/stateful/$1/addons:/server/garrysmod/addons \
-    -v $PWD/stateful/$1/gamemodes:/server/garrysmod/gamemodes \
-    -v $PWD/stateful/$1/data:/server/garrysmod/data \
-    -v $PWD/stateful/$1/sv.db:/server/garrysmod/sv.db \
-    -v $PWD/stateful/cache:/server/garrysmod/cache \
+    -v /$PWD/stateful/$1/addons:/server/garrysmod/addons \
+    -v /$PWD/stateful/$1/gamemodes:/server/garrysmod/gamemodes \
+    -v /$PWD/stateful/$1/data:/server/garrysmod/data \
+    -v /$PWD/stateful/$1/sv.db:/server/garrysmod/sv.db \
+    -v /$PWD/stateful/cache:/server/garrysmod/cache \
     -e PORT=27016 \
     -it \
     --name "${NAME}" \

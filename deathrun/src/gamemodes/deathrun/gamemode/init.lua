@@ -252,9 +252,9 @@ function GM:PlayerLoadout(ply)
 
     ply:Give("weapon_crowbar")
 
-    if ply.CustomWeapon then
-        ply:Give(ply.CustomWeapon)
-        ply:SelectWeapon(ply.CustomWeapon)
+    if ply.CustomKnife then
+        ply:Give(ply.CustomKnife)
+        ply:SelectWeapon(ply.CustomKnife)
     end
 
     local teamcol = team.GetColor(ply:Team())
