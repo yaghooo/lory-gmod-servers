@@ -28,8 +28,6 @@ services:
         volumes:
             - ./stateful/murder/data:/server/garrysmod/data
             - ./stateful/murder/sv.db:/server/garrysmod/sv.db
-            - ./stateful/murder/addons:/server/garrysmod/addons
-            - ./stateful/murder/gamemodes:/server/garrysmod/gamemodes
             - ./stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
