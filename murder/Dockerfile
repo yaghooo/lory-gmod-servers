@@ -1,4 +1,4 @@
-FROM ceifa/gmod-server:latest
+FROM ceifa/gmod-server:root
 
 COPY ./shared /server/garrysmod
 COPY ./murder/src /server/garrysmod
