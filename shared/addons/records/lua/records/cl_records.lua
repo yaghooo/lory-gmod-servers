@@ -1,0 +1,6 @@
+net.Receive("records_display", function()
+    local name = net.ReadString()
+    local records = util.JSONToTable(net.ReadString())
+    local user = net.ReadString()
+    RECORDS:OpenPage(name, records, user)
+end)
