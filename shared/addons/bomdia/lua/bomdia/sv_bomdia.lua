@@ -1,4 +1,4 @@
-local possibleCommands = {"bom dia", "good morning", "buenos dias"}
+local possibleCommands = {"bom dia", "good morning", "buenos dias", "bonjour"}
 sql.Query("CREATE TABLE IF NOT EXISTS bomdia ( `sid64` STRING, `bomdias` INT, PRIMARY KEY(sid64) )")
 
 hook.Add("PlayerSay", "HelloCommand", function(ply, text)
