@@ -1,5 +1,5 @@
 PRIZE.Title = "USE A TAG LORY NO NOME STEAM"
-PRIZE.Description = "Ganhe o dobro de pontos e tenha o dobro de chance para dropar caixas"
+PRIZE.Description = "Ganhe o dobro de " .. PS.Config.PointsName .. " e tenha o dobro de chance para dropar caixas"
 PRIZE.Image = "clock"
 PRIZE.Passive = true
 
