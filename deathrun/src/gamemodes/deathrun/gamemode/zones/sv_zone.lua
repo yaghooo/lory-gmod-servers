@@ -309,7 +309,7 @@ hook.Add("DeathrunPlayerEnteredZone", "DeathrunPlayerFinishMap", function(ply, n
 		ply.DenyEntryList[ name ] = ply:GetPos()
 	end
 
-	if (ply:Team() ~= TEAM_RUNNER) or ply:GetSpectate() or (not ply:Alive()) or ROUND:GetCurrent() == ROUND_WAITING then return end
+	if (ply:Team() ~= TEAM_RUNNER) or ply:GetSpectate() or (not ply:Alive()) or ROUND:GetCurrent() == ROUND_WAITING or ply.CanGetRecord == false then return end
 	if z.type == "end" and ply.HasFinishedMap ~= true then
 		table.insert( finishorder, ply )
 

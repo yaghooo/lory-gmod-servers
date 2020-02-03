@@ -189,6 +189,7 @@ hook.Add(
         ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 
         ply:AllowFlashlight(true)
+        ply.CanGetRecord = true
 
         ply:SetMoveType(MOVETYPE_WALK)
 

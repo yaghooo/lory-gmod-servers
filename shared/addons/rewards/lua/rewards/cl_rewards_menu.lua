@@ -5,7 +5,8 @@ function REWARDS:OpenPage()
     local i = 1
     for k, v in pairs(REWARDS.Prizes) do
         local item = vgui.Create("RewardsItem", page)
-        item:SetItem(i, v)
+        item:SetPos(page.ContainerPadding, page.ContainerPadding * 1.5 + self:GetTall() * (i - 1) + page.ContainerPadding * i)
+        item:SetItem(v)
         i = i + 1
     end
 
@@ -24,10 +25,7 @@ function REWARD_ITEM:Paint(w, h)
     surface.DrawRect(0, 0, w, h)
 end
 
-function REWARD_ITEM:SetItem(index, item)
-    local parent = self:GetParent()
-    self:SetPos(parent.ContainerPadding, parent.ContainerPadding * 1.5 + self:GetTall() * (index - 1) + parent.ContainerPadding * index)
-
+function REWARD_ITEM:SetItem(item)
     local image = vgui.Create("DImage", self)
     image:SetPos(15, 10)
     local imageSize = self:GetTall() - 10 * 2
@@ -51,7 +49,7 @@ function REWARD_ITEM:SetItem(index, item)
     if not item.Id then return end
     local button = vgui.Create(THEME.Component.Button1, self)
     button:SetSize(170, 40)
-    button:SetPos(self:GetWide() - button:GetWide() - parent.ContainerPadding, self:GetTall() / 2 - button:GetTall() / 2)
+    button:SetPos(self:GetWide() - button:GetWide() - self:GetParent().ContainerPadding, self:GetTall() / 2 - button:GetTall() / 2)
 
     function button:DoClick()
         if item.Passive then return end
