@@ -6,9 +6,9 @@ CATEGORY.Inspectable = true
 CATEGORY.Color = Color(255, 215, 0)
 
 function CATEGORY:OnEquip(ply, _, item)
-    ply.CustomWeapon = item.WeaponClass
+    ply.CustomKnife = item.WeaponClass
 end
 
 function CATEGORY:OnHolster(ply)
-    ply.CustomWeapon = nil
+    ply.CustomKnife = nil
 end

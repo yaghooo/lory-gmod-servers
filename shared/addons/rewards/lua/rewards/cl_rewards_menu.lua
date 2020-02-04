@@ -5,7 +5,7 @@ function REWARDS:OpenPage()
     local i = 1
     for k, v in pairs(REWARDS.Prizes) do
         local item = vgui.Create("RewardsItem", page)
-        item:SetPos(page.ContainerPadding, page.ContainerPadding * 1.5 + self:GetTall() * (i - 1) + page.ContainerPadding * i)
+        item:SetPos(page.ContainerPadding, page.ContainerPadding * 1.5 + item:GetTall() * (i - 1) + page.ContainerPadding * i)
         item:SetItem(v)
         i = i + 1
     end
