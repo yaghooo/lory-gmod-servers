@@ -17,49 +17,6 @@ function RecordsPage:SetData(name, records, user)
     title:SetSize(title:GetTextSize(), 30)
     title:SetColor(color_white)
 
-    records = {
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        },
-        {
-            Name = "Joao",
-            Value = 10
-        }
-    }
-
     if records then
         local i = 1
 
@@ -118,6 +75,7 @@ function UserRecord:SetRecord(index, record)
     value:SetText(record.Value)
     value:Dock(RIGHT)
     value:SetFont(THEME.Font.Coolvetica28)
+    value:SetSize(value:GetTextSize() + 5, 0)
 end
 
 function UserRecord:Paint(w, h)
