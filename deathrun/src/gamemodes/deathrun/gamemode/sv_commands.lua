@@ -195,13 +195,6 @@ DR:AddChatCommand(
 )
 
 DR:AddChatCommand(
-    "crosshair",
-    function(ply)
-        ply:ConCommand("deathrun_open_crosshair_creator")
-    end
-)
-
-DR:AddChatCommand(
     "help",
     function(ply)
         ply:ConCommand("deathrun_open_help")

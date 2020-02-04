@@ -57,9 +57,6 @@ include("sv_player.lua")
 include("sh_buttonclaiming.lua")
 AddCSLuaFile("sh_buttonclaiming.lua")
 
--- announcements
-AddCSLuaFile("cl_announcer.lua")
-
 -- pointshop support
 include("sh_pointshopsupport.lua")
 AddCSLuaFile("sh_pointshopsupport.lua")

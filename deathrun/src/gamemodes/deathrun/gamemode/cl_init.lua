@@ -23,8 +23,6 @@ include("cl_menus.lua")
 
 include("sh_buttonclaiming.lua")
 
-include("cl_announcer.lua")
-
 include("sh_pointshopsupport.lua")
 
 include("sh_statistics.lua")

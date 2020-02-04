@@ -1,14 +1,5 @@
 print("Loaded cl_hud.lua")
 
---local CrosshairStyle = CreateClientConVar("deathrun_crosshair_style", 1, true, false)
-local XHairThickness = CreateClientConVar("deathrun_crosshair_thickness", 2, true, false)
-local XHairGap = CreateClientConVar("deathrun_crosshair_gap", 8, true, false)
-local XHairSize = CreateClientConVar("deathrun_crosshair_size", 8, true, false)
-local XHairRed = CreateClientConVar("deathrun_crosshair_red", 255, true, false)
-local XHairGreen = CreateClientConVar("deathrun_crosshair_green", 255, true, false)
-local XHairBlue = CreateClientConVar("deathrun_crosshair_blue", 255, true, false)
-local XHairAlpha = CreateClientConVar("deathrun_crosshair_alpha", 255, true, false)
-
 --start and end cues
 local CuesConVar = CreateClientConVar("deathrun_round_cues", 1, true, false)
 
@@ -20,7 +11,6 @@ local HudAlpha = CreateClientConVar("deathrun_hud_alpha", 255, true, false)
 
 local HideElements = {
     ["CHudBattery"] = false,
-    ["CHudCrosshair"] = false,
     ["CHudHealth"] = false,
     ["CHudAmmo"] = false,
     ["CHudDamageIndicator"] = false
@@ -201,7 +191,6 @@ function DeathrunGetDT()
 end
 
 function GM:HUDPaint()
-    -- draw the crosshair
     deathrun_dt = CurTime() - deathrun_lasttime
     deathrun_lasttime = CurTime()
 
@@ -216,18 +205,6 @@ function GM:HUDPaint()
         {ScrW() / 2 - 228 / 2, ScrH() - 108 - 8},
         {ScrW() - 228 - 8, ScrH() - 108 - 8}
     }
-
-    -- draw crosshair and account for thirdperson mode
-    if GetConVar("deathrun_thirdperson_enabled"):GetBool() == true then
-        local x, y = 0, 0
-        local tr = LocalPlayer():GetEyeTrace()
-        x = tr.HitPos:ToScreen().x
-        y = tr.HitPos:ToScreen().y
-
-        DR:DrawCrosshair(x, y)
-    else
-        DR:DrawCrosshair(ScrW() / 2, ScrH() / 2)
-    end
 
     DR:DrawTargetID()
 
@@ -261,18 +238,6 @@ function GM:HUDPaint()
     end
 
     DeathrunDrawKillfeed(ScrW() / 2, ScrH() * 0.666)
-end
-
-function DR:DrawCrosshair(x, y)
-    local thick = XHairThickness:GetInt()
-    local gap = XHairGap:GetInt()
-    local size = XHairSize:GetInt()
-
-    surface.SetDrawColor(XHairRed:GetInt(), XHairGreen:GetInt(), XHairBlue:GetInt(), XHairAlpha:GetInt())
-    surface.DrawRect(x - (thick / 2), y - (size + gap / 2), thick, size)
-    surface.DrawRect(x - (thick / 2), y + (gap / 2), thick, size)
-    surface.DrawRect(x + (gap / 2), y - (thick / 2), size, thick)
-    surface.DrawRect(x - (size + gap / 2), y - (thick / 2), size, thick)
 end
 
 DR.TargetIDAlpha = 0
