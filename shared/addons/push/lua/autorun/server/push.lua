@@ -25,8 +25,9 @@ end
 hook.Add("KeyPress", "Pushing", function(ply, key)
     if key == IN_USE and not pushs[ply:UserID()] then
         local playerHasPush = PS and ply:PS_HasItemEquipped("push")
+        local playerHasAntiPush = PS and ply:PS_HasItemEquipped("antipush")
 
-        if playerHasPush then
+        if playerHasPush and not playerHasAntiPush then
             local ent = ply:GetEyeTrace().Entity
 
             if IsValid(ply) and IsValid(ent) and ply:IsPlayer() and ent:IsPlayer() and ent:Alive() then
@@ -36,9 +37,8 @@ hook.Add("KeyPress", "Pushing", function(ply, key)
 
                 if isEntityClose and isMoveTypeValid then
                     local entityHasAntiPush = PS and ent:PS_HasItemEquipped("antipush")
-                    local playerHasAntiAntiPush = PS and ply:PS_HasItemEquipped("antiantipush")
 
-                    if not entityHasAntiPush or (entityHasAntiPush and playerHasAntiAntiPush) then
+                    if not entityHasAntiPush then
                         PushEntity(ply, ent)
                     end
                 end
