@@ -294,12 +294,13 @@ function GM:PlayerDeath(ply, Inflictor, attacker)
 
                 if self:GetRound() ~= 2 and (not PowerRounds or not PowerRounds.CurrentPR or not PowerRounds.CurrentPR.AllowRDM) then
                     local wep = attacker:GetWeapon("weapon_mu_magnum")
+
                     if IsValid(wep) then
                         attacker:DropWeapon(wep)
                     end
 
-                    if awarn_warnplayer then
-                        awarn_warnplayer(nil, attacker, "RDM")
+                    if AWarn then
+                        AWarn:CreateWarningID(attacker:SteamID64(), nil, "RDM")
                     end
                 end
 
