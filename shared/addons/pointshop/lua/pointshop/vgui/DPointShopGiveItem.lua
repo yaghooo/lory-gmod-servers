@@ -70,7 +70,7 @@ function PANEL:RenderSubmitButton()
         draw.RoundedBox(0, 0, 0, w, h, ColorAlpha(THEME.Color.Success, opc))
         draw.RoundedBox(0, 1, 1, w - 2, h - 2, ColorAlpha(color_white, 10))
         draw.RoundedBox(0, 2, 2, w - 4, h - 4, ColorAlpha(THEME.Color.Success, opc))
-        draw.SimpleText("Enviar", "PS_CatName", w / 2, h / 2, ColorAlpha(color_white, opc), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText("Enviar", THEME.Font.Coolvetica20, w / 2, h / 2, ColorAlpha(color_white, opc), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 end
 

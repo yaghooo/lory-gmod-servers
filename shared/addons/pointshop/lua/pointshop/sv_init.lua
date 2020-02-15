@@ -80,7 +80,10 @@ net.Receive("PS_SendItem", function(length, ply)
         return
     end
 
-    if other:PS_HasItem(item_id) then
+    local item = PS.Items[item_id]
+    local category = PS:FindCategoryByName(item.Category)
+
+    if not category.CanHaveMultiples and other:PS_HasItem(item_id) then
         ply:PS_Notify(other:Nick(), " já possui este item!")
 
         return
@@ -94,7 +97,6 @@ net.Receive("PS_SendItem", function(length, ply)
         return
     end
 
-    local item = PS.Items[item_id]
     ply:PS_TakeItem(item_id)
     ply:PS_Notify("Você deu ", item.Name, " a ", other:Nick(), ".")
     other:PS_GiveItem(item_id)
