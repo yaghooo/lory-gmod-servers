@@ -6,53 +6,22 @@ function DR:OpenHelp()
     frame:Center()
     frame:MakePopup()
     frame:SetTitle("Deathrun Help")
-
     local lbl = vgui.Create("DLabel", frame)
     lbl:SetText("Please wait while page loads...")
     lbl:SetFont("deathrun_derma_Large")
     lbl:SizeToContents()
     lbl:Center()
-
     local html = vgui.Create("DHTML", frame)
     html:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
     html:SetPos(4, 32)
     html:OpenURL(GetConVar("deathrun_help_url"):GetString())
 end
 
-concommand.Add(
-    "deathrun_open_help",
-    function()
-        DR:OpenHelp()
-    end
-)
+concommand.Add("deathrun_open_help", function()
+    DR:OpenHelp()
+end)
 
-local deathrun_settings = {
-    {"header", "HUD Settings"},
-    {"number", "deathrun_hud_theme", 0, 4, "HUD Theme"},
-    {"number", "deathrun_hud_position", 0, 8, "Position of the HUD (HP, Velocity, Time)"},
-    {"number", "deathrun_hud_ammo_position", 0, 8, "Position of the Ammo HUD"},
-    {"number", "deathrun_hud_alpha", 0, 255, "Transparency of the HUD background"},
-    {"number", "deathrun_targetid_fade_duration", 0, 10, "TargetID fade duration"},
-    {"boolean", "deathrun_zones_visibility", "Toggle Zone Visibility"},
-    {"boolean", "deathrun_stats_visibility", "Toggle the YOUR STATS popup"},
-    {"header", "Spectator Settings"},
-    {"boolean", "deathrun_spectate_only", "Spectate-only mode"},
-    {"header", "Thirdperson Settings"},
-    {"boolean", "deathrun_thirdperson_enabled", "Thirdperson mode"},
-    {"number", "deathrun_thirdperson_opacity", 5, 255, "Transparency of your playermodel in Thirdperson mode"},
-    {"number", "deathrun_thirdperson_offset_x", -40, 40, "Thirdperson camera horizontal offset"},
-    {"number", "deathrun_thirdperson_offset_y", -40, 40, "Thirdperson camera vertical offset"},
-    {"number", "deathrun_thirdperson_offset_z", -75, 75, "Thirdperson camera forward-backward offset"},
-    {"number", "deathrun_thirdperson_offset_pitch", -75, 75, "Thirdperson camera Pitch offset"},
-    {"number", "deathrun_thirdperson_offset_yaw", -75, 75, "Thirdperson camera Yaw offset"},
-    {"number", "deathrun_thirdperson_offset_roll", -75, 75, "Thirdperson camera Roll offset"},
-    {"header", "Other Settings"},
-    {"boolean", "deathrun_round_cues", "Audible round cues at starts and ends of rounds"},
-    {"boolean", "deathrun_info_on_join", "Show the info menu when joining the server"},
-    {"boolean", "deathrun_autojump", "Autojump (Enabling this limits velocity depending on server settings.)"},
-    {"number", "deathrun_teammate_fade_distance", 0, 512, "Teammate fade distance."}
-}
-
+local deathrun_settings = {{"header", "HUD Settings"}, {"number", "deathrun_hud_theme", 0, 4, "HUD Theme"}, {"number", "deathrun_hud_position", 0, 8, "Position of the HUD (HP, Velocity, Time)"}, {"number", "deathrun_hud_ammo_position", 0, 8, "Position of the Ammo HUD"}, {"number", "deathrun_hud_alpha", 0, 255, "Transparency of the HUD background"}, {"number", "deathrun_targetid_fade_duration", 0, 10, "TargetID fade duration"}, {"boolean", "deathrun_zones_visibility", "Toggle Zone Visibility"}, {"boolean", "deathrun_stats_visibility", "Toggle the YOUR STATS popup"}, {"header", "Spectator Settings"}, {"boolean", "deathrun_spectate_only", "Spectate-only mode"}, {"header", "Thirdperson Settings"}, {"boolean", "deathrun_thirdperson_enabled", "Thirdperson mode"}, {"number", "deathrun_thirdperson_opacity", 5, 255, "Transparency of your playermodel in Thirdperson mode"}, {"number", "deathrun_thirdperson_offset_x", -40, 40, "Thirdperson camera horizontal offset"}, {"number", "deathrun_thirdperson_offset_y", -40, 40, "Thirdperson camera vertical offset"}, {"number", "deathrun_thirdperson_offset_z", -75, 75, "Thirdperson camera forward-backward offset"}, {"number", "deathrun_thirdperson_offset_pitch", -75, 75, "Thirdperson camera Pitch offset"}, {"number", "deathrun_thirdperson_offset_yaw", -75, 75, "Thirdperson camera Yaw offset"}, {"number", "deathrun_thirdperson_offset_roll", -75, 75, "Thirdperson camera Roll offset"}, {"header", "Other Settings"}, {"boolean", "deathrun_round_cues", "Audible round cues at starts and ends of rounds"}, {"boolean", "deathrun_info_on_join", "Show the info menu when joining the server"}, {"boolean", "deathrun_autojump", "Autojump (Enabling this limits velocity depending on server settings.)"}, {"number", "deathrun_teammate_fade_distance", 0, 512, "Teammate fade distance."}}
 DR.DeathrunSettings = deathrun_settings
 
 function DR:AddSetting(tbl)
@@ -64,14 +33,12 @@ end
 --DR:AddSetting( {"header", "Last Significant Update: "..os.date( "%H:%M:%S - %d/%m/%Y", DR.TimeStamp or os.time() )} )
 --end)
 --end)
-
 function DR:OpenSettings()
     local frame = vgui.Create("deathrun_window")
     frame:SetSize(480, 640)
     frame:Center()
     frame:MakePopup()
     frame:SetTitle("Deathrun Settings")
-
     local controls = vgui.Create("DPanel", frame)
     controls:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
     controls:SetPos(4, 32)
@@ -84,7 +51,6 @@ function DR:OpenSettings()
     local scr = vgui.Create("DScrollPanel", controls)
     scr:SetSize(controls:GetWide() - 16, controls:GetTall() - 16)
     scr:SetPos(8, 8)
-
     local vbar = scr:GetVBar()
     vbar:SetWide(4)
 
@@ -92,10 +58,13 @@ function DR:OpenSettings()
         surface.SetDrawColor(0, 0, 0, 100)
         surface.DrawRect(0, 0, w, h)
     end
+
     function vbar.btnUp:Paint()
     end
+
     function vbar.btnDown:Paint()
     end
+
     function vbar.btnGrip:Paint(w, h)
         surface.SetDrawColor(0, 0, 0, 200)
         surface.DrawRect(0, 0, w, h)
@@ -106,7 +75,6 @@ function DR:OpenSettings()
     dlist:SetPos(0, 0)
     dlist:SetSpaceX(0)
     dlist:SetSpaceY(8)
-
     local lbl = vgui.Create("DLabel")
     lbl:SetFont("deathrun_derma_Medium")
     lbl:SetTextColor(DR.Colors.Text.Turq)
@@ -122,10 +90,11 @@ function DR:OpenSettings()
             local pnl = vgui.Create("DPanel") -- spacer
             pnl:SetWide(dlist:GetWide())
             pnl:SetTall(24)
+
             function pnl:Paint()
             end
-            dlist:Add(pnl)
 
+            dlist:Add(pnl)
             local lbl = vgui.Create("DLabel")
             lbl:SetFont("deathrun_derma_Small")
             lbl:SetTextColor(DR.Colors.Text.Turq)
@@ -137,10 +106,11 @@ function DR:OpenSettings()
             local pnl = vgui.Create("DPanel") -- spacer
             pnl:SetWide(dlist:GetWide())
             pnl:SetTall(4)
+
             function pnl:Paint()
             end
-            dlist:Add(pnl)
 
+            dlist:Add(pnl)
             local lbl = vgui.Create("DLabel") -- label
             lbl:SetFont("deathrun_derma_Tiny")
             lbl:SetTextColor(DR.Colors.Text.Grey3)
@@ -148,7 +118,6 @@ function DR:OpenSettings()
             lbl:SizeToContents()
             lbl:SetWide(dlist:GetWide())
             dlist:Add(lbl)
-
             local check = vgui.Create("AuToggle_Deathrun")
             check:SetValue(GetConVar(v[2]):GetInt())
             check:SetText("Enabled")
@@ -160,10 +129,11 @@ function DR:OpenSettings()
             local pnl = vgui.Create("DPanel") -- spacer
             pnl:SetWide(dlist:GetWide())
             pnl:SetTall(4)
+
             function pnl:Paint()
             end
-            dlist:Add(pnl)
 
+            dlist:Add(pnl)
             local lbl = vgui.Create("DLabel") -- label
             lbl:SetFont("deathrun_derma_Tiny")
             lbl:SetTextColor(DR.Colors.Text.Grey3)
@@ -171,7 +141,6 @@ function DR:OpenSettings()
             lbl:SizeToContents()
             lbl:SetWide(dlist:GetWide())
             dlist:Add(lbl)
-
             -- slider
             local sl = vgui.Create("Slider")
             sl:SetMin(v[3])
@@ -179,7 +148,6 @@ function DR:OpenSettings()
             sl:SetWide(dlist:GetWide())
             sl:SetTall(12)
             sl:SetValue(GetConVar(v[2]):GetFloat())
-
             sl.convarname = v[2]
 
             function sl:OnValueChanged()
@@ -188,15 +156,17 @@ function DR:OpenSettings()
 
             dlist:Add(sl)
         end
-    end -- {"header", "Last Significant Update: "..os.date( "%H:%M:%S - %d/%m/%Y", DR.TimeStamp or os.time() )}
+    end
 
+    -- {"header", "Last Significant Update: "..os.date( "%H:%M:%S - %d/%m/%Y", DR.TimeStamp or os.time() )}
     local pnl = vgui.Create("DPanel") -- spacer
     pnl:SetWide(dlist:GetWide())
     pnl:SetTall(24)
+
     function pnl:Paint()
     end
-    dlist:Add(pnl)
 
+    dlist:Add(pnl)
     local lbl = vgui.Create("DLabel")
     lbl:SetFont("deathrun_derma_Tiny")
     lbl:SetTextColor(DR.Colors.Text.Turq)
@@ -205,12 +175,10 @@ function DR:OpenSettings()
     lbl:SetWide(dlist:GetWide())
     dlist:Add(lbl)
 end
-concommand.Add(
-    "deathrun_open_settings",
-    function()
-        DR:OpenSettings()
-    end
-)
+
+concommand.Add("deathrun_open_settings", function()
+    DR:OpenSettings()
+end)
 
 function DR:OpenZoneEditor()
     local frame = vgui.Create("deathrun_window")
@@ -218,10 +186,10 @@ function DR:OpenZoneEditor()
     frame:Center()
     frame:MakePopup()
     frame:SetTitle("Zone Editor")
-
     local panel = vgui.Create("DPanel", frame)
     panel:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
     panel:SetPos(4, 32)
+
     function panel:Paint(w, h)
         surface.SetDrawColor(DR.Colors.Clouds)
         surface.DrawRect(0, 0, w, h)
@@ -230,7 +198,6 @@ function DR:OpenZoneEditor()
     local scr = vgui.Create("DScrollPanel", panel)
     scr:SetSize(panel:GetWide() - 12, panel:GetTall() - 16)
     scr:SetPos(8, 8)
-
     local vbar = scr:GetVBar()
     vbar:SetWide(4)
 
@@ -238,10 +205,13 @@ function DR:OpenZoneEditor()
         surface.SetDrawColor(0, 0, 0, 100)
         surface.DrawRect(0, 0, w, h)
     end
+
     function vbar.btnUp:Paint()
     end
+
     function vbar.btnDown:Paint()
     end
+
     function vbar.btnGrip:Paint(w, h)
         surface.SetDrawColor(0, 0, 0, 200)
         surface.DrawRect(0, 0, w, h)
@@ -252,7 +222,6 @@ function DR:OpenZoneEditor()
     dlist:SetPos(0, 0)
     dlist:SetSpaceX(4)
     dlist:SetSpaceY(8)
-
     local lbl = vgui.Create("DLabel")
     lbl:SetFont("deathrun_derma_Small")
     lbl:SetTextColor(DR.Colors.Text.Turq)
@@ -260,7 +229,6 @@ function DR:OpenZoneEditor()
     lbl:SizeToContents()
     lbl:SetWide(dlist:GetWide())
     dlist:Add(lbl)
-
     local lbl = vgui.Create("DLabel")
     lbl:SetFont("deathrun_derma_Tiny")
     lbl:SetTextColor(DR.Colors.Text.Grey3)
@@ -268,12 +236,10 @@ function DR:OpenZoneEditor()
     lbl:SizeToContents()
     lbl:SetWide(dlist:GetWide() / 2 - 2)
     dlist:Add(lbl)
-
     local te = vgui.Create("DTextEntry")
     te:SetSize(dlist:GetWide() / 2 - 2, 18)
     te:SetText("new_zone")
     dlist:Add(te)
-
     local lbl = vgui.Create("DLabel")
     lbl:SetFont("deathrun_derma_Tiny")
     lbl:SetTextColor(DR.Colors.Text.Grey3)
@@ -281,22 +247,21 @@ function DR:OpenZoneEditor()
     lbl:SizeToContents()
     lbl:SetWide(dlist:GetWide() / 2 - 2)
     dlist:Add(lbl)
-
     local dd = vgui.Create("DComboBox")
     dd:SetSize(dlist:GetWide() / 2 - 2, 18)
     dd:SetValue("end")
+
     for i = 1, #ZONE.ZoneTypes do
         dd:AddChoice(ZONE.ZoneTypes[i])
     end
-    dlist:Add(dd)
 
+    dlist:Add(dd)
     local sbmt = vgui.Create("deathrun_button")
     sbmt:SetSize(dlist:GetWide(), 18)
     sbmt:SetText("Create Zone")
     sbmt:SetFont("deathrun_derma_Tiny")
     sbmt:SetOffsets(0, 0)
     dlist:Add(sbmt)
-
     sbmt.te = te
     te.sbmt = sbmt
     sbmt.dd = dd
@@ -318,44 +283,36 @@ function DR:OpenZoneEditor()
     lbl:SizeToContents()
     lbl:SetWide(dlist:GetWide())
     dlist:Add(lbl)
-
     local dd = vgui.Create("DComboBox")
     dd:SetSize(dlist:GetWide(), 18)
     dd:SetValue(LocalPlayer().LastSelectZone or "Select Zone")
+
     for name, z in pairs(ZONE.zones) do
         if z.type then
             dd:AddChoice(name)
         end
     end
+
     function dd:OnSelect(index, value)
         LocalPlayer().LastSelectZone = value
     end
-    dlist:Add(dd)
 
+    dlist:Add(dd)
     local pnl = vgui.Create("DPanel")
     pnl:SetSize(dlist:GetWide(), 85)
     dlist:Add(pnl)
     pnl.dd = dd
+
     function pnl:Paint(w, h)
         local zone = ZONE.zones[self.dd:GetValue()] or nil
-        if zone ~= nil then
-            if zone.type then
-                local col = zone.color
-                local info = {
-                    "Zone Name: " .. self.dd:GetValue(),
-                    "Zone Type: " .. zone.type,
-                    "Pos1: " .. tostring(zone.pos1),
-                    "Pos2: " .. tostring(zone.pos2),
-                    "Color:" ..
-                        " " ..
-                            tostring(col.r) ..
-                                " " .. tostring(col.g) .. " " .. tostring(col.b) .. " " .. tostring(col.a)
-                }
 
-                for i = 1, #info do
-                    local k = i - 1
-                    draw.SimpleText(info[i], "deathrun_derma_Tiny", 0, 14 * k, HexColor("#303030"))
-                end
+        if zone ~= nil and zone.type then
+            local col = zone.color
+            local info = {"Zone Name: " .. self.dd:GetValue(), "Zone Type: " .. zone.type, "Pos1: " .. tostring(zone.pos1), "Pos2: " .. tostring(zone.pos2), "Color:" .. " " .. tostring(col.r) .. " " .. tostring(col.g) .. " " .. tostring(col.b) .. " " .. tostring(col.a)}
+
+            for i = 1, #info do
+                local k = i - 1
+                draw.SimpleText(info[i], "deathrun_derma_Tiny", 0, 14 * k, HexColor("#303030"))
             end
         end
     end
@@ -368,9 +325,7 @@ function DR:OpenZoneEditor()
     Mixer:SetWangs(true) --Show/hide the R G B A indicators 	DEF:true
     Mixer:SetColor(Color(255, 255, 255)) --Set the default color
     Mixer.dd = dd
-
     dlist:Add(Mixer)
-
     local but = vgui.Create("deathrun_button")
     but:SetSize(dlist:GetWide(), 18)
     but:SetText("Set zone color")
@@ -379,13 +334,10 @@ function DR:OpenZoneEditor()
     but.dd = dd
     but.mixer = Mixer
     dlist:Add(but)
+
     function but:DoClick()
         local col = self.mixer:GetColor()
-        LocalPlayer():ConCommand(
-            "zone_setcolor " ..
-                self.dd:GetValue() ..
-                    " " .. tostring(col.r) .. " " .. tostring(col.g) .. " " .. tostring(col.b) .. " " .. tostring(col.a)
-        )
+        LocalPlayer():ConCommand("zone_setcolor " .. self.dd:GetValue() .. " " .. tostring(col.r) .. " " .. tostring(col.g) .. " " .. tostring(col.b) .. " " .. tostring(col.a))
     end
 
     local but = vgui.Create("deathrun_button")
@@ -395,6 +347,7 @@ function DR:OpenZoneEditor()
     but:SetOffsets(0, 0)
     but.dd = dd
     dlist:Add(but)
+
     function but:DoClick()
         LocalPlayer():ConCommand("zone_setpos1 " .. self.dd:GetValue() .. " eyetrace")
     end
@@ -406,6 +359,7 @@ function DR:OpenZoneEditor()
     but:SetOffsets(0, 0)
     but.dd = dd
     dlist:Add(but)
+
     function but:DoClick()
         LocalPlayer():ConCommand("zone_setpos2 " .. self.dd:GetValue() .. " eyetrace")
     end
@@ -417,25 +371,22 @@ function DR:OpenZoneEditor()
     but:SetOffsets(0, 0)
     but.dd = dd
     dlist:Add(but)
+
     function but:DoClick()
         LocalPlayer():ConCommand("zone_remove " .. self.dd:GetValue())
     end
 end
-concommand.Add(
-    "deathrun_open_zone_editor",
-    function(ply, cmd)
-        if DR:CanAccessCommand(ply, cmd) then
-            DR:OpenZoneEditor()
-        end
+
+concommand.Add("deathrun_open_zone_editor", function(ply, cmd)
+    if DR:CanAccessCommand(ply, cmd) then
+        DR:OpenZoneEditor()
     end
-)
+end)
 
 local MOTDConVars = {}
-
 MOTDConVars.Enabled = GetConVar("deathrun_motd_enabled")
 MOTDConVars.Title = GetConVar("deathrun_motd_title")
 MOTDConVars.URL = GetConVar("deathrun_motd_url")
-
 DR.MOTDEnabled = MOTDConVars.Enabled:GetBool()
 DR.MOTDTitle = MOTDConVars.Title:GetString() or "Deathrun Information"
 DR.MOTDWidth = DR.MOTDWidth or ScrW() - 320
@@ -446,14 +397,17 @@ function DR:SetMOTDEnabled(enabled)
     print("DR:SetMOTDEnabled is deprecated! Instead please use the server convar deathrun_motd_enabled <0/1>")
     DR.MOTDEnabled = enabled
 end
+
 function DR:SetMOTDTitle(title)
     DR.MOTDTitle = title
     print("DR:SetMOTDTitle is deprecated! Instead please use the server convar deathrun_motd_title <string title>")
 end
+
 function DR:SetMOTDSize(w, h)
     DR.MOTDWidth = w
     DR.MOTDHeight = h
 end
+
 function DR:SetMOTDPage(url)
     print("DR:SetMOTDPage is deprecated! Instead please use the server convar deathrun_motd_url <string url>")
     DR.MOTDPage = url
@@ -477,13 +431,11 @@ function DR:OpenQuickInfo()
     lbl:SetFont("deathrun_derma_Large")
     lbl:SizeToContents()
     lbl:Center()
-
     local html = vgui.Create("DHTML", frame)
     html:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
     html:SetPos(4, 32)
     html:OpenURL(DR.MOTDPage)
     html:SetAllowLua(true)
-
     DR.QuickInfoFrame = frame
 end
 
@@ -494,58 +446,48 @@ function OpenSteamGroup()
     end
 end
 
-concommand.Add(
-    "deathrun_open_quickinfo",
-    function()
-        DR:OpenQuickInfo()
-    end
-)
+concommand.Add("deathrun_open_quickinfo", function()
+    DR:OpenQuickInfo()
+end)
 
-concommand.Add(
-    "deathrun_open_motd",
-    function()
-        DR:OpenQuickInfo()
-    end
-)
+concommand.Add("deathrun_open_motd", function()
+    DR:OpenQuickInfo()
+end)
 
 infoOpened = infoOpened ~= nil and infoOpened or false -- needs to be global
 local ShowInfo = CreateClientConVar("deathrun_info_on_join", 1, true, false) -- whether we see info on join
 
-hook.Add(
-    "HUDPaint",
-    "openquickinfo",
-    function()
-        if infoOpened == false and ShowInfo:GetBool() == true and DR.MOTDEnabled == true then
-            DR:OpenQuickInfo()
-        end
-        infoOpened = true -- only check once, then leave it
+hook.Add("HUDPaint", "openquickinfo", function()
+    if infoOpened == false and ShowInfo:GetBool() == true and DR.MOTDEnabled == true then
+        DR:OpenQuickInfo()
     end
-)
+
+    infoOpened = true -- only check once, then leave it
+end)
 
 function DR:GetWordWrapText(text, w, font)
     local displaytext = ""
     local displayline = ""
     local displayfont = font
     surface.SetFont(displayfont)
-
     text = string.Replace(text, "\n", "")
     text = string.Replace(text, "\t", "")
-
     text = string.Replace(text, [[\n]], "\n")
     text = string.Replace(text, [[\t]], "\t")
     text = string.Replace(text, [[\b]], "• ")
-
     local args = string.Split(text, " ")
 
     for i = 1, #args do
         local word = args[i]
-        local tw, th = surface.GetTextSize(displayline .. word .. " ")
+        local tw, _ = surface.GetTextSize(displayline .. word .. " ")
+
         if tw > w then
             displaytext = displaytext .. displayline .. "\n"
             displayline = word .. " "
         else
             displayline = displayline .. word .. " "
         end
+
         if i == #args then
             displaytext = displaytext .. displayline
         end
@@ -561,21 +503,16 @@ function DR:OpenWaitingMenu()
     frame:Center()
     frame:MakePopup()
     frame:SetTitle("Waiting For Players")
-
     local panel = vgui.Create("panel", frame)
     panel:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
     panel:SetPos(4, 32)
 
     function panel:Paint(w, h)
         local x, y = 0, 0
-
         surface.SetDrawColor(DR.Colors.Clouds)
         surface.DrawRect(x, y, w, h)
-
-        local ix, iy, iw, ih = x + 8, y + 8, w - 16, h - 16
-
-        local info =
-            [[Welcome to the server! Currently there are no players online. 
+        local ix, iy, iw = x + 8, y + 8, w - 16
+        local info = [[Welcome to the server! Currently there are no players online. 
 		This means that you can explore the map at your own pace 
 		from the safety of godmode, so you can practice 
 		your Bhop and check for auto-traps with ease.\n\n
@@ -584,18 +521,14 @@ function DR:OpenWaitingMenu()
 		\t\b !cleanup - Reset all traps on the map.\n
 		\t\b !help - View the help menu.\n\n
 		Enjoy, and have fun!]]
-
         info = DR:GetWordWrapText(info, iw, "deathrun_hud_Medium_light")
         deathrunShadowText(info, "deathrun_hud_Medium_light", ix, iy, HexColor("#303030"), nil, nil, 0)
     end
 end
 
-concommand.Add(
-    "deathrun_open_waitingmenu",
-    function()
-        DR:OpenWaitingMenu()
-    end
-)
+concommand.Add("deathrun_open_waitingmenu", function()
+    DR:OpenWaitingMenu()
+end)
 
 function DR:OpenForcedSpectatorMenu(msg)
     local frame = vgui.Create("deathrun_window")
@@ -603,21 +536,16 @@ function DR:OpenForcedSpectatorMenu(msg)
     frame:Center()
     frame:SetTitle("Moved to Spectator")
     frame:MakePopup()
-
     local panel = vgui.Create("panel", frame)
     panel:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
     panel:SetPos(4, 32)
 
     function panel:Paint(w, h)
         local x, y = 0, 0
-
         surface.SetDrawColor(DR.Colors.Text.Clouds)
         surface.DrawRect(x, y, w, h)
-
-        local ix, iy, iw, ih = x + 8, y + 8, w - 16, h - 16
-
-        local info =
-            [[You have been moved to the Spectator team for being AFK. 
+        local ix, iy, iw = x + 8, y + 8, w - 16
+        local info = [[You have been moved to the Spectator team for being AFK. 
 		To move back, either click on one of the buttons below or visit the 
 		Spectator section of the F2 menu.
 		\n\nWould you like to move back into to the game?]]
@@ -643,22 +571,17 @@ function DR:OpenForcedSpectatorMenu(msg)
     back:SetSize((panel:GetWide() - 3 * 4) / 2, 32)
     back:SetPos(8 + (panel:GetWide() - 3 * 4) / 2, panel:GetTall() - 32 - 4)
     back:SetText("Yes, please move me back.")
+
     function back:DoClick()
         LocalPlayer():ConCommand("deathrun_spectate_only 0")
         self:GetParent():GetParent():Close()
     end
 end
 
-concommand.Add(
-    "deathrun_open_forcespectatormenu",
-    function()
-        DR:OpenForcedSpectatorMenu()
-    end
-)
+concommand.Add("deathrun_open_forcespectatormenu", function()
+    DR:OpenForcedSpectatorMenu()
+end)
 
-net.Receive(
-    "DeathrunSpectatorNotification",
-    function()
-        DR:OpenForcedSpectatorMenu()
-    end
-)
+net.Receive("DeathrunSpectatorNotification", function()
+    DR:OpenForcedSpectatorMenu()
+end)

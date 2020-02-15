@@ -4,10 +4,6 @@ if SERVER then
     end
 end
 
-hook.Add(
-    "InitPostEntity",
-    "MapSettings",
-    function()
-        include("mapsettings/" .. game.GetMap() .. ".lua")
-    end
-)
+hook.Add("InitPostEntity", "MapSettings", function()
+    include("mapsettings/" .. game.GetMap() .. ".lua")
+end)

@@ -61,12 +61,8 @@ if SERVER then
             if endmap ~= nil and res2 ~= false then
                 local seconds = -1
 
-                if res2 ~= nil then
-                    if res2[1] then
-                        if res2[1]["seconds"] then
-                            seconds = res2[1]["seconds"]
-                        end
-                    end
+                if res2 ~= nil and res2[1] and res2[1]["seconds"] then
+                    seconds = res2[1]["seconds"]
                 end
 
                 net.Start("deathrun_send_map_pb")
@@ -287,24 +283,22 @@ if CLIENT then
     local labels = {}
 
     net.Receive("deathrun_display_stats", function()
-        if IsValid(LocalPlayer()) then
-            if statsvis:GetBool() == true then
-                local kills, deaths, run_win, dea_win
-                kills = net.ReadInt(16)
-                deaths = net.ReadInt(16)
-                run_win = net.ReadInt(16)
-                dea_win = net.ReadInt(16)
-                mo_wins_name = net.ReadString()
-                mo_wins = net.ReadInt(32)
-                stats3d.data = {kills, deaths, run_win, dea_win, mo_wins_name .. " (" .. tostring(mo_wins) .. ")"}
-                labels = {"Your Kills", "Your Deaths", "Your Runner Wins", "Your Death Wins", "Most Wins"}
-                stats3d.pos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 36
-                stats3d.ang = LocalPlayer():EyeAngles()
-                stats3d.ang:RotateAroundAxis(LocalPlayer():EyeAngles():Right(), 90)
-                stats3d.ang:RotateAroundAxis(LocalPlayer():EyeAngles():Forward(), 90)
-                stats3d.born = CurTime()
-                hook.Call("DeathrunAddStatsRow", nil, labels, stats3d.data)
-            end
+        if IsValid(LocalPlayer()) and statsvis:GetBool() == true then
+            local kills, deaths, run_win, dea_win
+            kills = net.ReadInt(16)
+            deaths = net.ReadInt(16)
+            run_win = net.ReadInt(16)
+            dea_win = net.ReadInt(16)
+            mo_wins_name = net.ReadString()
+            mo_wins = net.ReadInt(32)
+            stats3d.data = {kills, deaths, run_win, dea_win, mo_wins_name .. " (" .. tostring(mo_wins) .. ")"}
+            labels = {"Your Kills", "Your Deaths", "Your Runner Wins", "Your Death Wins", "Most Wins"}
+            stats3d.pos = LocalPlayer():EyePos() + LocalPlayer():EyeAngles():Forward() * 36
+            stats3d.ang = LocalPlayer():EyeAngles()
+            stats3d.ang:RotateAroundAxis(LocalPlayer():EyeAngles():Right(), 90)
+            stats3d.ang:RotateAroundAxis(LocalPlayer():EyeAngles():Forward(), 90)
+            stats3d.born = CurTime()
+            hook.Call("DeathrunAddStatsRow", nil, labels, stats3d.data)
         end
     end)
 
@@ -422,11 +416,10 @@ end
 -- Deathrun Aggregated Score is calculated like so:
 -- { [ ( 1 - 0.5^(death_wins + runner_wins) ) / 0.5 ] -1 } * sqrt(KDR)
 -- where KDR = K/D
-if SERVER then end
 local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+="
 
 function Base64Encode(data)
-    return ((data:gsub(".", function(x)
+    return (data:gsub(".", function(x)
         local r, b = "", x:byte()
 
         for i = 8, 1, -1 do
@@ -443,13 +436,13 @@ function Base64Encode(data)
         end
 
         return b:sub(c + 1, c + 1)
-    end) .. ({"", "==", "="})[#data % 3 + 1])
+    end) .. ({"", "==", "="})[#data % 3 + 1]
 end
 
 function Base64Decode(data)
     data = string.gsub(data, "[^" .. b .. "=]", "")
 
-    return (data:gsub(".", function(x)
+    return data:gsub(".", function(x)
         if (x == "=") then return "" end
         local r, f = "", (b:find(x) - 1)
 
@@ -467,7 +460,7 @@ function Base64Decode(data)
         end
 
         return string.char(c)
-    end))
+    end)
 end
 
 if SERVER then

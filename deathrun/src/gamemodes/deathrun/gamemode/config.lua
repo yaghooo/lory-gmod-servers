@@ -1,7 +1,5 @@
 print("Loading Config...")
-
 DR = DR or {}
-
 print("Creating global table DR...")
 
 DR.Colors = {
@@ -37,7 +35,6 @@ DR.Colors = {
 }
 
 DR.DermaColors = {}
-
 DR.AirAccelerate = 1000 -- does nothing
 
 function DR:SetMainColor(col)
@@ -61,20 +58,14 @@ end
 	
 ]]
 -- don't touch this otherwise shit will hit the fan and your custom colors won't work
-hook.Add(
-    "InitPostEntity",
-    "DeathrunChangeColors",
-    function()
-        hook.Call("DeathrunChangeColors", nil, nil)
-    end
-)
+hook.Add("InitPostEntity", "DeathrunChangeColors", function()
+    hook.Call("DeathrunChangeColors", nil, nil)
+end)
 
 -- 1 = user, 2 = moderator, 3 = admin
 -- 2 will inherit from 1, 3 will inherit from 2
 -- to access a command, player must have access level >= permission level
-
 DR.Ranks = {}
-
 DR.Ranks["user"] = 1 -- access levels
 DR.Ranks["regular"] = 1 -- ranks are case sensitive, Admin /= admin
 DR.Ranks["moderator"] = 2
@@ -82,13 +73,10 @@ DR.Ranks["mod"] = 2
 DR.Ranks["admin"] = 3
 DR.Ranks["superadmin"] = 3
 DR.Ranks["owner"] = 3
-
 DR.Ranks["atari"] = 2
 DR.Ranks["commodore 64"] = 3
 DR.Ranks["sega dreamcast"] = 3
-
 DR.PlayerAccess = {}
-
 DR.PlayerAccess["gamefresh_steamid"] = 2
 DR.PlayerAccess["bobbis_steamid"] = 3
 
@@ -96,7 +84,6 @@ DR.Permissions = {
     ["deathrun_respawn"] = 3, -- permission levels
     ["deathrun_cleanup"] = 3,
     ["deathrun_open_zone_editor"] = 3,
-    ["deathrun_unstuck"] = 1, -- edit this to change unstuck permissions
     ["deathrun_punish"] = 2,
     ["zone_create"] = 3,
     ["zone_remove"] = 3,

@@ -75,7 +75,6 @@ end)
 
 CreateConVar("deathrun_death_model", "models/player/monk.mdl", defaultFlags, "The default model for the Deaths.")
 local deathModel = GetConVar("deathrun_death_model")
-local dropWeaponsOnDeath = CreateConVar("deathrun_drop_weapons_on_death", 1, defaultFlags, "Should players drop weapons on death?")
 
 hook.Add("PlayerSpawn", "DeathrunSetPlayerModels", function(ply)
     --if dropWeaponsOnDeath
@@ -117,13 +116,11 @@ DR.SpecBuffer = {}
 hook.Add("PlayerSpawn", "DeathrunPlayerSpawn", function(ply)
     --print( ply:Nick(), "spectator only: "..tostring( ply:ShouldStaySpectating() ) )
     -- GhostMode compatibility
-    if GhostMode then
-        if ply:Team() == TEAM_GHOST then
-            ply:ConCommand("deathrun_spectate_only 0")
-            ply:StopSpectate()
+    if GhostMode and ply:Team() == TEAM_GHOST then
+        ply:ConCommand("deathrun_spectate_only 0")
+        ply:StopSpectate()
 
-            return
-        end
+        return
     end
 
     if ply:ShouldStaySpectating() then return SpawnSpectator(ply) end
@@ -156,14 +153,14 @@ hook.Add("PlayerSpawn", "DeathrunPlayerSpawn", function(ply)
             ply:SetTeam(TEAM_RUNNER)
         end
 
-        hook.Call("PlayerLoadout", self, ply)
+        hook.Call("PlayerLoadout", GM or GAMEMODE, ply)
     elseif ply.JustDied == true then
         ply:BeginSpectate()
     elseif ply:ShouldStaySpectating() then
         return SpawnSpectator(ply)
     else
         ply:StopSpectate()
-        hook.Call("PlayerLoadout", self, ply)
+        hook.Call("PlayerLoadout", GM or GAMEMODE, ply)
     end
 
     if ply:Team() ~= TEAM_RUNNER and ply:Team() ~= TEAM_DEATH and ply:Team() ~= TEAM_SPECTATOR then
@@ -271,10 +268,8 @@ function GM:PlayerDeath(ply, inflictor, attacker)
         end
     end)
 
-    if inflictor.LastCaller then
-        if inflictor.LastCaller.User then
-            attacker = inflictor.LastCaller.User
-        end
+    if inflictor.LastCaller and inflictor.LastCaller.User then
+        attacker = inflictor.LastCaller.User
     end
 
     hook.Call("DeathrunPlayerDeath", self, ply, inflictor, attacker) -- support for when traps kill players
@@ -288,7 +283,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
         end
     end
 
-    local msg = attackerName .. "\t" .. ("✕") .. "\t" .. ply:Nick()
+    local msg = attackerName .. "\t" .. "✕" .. "\t" .. ply:Nick()
     DR:DeathNotification(msg, 1)
 end
 
@@ -364,33 +359,24 @@ function GM:EntityTakeDamage(target, dmginfo)
     local ply = target
     local attacker = dmginfo:GetAttacker()
 
-    if target:IsPlayer() then
-        if ROUND:GetCurrent() == ROUND_WAITING or ROUND:GetCurrent() == ROUND_PREP then
-            target:DeathrunChatPrint("You took " .. tostring(dmginfo:GetDamage()) .. " damage.")
-            dmginfo:SetDamage(0)
-        end
+    if target:IsPlayer() and ROUND:GetCurrent() == ROUND_WAITING or ROUND:GetCurrent() == ROUND_PREP then
+        target:DeathrunChatPrint("You took " .. tostring(dmginfo:GetDamage()) .. " damage.")
+        dmginfo:SetDamage(0)
     end
 
-    if target:IsPlayer() and attacker:IsPlayer() then
-        if target:Team() == attacker:Team() and target ~= attacker then
-            --print("Attacked teammate")
-            local od = dmginfo:GetDamage()
-            dmginfo:SetDamage(0)
-            hook.Call("DeathrunTeamDamage", self, attacker, target, dmginfo, od)
-        end
+    if target:IsPlayer() and attacker:IsPlayer() and target:Team() == attacker:Team() and target ~= attacker then
+        --print("Attacked teammate")
+        local od = dmginfo:GetDamage()
+        dmginfo:SetDamage(0)
+        hook.Call("DeathrunTeamDamage", self, attacker, target, dmginfo, od)
     end
 
     --damage sounds
     local dmg = dmginfo:GetDamage()
 
-    if dmg > 0 then
-        -- drowning noisess
-        if dmginfo:GetDamageType() == DMG_DROWN then
-            local drownsounds = {"player/pl_drown1.wav", "player/pl_drown2.wav", "player/pl_drown3.wav"}
-            ply:EmitSound(table.Random(drownsounds), 400, 100, 1)
-        else
-            local painsounds = {}
-        end
+    if dmg > 0 and dmginfo:GetDamageType() == DMG_DROWN then
+        local drownsounds = {"player/pl_drown1.wav", "player/pl_drown2.wav", "player/pl_drown3.wav"}
+        ply:EmitSound(table.Random(drownsounds), 400, 100, 1)
     end
 end
 
@@ -464,39 +450,15 @@ hook.Add("ShowHelp", "DeathrunHelpBind", function(ply)
     ply:ConCommand("deathrun_open_help")
 end)
 
-local function IsCSSPrimary(wep)
-    local prims = {"_rif_", "_shot_", "_mach_", "_smg_", "_snip_"}
-
-    for i = 1, #prims do
-        v = prims[i]
-
-        if weapons.Get(wep:GetClass()) ~= nil then
-            if string.find(weapons.Get(wep:GetClass()).WorldModel, v) ~= nil then return true end
-        end
-    end
-
-    return false
-end
-
-local function IsCSSSecondary(wep)
-    if weapons.Get(wep:GetClass()) ~= nil then
-        if string.find(weapons.Get(wep:GetClass()).WorldModel, "_pist_") ~= nil then return true end
-    else
-        return false
-    end
-end
-
 local stop_the_drop = {"weapon_fuckmeintheass", "weapon_fuckmesilly2_fuckmybigblackass"} --"weapon_crowbar",
 
 function DR:CanPlayerDropWeapon(ply, class)
-    return (not table.HasValue(stop_the_drop, class))
+    return not table.HasValue(stop_the_drop, class)
 end
 
 concommand.Add("deathrun_dropweapon", function(ply, cmd, args)
-    if ply:Alive() and ply:GetActiveWeapon() ~= nil and IsValid(ply:GetActiveWeapon()) then
-        if DR:CanPlayerDropWeapon(ply, ply:GetActiveWeapon():GetClass()) then
-            ply:DropWeapon(ply:GetActiveWeapon())
-        end
+    if ply:Alive() and ply:GetActiveWeapon() ~= nil and IsValid(ply:GetActiveWeapon()) and DR:CanPlayerDropWeapon(ply, ply:GetActiveWeapon():GetClass()) then
+        ply:DropWeapon(ply:GetActiveWeapon())
     end
 end)
 
@@ -506,10 +468,7 @@ hook.Add("PlayerCanPickupWeapon", "StopWeaponAbuseAustraliaSaysNo", function(ply
     local class = wep:GetClass()
     local weps = ply:GetWeapons()
     local wepsclasses = {}
-    local filledslots = {}
     local slot1, slot3 = 0, 0
-    local secondaries = 0
-    local primaries = 0
 
     for k, v in ipairs(weps) do
         table.insert(wepsclasses, v:GetClass())

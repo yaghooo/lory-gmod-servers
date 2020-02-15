@@ -108,7 +108,7 @@ ROUND:AddState(ROUND_WAITING, function()
         timer.Create("DeathrunWaitingStateCheck", 5, 0, function()
             if #player.GetAllPlaying() >= 2 then
                 ROUND:RoundSwitch(ROUND_PREP)
-                timer.Destroy("DeathrunWaitingStateCheck")
+                timer.Remove("DeathrunWaitingStateCheck")
             end
         end)
     end
@@ -121,10 +121,8 @@ ROUND:AddState(ROUND_PREP, function()
     print("Round State: PREP")
     hook.Call("DeathrunBeginPrep", nil)
 
-    if CLIENT then
-        if GetConVar("deathrun_round_cues"):GetBool() == true then
-            surface.PlaySound("ui/achievement_earned.wav") -- round start cue
-        end
+    if CLIENT and GetConVar("deathrun_round_cues"):GetBool() then
+        surface.PlaySound("ui/achievement_earned.wav") -- round start cue
     end
 
     if SERVER then
@@ -412,7 +410,7 @@ if SERVER then
         end
 
         if mostkillsmvp and winteam == TEAM_RUNNER then
-            table.insert(mvps, mostkillsmvp:Nick() .. " got " .. (mostkills) .. (mostkills > 1 and " kills!" or " kill!"))
+            table.insert(mvps, mostkillsmvp:Nick() .. " got " .. mostkills .. (mostkills > 1 and " kills!" or " kill!"))
         end
 
         local data = {}
