@@ -85,9 +85,6 @@ function VoiceChat.StartVoice(ply)
             return false
         end
 
-        local curTime = CurTime()
-        if self.Next and curTime - self.Next < 0.1 then return false end
-
         if VoiceChat.Talking[CurID].fade then
             if Go ~= 0 then
                 Go = 0
@@ -109,7 +106,6 @@ function VoiceChat.StartVoice(ply)
             Av:SetAlpha(Fade * 255)
         end
 
-        self.Next = curTime
         local CurVol = ply:VoiceVolume() * 1.05
         local VolBar, Clr = vgui.Create("DPanel", NameBar), Color(255 * CurVol, 255 * (1 - CurVol), 0, 190)
         VolBar:SetSize(5, (self:GetTall() - 6) * CurVol)
