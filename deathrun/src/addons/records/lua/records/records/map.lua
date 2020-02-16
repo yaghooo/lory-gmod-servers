@@ -2,7 +2,7 @@ RECORD.Name = "Melhor tempo no mapa " .. game.GetMap()
 RECORD.Aliases = {"map", "mapa", "", " ", nil}
 
 function RECORD:GetUser(sid64)
-    local result = sql.Query("SELECT MIN(seconds) as seconds FROM deathrun_records WHERE sid64 = '" .. sid64 .. "'")
+    local result = sql.Query("SELECT MIN(seconds) as seconds FROM deathrun_records WHERE sid64 = '" .. sid64 .. "' AND mapname = '" .. game.GetMap() .. "'")
 
     return result and result[1] and result[1]["seconds"] or 0
 end
