@@ -47,7 +47,7 @@ function PRIZE:FindSteamUser(ply, page, onsuccess, onerror)
             end
 
             if string.match(body, "nextPageLink") then
-                self:FindSteamUser(ply, page + 1)
+                self:FindSteamUser(ply, page + 1, onsuccess, onerror)
             else
                 onerror()
             end
