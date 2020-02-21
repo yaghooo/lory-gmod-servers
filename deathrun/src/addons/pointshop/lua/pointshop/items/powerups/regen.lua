@@ -7,7 +7,7 @@ ITEM.SingleUse = true
 function ITEM:OnBuy(ply)
     timer.Create(
         "Regen_" .. ply:UniqueID(),
-        1,
+        0.5,
         65,
         function()
             local newHealth = ply:Health() + 1
