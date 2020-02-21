@@ -65,7 +65,11 @@ local defaultFlags = FCVAR_SERVER_CAN_EXECUTE + FCVAR_REPLICATED + FCVAR_NOTIFY 
 hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
     ply.FirstSpawn = true
     ply:SetTeam(TEAM_SPECTATOR)
-    --ply:Spawn()
+
+    if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 then
+        ply:Spawn()
+    end
+
     DR:ChatBroadcast(ply:Nick() .. " has joined the server.")
 end)
 

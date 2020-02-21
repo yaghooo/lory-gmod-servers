@@ -1,6 +1,5 @@
 local fontstandard2 = "Roboto Medium"
 
--- modified version of my derma thingzzzz
 surface.CreateFont("deathrun_derma_Large", {
     font = "Roboto Black",
     size = 45,
@@ -73,7 +72,6 @@ local function deathrunDrawBlur(panel, amount)
     surface.SetDrawColor(255, 255, 255)
     surface.SetMaterial(blur)
 
-    -- 3 pass blur i guess?
     for i = 1, 3 do
         blur:SetFloat("$blur", (i / 3) * (amount or 7))
         blur:Recompute()
@@ -91,7 +89,6 @@ local MAIN = {}
 function MAIN:OnClose()
 end
 
--- stub
 function MAIN:Init()
     self.bgalpha = 25
     self.bgcolor = DR.Colors.Clouds
@@ -100,13 +97,11 @@ function MAIN:Init()
     self.cb = vgui.Create("DButton", self)
 
     function self.cb:DoClick()
-        --self:GetParent():OnClose()
         self:GetParent():Close()
     end
 
     function self.cb:PaintOver(w, h)
         draw.RoundedBox(0, 0, 0, w, h, DR.DermaColors.Bad)
-        --draw.DrawText("✖","deathrun_derma_Medium",w/2,-3,DR.DermaColors.NeutralHigh, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
     self.inner = vgui.Create("DPanel", self)
@@ -146,7 +141,6 @@ function MAIN:Paint(w, h)
     surface.DrawRect(0, 8, w, 20)
     draw.RoundedBox(0, 0, h - 8, w, 8, fgcol)
     surface.DrawRect(0, h - 8, w, 4)
-    --title
     deathrunShadowTextSimple(self.title, "deathrun_derma_WindowTitle", 8, 14, DR.Colors.Clouds, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1)
 end
 
@@ -171,7 +165,7 @@ function MAIN:SetTitle(str)
 end
 
 vgui.Register("deathrun_window", MAIN, "DFrame")
-local BUTTN = {} -- custom buttons
+local BUTTN = {}
 
 function BUTTN:Init()
     self.w, self.h = 64, 24
@@ -276,7 +270,6 @@ function BUTTN:SetDisabled(bool)
 end
 
 vgui.Register("deathrun_button", BUTTN)
---hub multi panels
 local MPANEL = {}
 
 function MPANEL:Init()
@@ -296,8 +289,6 @@ function MPANEL:Init()
     end
 
     self.spacer:SetPos(0, 24)
-    -- Color(46, 204, 113)
-    -- Color(39, 174, 96)
     self.navleft = vgui.Create("deathrun_button", self)
     self.navleft:SetColors(Color(39, 174, 96), Color(46, 204, 113))
     self.navleft:SetText("<")
@@ -367,17 +358,17 @@ function MPANEL:AddTab(str_name)
         parent:SetTab(self.idx)
     end
 
-    temp.PaintOver = function(self, w, h)
-        if self.hover == true or self.active == true then
-            surface.SetDrawColor(self.color.hover)
-            draw.RoundedBox(4, 0, 0, self:GetWide(), 12, self.color.hover)
-        elseif self.hover == false then
-            surface.SetDrawColor(self.color.up)
-            draw.RoundedBox(4, 0, 0, self:GetWide(), 12, self.color.up)
+    temp.PaintOver = function(s, w, h)
+        if s.hover or s.active then
+            surface.SetDrawColor(s.color.hover)
+            draw.RoundedBox(4, 0, 0, s:GetWide(), 12, s.color.hover)
+        elseif s.hover == false then
+            surface.SetDrawColor(s.color.up)
+            draw.RoundedBox(4, 0, 0, s:GetWide(), 12, s.color.up)
         end
 
-        surface.DrawRect(0, 8, self:GetWide(), self:GetTall() - 8)
-        deathrunShadowText(self.text, self.font, self:GetWide() / 2 + self.offsets[1], self:GetTall() / 2 + self.offsets[2], Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1)
+        surface.DrawRect(0, 8, s:GetWide(), s:GetTall() - 8)
+        deathrunShadowText(s.text, s.font, s:GetWide() / 2 + s.offsets[1], s:GetTall() / 2 + s.offsets[2], Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1)
     end
 
     self.panels[str_name] = vgui.Create("DPanel", self)
@@ -385,7 +376,7 @@ function MPANEL:AddTab(str_name)
     self.panels[str_name]:SetPos(0, 28)
     self.panels[str_name]:SetVisible(false)
 
-    self.panels[str_name].Paint = function(self, w, h)
+    self.panels[str_name].Paint = function(s, w, h)
         surface.SetDrawColor(Color(225, 225, 225))
         surface.DrawRect(0, 0, w, h) -- meh
     end
@@ -432,7 +423,6 @@ concommand.Add("deathrun_test_derma", function()
     vgui.Create("deathrun_window")
 end)
 
--- needs a table in format { {x1,y1}, {x2,y2} }
 function surface.EasyPoly(tbl)
     local poly = {}
 
@@ -537,16 +527,11 @@ end
 function AUTOGGLE:Paint(w, h)
     surface.SetDrawColor(DR.Colors.Turq)
     draw.NoTexture()
-    --surface.DrawOutlinedRect(0,0,w,h)
-    --surface.DrawRect(8, h/2-8, 4 + ( self.state and QuadLerp(self.t, 0, 1) or QuadLerp(1-self.t, 1, 0) )*12, 16)
-    --surface.DrawOutlinedRect(8, h/2-8, 16, 16)
     surface.DrawCircle(16, h / 2, 8)
     surface.SetDrawColor(DR.Colors.Clouds)
     surface.DrawCircle(16, h / 2, 6)
     surface.SetDrawColor(DR.Colors.Turq)
     surface.DrawCircle(16, h / 2, 4 * (1 - (self.state and QuadLerp(self.t, 1, 0) or QuadLerp(1 - self.t, 0, 1))))
-    --surface.SetDrawColor( AuColors.New.E )
-    --surface.DrawCircle( 16, h/2, 10*( self.state and QuadLerp(self.t, 0, 1) or QuadLerp(1-self.t, 1, 0) ) )
     deathrunShadowTextSimple(self:GetText(), self:GetFont(), 8 + 16 + 8, h / 2, DR.Colors.Turq, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1)
 end
 

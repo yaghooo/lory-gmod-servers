@@ -573,11 +573,13 @@ surface.CreateFont("sassTiny", {
     weight = 500
 })
 
+local avatar
+
 if IsValid(avatar) then
     avatar:Remove()
 end
 
-local avatar = IsValid(avatar) and avatar or vgui.Create("AvatarImage")
+avatar = IsValid(avatar) and avatar or vgui.Create("AvatarImage")
 avatar:SetSize(46, 46)
 avatar:SetPos(0, 0)
 avatar:SetPlayer(LocalPlayer(), 64)
