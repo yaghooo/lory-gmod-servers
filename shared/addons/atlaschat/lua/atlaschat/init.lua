@@ -739,9 +739,9 @@ net.Receive(
         player.nextMessageAtlas = CurTime() + 0.25
 
         local text = net.ReadString()
-        local team = util.tobool(net.ReadBit())
+        local team = tobool(net.ReadBit())
 
-        text = string.sub(text, 0, 127)
+        text = string.Trim(string.sub(text, 0, 127))
 
         local newText = hook.Run("PlayerSay", player, text, team, not player:Alive())
 
