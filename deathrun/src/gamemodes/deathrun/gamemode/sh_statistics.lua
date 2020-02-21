@@ -38,7 +38,7 @@ if SERVER then
     hook.Add("DeathrunBeginPrep", "DeathrunSendRecords", function()
         -- deathrun_send_map_records
         --
-        res = sql.Query("SELECT sid64, MIN(seconds) FROM deathrun_records WHERE mapname = '" .. game.GetMap() .. "' GROUP BY sid64 ORDER BY seconds ASC LIMIT 3")
+        res = sql.Query("SELECT sid64, MIN(seconds) as seconds FROM deathrun_records WHERE mapname = '" .. game.GetMap() .. "' GROUP BY sid64 ORDER BY seconds ASC LIMIT 3")
 
         if endmap ~= nil and res ~= false then
             if res == nil then
