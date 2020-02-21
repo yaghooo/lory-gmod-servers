@@ -86,29 +86,27 @@ function ZONE:Tick()
                 local border = Vector(20, 20, 20)
                 local posmin, posmax = VectorMinMax(z.pos1, z.pos2)
 
-                for k, ply in ipairs(ents.FindInBox(posmin - border, posmax + border)) do
-                    if ply:IsPlayer() == true then
+                for k, ply in pairs(ents.FindInBox(posmin - border, posmax + border)) do
+                    if ply:IsPlayer() then
+                        local inCuboid = PlayerInCuboid(ply, z.pos1, z.pos2)
                         -- create a bunch of variables on the player
                         ply.InZones = ply.InZones or {}
 
                         if not ply.InZones[name] then
                             -- if we don't remember them being inside, but they are inside, then they mustve just entered the zone.
-                            if PlayerInCuboid(ply, z.pos1, z.pos2) then
+                            if inCuboid then
                                 ply.InZones[name] = true
                                 hook.Call("DeathrunPlayerEnteredZone", nil, ply, name, z)
                             end
-                        else
-                            -- if we remember them being inside, but they arent anymore, then they left.
-                            if not PlayerInCuboid(ply, z.pos1, z.pos2) then
-                                ply.InZones[name] = false
-                                hook.Call("DeathrunPlayerExitedZone", nil, ply, name, z)
-                            end
+                        elseif not inCuboid then
+                            ply.InZones[name] = false
+                            hook.Call("DeathrunPlayerExitedZone", nil, ply, name, z)
                         end
+                    end
 
-                        -- if we don't remember them being inside, but they are inside, then they mustve just entered the zone.
-                        if PlayerInCuboid(ply, z.pos1, z.pos2) then
-                            hook.Call("DeathrunPlayerInsideZone", nil, ply, name, z)
-                        end
+                    -- if we don't remember them being inside, but they are inside, then they mustve just entered the zone.
+                    if inCuboid then
+                        hook.Call("DeathrunPlayerInsideZone", nil, ply, name, z)
                     end
                 end
             end
@@ -280,22 +278,14 @@ local function denyZone(ply, name, z)
 end
 
 hook.Add("DeathrunPlayerInsideZone", "DeathrunPlayerDenyZones", function(ply, name, z)
-    if z.type == "deny_team_runner" and ply:Team() == TEAM_RUNNER then
+    if z.type == "end" then
+        CheckFinishMap(ply)
+    elseif z.type == "deny_team_runner" and ply:Team() == TEAM_RUNNER then
         denyZone(ply, name, z)
-
-        return
-    end
-
-    if z.type == "deny_team_death" and ply:Team() == TEAM_DEATH then
+    elseif z.type == "deny_team_death" and ply:Team() == TEAM_DEATH then
         denyZone(ply, name, z)
-
-        return
-    end
-
-    if z.type == "deny" then
+    elseif z.type == "deny" then
         denyZone(ply, name, z)
-
-        return
     end
 end)
 
@@ -316,37 +306,23 @@ hook.Add("DeathrunPlayerEnteredZone", "DeathrunPlayerFinishMap", function(ply, n
 
     if (ply:Team() ~= TEAM_RUNNER) or ply:GetSpectate() or (not ply:Alive()) or ROUND:GetCurrent() == ROUND_WAITING or ply.CanGetRecord == false then return end
 
-    if z.type == "end" and ply.HasFinishedMap ~= true then
-        table.insert(finishorder, ply)
-        local place = #finishorder
-        local placestring = tostring(place)
-        local endchar = string.sub(placestring, -1, -1)
-        local end2char = string.sub(placestring, -1, -2)
-        local placetext = ""
-
-        if end2char == "11" or end2char == "12" or end2char == "13" then
-            placetext = placetext .. "th"
-        elseif endchar == "1" then
-            placetext = placestring .. "st"
-        elseif endchar == "2" then
-            placetext = placestring .. "nd"
-        elseif endchar == "3" then
-            placetext = placestring .. "rd"
-        else
-            placetext = placestring .. "th"
-        end
-
-        for k, v in ipairs(team.GetPlayers(TEAM_DEATH)) do
-            v:SetRunSpeed(250)
-        end
-
-        DR:ChatBroadcast(ply:Nick() .. " has finished the map in " .. placetext .. " place with a time of " .. string.ToMinutesSecondsMilliseconds(CurTime() - ZONE.StartTime) .. "!")
-        ply.HasFinishedMap = true
-
-        for k, v in ipairs(team.GetPlayers(TEAM_DEATH)) do
-            v:SetRunSpeed(v:GetWalkSpeed()) -- deaths lose sprint when the runner finishes
-        end
-
-        hook.Call("DeathrunPlayerFinishMap", nil, ply, name, z, place, CurTime() - ZONE.StartTime)
+    if z.type == "end" then
+        CheckFinishMap(ply)
     end
 end)
+
+function CheckFinishMap(ply)
+    if ply:Team() ~= TEAM_RUNNER or ply:GetSpectate() or not ply:Alive() or ROUND:GetCurrent() == ROUND_WAITING or not ply.HasFinishedMap or ply.CanGetRecord == false then return end
+    table.insert(finishorder, ply)
+    local place = #finishorder
+    local placestring = tostring(place)
+
+    for _, v in pairs(team.GetPlayers(TEAM_DEATH)) do
+        v:SetRunSpeed(250)
+        v:SetWalkSpeed(250)
+    end
+
+    DR:ChatBroadcast(ply:Nick() .. " finalizou na " .. placestring .. "ª posição em " .. string.ToMinutesSecondsMilliseconds(CurTime() - ply.StartTime) .. "!")
+    ply.HasFinishedMap = true
+    hook.Call("DeathrunPlayerFinishMap", nil, ply, name, z, place, CurTime() - ply.StartTime)
+end
