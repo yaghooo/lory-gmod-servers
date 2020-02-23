@@ -140,6 +140,8 @@ hook.Add("PrePlayerDraw", "TransparencyPlayers", function(ply)
 end)
 
 function GM:PreDrawViewModel(vm, ply, wep)
+    ply = ply or LocalPlayer()
+
     if ply:GetObserverMode() == OBS_MODE_CHASE or ply:GetObserverMode() == OBS_MODE_ROAMING then
         return true
     elseif not IsValid(wep) or not wep.PreDrawViewModel then
