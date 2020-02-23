@@ -48,26 +48,6 @@ function ZONE:ZoneData(name)
     return self.zones[name] or false
 end
 
-function ZONE:GetPlayerInZone(name)
-    return ply.InZones and ply.InZones[name]
-end
-
-function ZONE:GetPlayerInZoneType(ply, t)
-    for k, v in pairs(ply.InZones or {}) do
-        if self.zones[k] and v == true then
-            if type(t) == "string" then
-                if self.zones[k].type == t then return true end
-            elseif type(t) == "table" then
-                for _, j in ipairs(t) do
-                    if self.zones[k].type == j then return true end
-                end
-            end
-        end
-    end
-
-    return false
-end
-
 local skipcount = 0
 local skip = 0
 local tickrate = math.ceil(1 / engine.TickInterval()) -- makes it a bit less taxing, at the cost of reducing the resolution of records
@@ -102,11 +82,11 @@ function ZONE:Tick()
                             ply.InZones[name] = false
                             hook.Call("DeathrunPlayerExitedZone", nil, ply, name, z)
                         end
-                    end
 
-                    -- if we don't remember them being inside, but they are inside, then they mustve just entered the zone.
-                    if inCuboid then
-                        hook.Call("DeathrunPlayerInsideZone", nil, ply, name, z)
+                        -- if we don't remember them being inside, but they are inside, then they mustve just entered the zone.
+                        if inCuboid then
+                            hook.Call("DeathrunPlayerInsideZone", nil, ply, name, z)
+                        end
                     end
                 end
             end
@@ -289,12 +269,6 @@ hook.Add("DeathrunPlayerInsideZone", "DeathrunPlayerDenyZones", function(ply, na
     end
 end)
 
--- hook.Add("Move", "DeathrunPlayerDenyZones", function( ply, cmd )
--- 	if ZONE:GetPlayerInZoneType( ply, {"deny", "deny_team_death", "deny_team_runner"} ) then
--- 		--cmd:SetMaxSpeed( 0 )
--- 		--cmd:SetMaxClientSpeed( 0 )
--- 	end
--- end)
 hook.Add("DeathrunPlayerEnteredZone", "DeathrunPlayerFinishMap", function(ply, name, z)
     if string.sub(z.type, 1, 4) == "deny" then
         if not ply.DenyEntryList then
@@ -304,15 +278,13 @@ hook.Add("DeathrunPlayerEnteredZone", "DeathrunPlayerFinishMap", function(ply, n
         ply.DenyEntryList[name] = ply:GetPos()
     end
 
-    if (ply:Team() ~= TEAM_RUNNER) or ply:GetSpectate() or (not ply:Alive()) or ROUND:GetCurrent() == ROUND_WAITING or ply.CanGetRecord == false then return end
-
     if z.type == "end" then
         CheckFinishMap(ply)
     end
 end)
 
 function CheckFinishMap(ply)
-    if ply:Team() ~= TEAM_RUNNER or ply:GetSpectate() or not ply:Alive() or ROUND:GetCurrent() == ROUND_WAITING or not ply.HasFinishedMap or ply.CanGetRecord == false then return end
+    if ply:Team() ~= TEAM_RUNNER or ply:GetSpectate() or not ply:Alive() or ROUND:GetCurrent() == ROUND_WAITING or ply.HasFinishedMap or ply.CanGetRecord == false then return end
     table.insert(finishorder, ply)
     local place = #finishorder
     local placestring = tostring(place)
@@ -322,7 +294,7 @@ function CheckFinishMap(ply)
         v:SetWalkSpeed(250)
     end
 
-    DR:ChatBroadcast(ply:Nick() .. " finalizou na " .. placestring .. "ª posição em " .. string.ToMinutesSecondsMilliseconds(CurTime() - ply.StartTime) .. "!")
+    DR:ChatBroadcast(ply:Nick() .. " finalizou na " .. placestring .. "ª posição em " .. string.ToMinutesSecondsMilliseconds(CurTime() - ZONE.StartTime) .. "!")
     ply.HasFinishedMap = true
-    hook.Call("DeathrunPlayerFinishMap", nil, ply, name, z, place, CurTime() - ply.StartTime)
+    hook.Call("DeathrunPlayerFinishMap", nil, ply, name, z, place, CurTime() - ZONE.StartTime)
 end
