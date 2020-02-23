@@ -66,7 +66,7 @@ hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
     ply.FirstSpawn = true
     ply:SetTeam(TEAM_SPECTATOR)
 
-    if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 then
+    if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 or game.GetMap() == "mg_100traps_v3" then
         ply:SetTeam(TEAM_RUNNER)
         ply:Spawn()
     end
@@ -244,7 +244,7 @@ function GM:PlayerDeath(ply, inflictor, attacker)
         if not IsValid(ply) then return end -- incase they die and disconnect, prevents console errors.
 
         if not ply:Alive() then
-            if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 then
+            if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 or game.GetMap() == "mg_100traps_v3" then
                 ply:Spawn()
             else
                 ply.JustDied = true

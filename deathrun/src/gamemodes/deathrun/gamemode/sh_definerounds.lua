@@ -287,7 +287,11 @@ ROUND:AddState(ROUND_ACTIVE, function()
     hook.Run("OnStartRound")
 
     if SERVER then
-        ROUND:SetTimer(GetConVarNumber("deathrun_round_duration"))
+        if game.GetMap() == "mg_100traps_v3" then
+            ROUND:SetTimer(3600)
+        else
+            ROUND:SetTimer(GetConVarNumber("deathrun_round_duration"))
+        end
 
         timer.Create("DeathrunAutoslay", GetConVarNumber("deathrun_autoslay_delay") + 5, 1, function()
             for k, v in ipairs(player.GetAllPlaying()) do
@@ -348,7 +352,7 @@ ROUND:AddState(ROUND_OVER, function()
     rounds_played = rounds_played + 1
 
     if SERVER then
-        if not hook.Call("DeathrunShouldMapSwitch", nil, rounds_played) and (rounds_played < GetConVarNumber("deathrun_round_limit")) then
+        if not hook.Call("DeathrunShouldMapSwitch", nil, rounds_played) and (rounds_played < GetConVarNumber("deathrun_round_limit")) and game.GetMap() ~= "mg_100traps_v3" then
             DR:ChatBroadcast("Round " .. tostring(rounds_played) .. " over. " .. tostring(GetConVarNumber("deathrun_round_limit") - rounds_played) .. " rounds to go!")
             ROUND:SetTimer(GetConVarNumber("deathrun_finishtime_duration"))
 
