@@ -9,8 +9,9 @@ function ITEM:OnBuy(ply)
 end
 
 function ITEM:OnEquip(ply)
-    ply:Give(self.WeaponClass)
-    ply:SelectWeapon(self.WeaponClass)
+    timer.Simple(1, function()
+        ply:Give(self.WeaponClass)
+    end)
 end
 
 function ITEM:OnSell(ply)
