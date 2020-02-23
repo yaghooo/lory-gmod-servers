@@ -67,6 +67,7 @@ hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
     ply:SetTeam(TEAM_SPECTATOR)
 
     if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 then
+        ply:SetTeam(TEAM_RUNNER)
         ply:Spawn()
     end
 
