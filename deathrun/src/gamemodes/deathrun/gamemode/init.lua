@@ -63,12 +63,12 @@ local playermodels = {"models/player/group01/male_01.mdl", "models/player/group0
 local defaultFlags = FCVAR_SERVER_CAN_EXECUTE + FCVAR_REPLICATED + FCVAR_NOTIFY + FCVAR_ARCHIVE
 
 hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
-    ply.FirstSpawn = true
-    ply:SetTeam(TEAM_SPECTATOR)
-
     if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 or game.GetMap() == "mg_100traps_v3" then
         ply:SetTeam(TEAM_RUNNER)
         ply:Spawn()
+    else
+        ply.FirstSpawn = true
+        ply:SetTeam(TEAM_SPECTATOR)
     end
 
     DR:ChatBroadcast(ply:Nick() .. " has joined the server.")
