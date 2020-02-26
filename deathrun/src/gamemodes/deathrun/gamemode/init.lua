@@ -240,7 +240,8 @@ function GM:PlayerDeath(ply, inflictor, attacker)
         return
     end
 
-    timer.Simple(3, function()
+    local waitTime = string.StartWith(game.GetMap(), "mg_") and 1 or 4
+    timer.Simple(waitTime, function()
         if not IsValid(ply) then return end -- incase they die and disconnect, prevents console errors.
 
         if not ply:Alive() then
