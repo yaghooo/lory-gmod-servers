@@ -181,7 +181,7 @@ function GM:DisplayEndRoundBoard(data)
             surface.SetTextColor(add_clean_color)
         end
 
-        surface.DrawTexturedRect(10, 0, 180, 64)
+        surface.DrawTexturedRect(10, 0, 64, 64)
         surface.SetFont("MersRadialSmall")
         local tw = surface.GetTextSize(translate.adMelonbomberBy)
         surface.SetTextPos(w - tw - 10, h / 2 - 10)
