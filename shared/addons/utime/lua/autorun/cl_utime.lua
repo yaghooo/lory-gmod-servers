@@ -57,8 +57,6 @@ function think()
 end
 timer.Create("UTimeThink", 0.6, 0, think)
 
-local texGradient = surface.GetTextureID("gui/center_gradient")
-
 -----------------------------------------------------------
 --	 Name: Paint
 -----------------------------------------------------------
