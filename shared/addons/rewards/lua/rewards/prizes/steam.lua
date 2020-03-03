@@ -34,6 +34,7 @@ end
 
 function PRIZE:FindSteamUser(ply, page, onsuccess, onerror)
     local url = "https://steamcommunity.com/groups/" .. self.GroupId .. "/memberslistxml/?xml=1&p=" .. page .. "&c=" .. CurTime()
+    local prize = self
 
     http.Fetch(url, function(body, len, headers, code)
         if code == 200 then
@@ -47,16 +48,16 @@ function PRIZE:FindSteamUser(ply, page, onsuccess, onerror)
             end
 
             if string.match(body, "nextPageLink") then
-                self:FindSteamUser(ply, page + 1, onsuccess, onerror)
+                prize:FindSteamUser(ply, page + 1, onsuccess, onerror)
             else
                 onerror()
             end
         else
-            error("Error when trying to get status for user on steam group " .. self.GroupId .. " (Code: " .. code .. ")")
+            error("Error when trying to get status for user on steam group " .. prize.GroupId .. " (Code: " .. code .. ")")
             onerror()
         end
     end, function(err)
-        error("Error when trying to get status for user on steam group " .. self.GroupId)
+        error("Error when trying to get status for user on steam group " .. prize.GroupId)
         onerror()
     end)
 end
