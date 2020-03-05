@@ -1,6 +1,10 @@
 const { promises: fs } = require("fs");
 const path = require("path");
 
+function setProduction(v) {
+    process.env['PRODUCTION'] = Number(v);
+}
+
 async function mkdirOrIgnore(dir) {
     try {
         await fs.mkdir(dir);
@@ -14,16 +18,16 @@ async function mkdirOrIgnore(dir) {
 async function mergeDirs(src, dest) {
     const files = await fs.readdir(src);
 
-    for (const file of files) {
+    for (const file of files) {        
         const srcFile = path.resolve(src, file);
         const destFile = path.resolve(dest, file);
         
-        const stats = await fs.lstat(srcFile);
+        const stats = await fs.lstat(srcFile);        
         if (stats.isDirectory()) {
-            await mkdirOrIgnore(srcFile);
+            await mkdirOrIgnore(destFile);
             await mergeDirs(srcFile, destFile);
         } else {
-            await fs.writeFile(destFile, await fs.readFile(srcFile))
+            await fs.writeFile(destFile, await fs.readFile(srcFile));
         }
     }
 }
@@ -43,22 +47,26 @@ async function build([servers, env]) {
     await mkdirOrIgnore(buildDir);
 
     for (const serverName of serversToBuild) {
-        const serverBuildDir = path.resolve(buildDir, serverName)
+        const serverBuildDir = path.resolve(buildDir, serverName);
         await mkdirOrIgnore(serverBuildDir);
 
         const sharedDir = path.resolve(serversDir, "_shared");
         await mergeDirs(sharedDir, serverBuildDir);
 
-        if (env === "dev") {
+        const isDev = env === "dev";
+        if (isDev) {
             const debugDir = path.resolve(serversDir, "_debug");
             await mergeDirs(debugDir, serverBuildDir);
         }
+    
+        setProduction(!isDev);
 
         await mergeDirs(path.resolve(serversDir, serverName), serverBuildDir);
     }
 }
 
-async function start() {
+async function start([servers, env]) {
+    await build([servers, env || "dev"]);
 }
 
 const actions = {
