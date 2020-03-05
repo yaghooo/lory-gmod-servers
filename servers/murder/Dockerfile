@@ -1,6 +1,6 @@
 FROM ceifa/gmod-server:root
 
-COPY ./shared /server/garrysmod
+COPY ./_shared /server/garrysmod
 COPY ./murder/src /server/garrysmod
 
 ENV NAME="[BR] Lory | Murder ~ [[ VIP GRATIS LIMITADO! ]] ~ Divirta-se!"

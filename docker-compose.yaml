@@ -6,9 +6,9 @@ services:
             - "27017:27017"
             - "27017:27017/udp"
         volumes:
-            - ./stateful/deathrun/data:/server/garrysmod/data
-            - ./stateful/deathrun/sv.db:/server/garrysmod/sv.db
-            - ./stateful/cache:/server/garrysmod/cache
+            - ./servers/_stateful/deathrun/data:/server/garrysmod/data
+            - ./servers/_stateful/deathrun/sv.db:/server/garrysmod/sv.db
+            - ./servers/_stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
             - PORT=27017
@@ -16,7 +16,7 @@ services:
         tty: true
         build:
             context: .
-            dockerfile: ./deathrun/Dockerfile
+            dockerfile: ./servers/deathrun/Dockerfile
         networks:
             - lory
 
@@ -26,9 +26,9 @@ services:
             - "27018:27018"
             - "27018:27018/udp"
         volumes:
-            - ./stateful/murder/data:/server/garrysmod/data
-            - ./stateful/murder/sv.db:/server/garrysmod/sv.db
-            - ./stateful/cache:/server/garrysmod/cache
+            - ./servers/_stateful/murder/data:/server/garrysmod/data
+            - ./servers/_stateful/murder/sv.db:/server/garrysmod/sv.db
+            - ./servers/_stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
             - PORT=27018
@@ -36,7 +36,7 @@ services:
         tty: true
         build:
             context: .
-            dockerfile: ./murder/Dockerfile
+            dockerfile: ./servers/murder/Dockerfile
         networks:
             - lory
 

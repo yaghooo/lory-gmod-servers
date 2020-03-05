@@ -1,6 +1,6 @@
 FROM ceifa/gmod-server:root
 
-COPY ./shared /server/garrysmod
+COPY ./_shared /server/garrysmod
 COPY ./deathrun/src /server/garrysmod
 
 ENV NAME="[BR] Lory | Deathrun ~ 128 tickrate ~ Divirta-se!"
