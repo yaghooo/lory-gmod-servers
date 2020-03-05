@@ -1,4 +1,5 @@
 PS.Config = {}
+
 -- Edit below
 PS.Config.CommunityName = "LORYSHOP"
 PS.Config.DataProvider = "sqlite"
@@ -16,8 +17,11 @@ PS.Config.CanPlayersGiveItems = true
 PS.Config.CanPlayersGivePoints = true -- Can players give points away to other players?
 PS.Config.PointsName = "Judeu" -- What are the points called?
 PS.Config.SortItemsBy = "Name" -- How are items sorted? Set to 'Price' to sort by price.
+
 -- Edit below if you know what you're doing
-PS.Config.CalculateBuyPrice = function(ply, item) return item.Price end
+PS.Config.CalculateBuyPrice = function(ply, item)
+    return item.Price
+end
 
 PS.Config.CalculateSellPrice = function(ply, item)
     if item.Category == "Facas" or item.Category == "Caixas" then

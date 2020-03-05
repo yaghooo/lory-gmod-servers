@@ -1,31 +1,13 @@
---[[
-	pointshop/sh_init.lua
-	first file included on both states.
-]]
---
 PS = {}
 PS.__index = PS
 PS.Items = {}
 PS.Categories = {}
 PS.ClientsideModels = {}
-include("sh_config.lua")
-
--- validation
-function PS:ValidateItems(items)
-    if type(items) ~= "table" then return {} end
-
-    -- Remove any items that no longer exist
-    for item_id, item in pairs(items) do
-        if not self.Items[item_id] then
-            items[item_id] = nil
-        end
-    end
-
-    return items
-end
 
 function PS:ValidatePoints(points)
-    if type(points) ~= "number" then return 0 end
+    if type(points) ~= "number" then
+        error("Points should be of type number")
+    end
 
     return points >= 0 and points or 0
 end
