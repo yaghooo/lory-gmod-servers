@@ -5,13 +5,18 @@ services:
         ports: 
             - "27017:27017"
             - "27017:27017/udp"
-        volumes:
-            - ./servers/_stateful/deathrun/data:/server/garrysmod/data
-            - ./servers/_stateful/deathrun/sv.db:/server/garrysmod/sv.db
-            - ./servers/_stateful/cache:/server/garrysmod/cache
+        # volumes:
+        #     - ./servers/_stateful/deathrun/data:/server/garrysmod/data
+        #     - ./servers/_stateful/deathrun/sv.db:/server/garrysmod/sv.db
+        #     - ./servers/_stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
             - PORT=27017
+            - NAME=[BR] Lory | Deathrun ~ 128 tickrate ~ Divirta-se!
+            - ARGS=+host_workshop_collection 382793424 -tickrate 100
+            - MAP=deathrun_atomic_warfare
+            - GAMEMODE=deathrun
+            - MAXPLAYERS=24
         restart: always
         tty: true
         build:
@@ -25,13 +30,18 @@ services:
         ports: 
             - "27018:27018"
             - "27018:27018/udp"
-        volumes:
-            - ./servers/_stateful/murder/data:/server/garrysmod/data
-            - ./servers/_stateful/murder/sv.db:/server/garrysmod/sv.db
-            - ./servers/_stateful/cache:/server/garrysmod/cache
+        # volumes:
+        #     - ./servers/_stateful/murder/data:/server/garrysmod/data
+        #     - ./servers/_stateful/murder/sv.db:/server/garrysmod/sv.db
+        #     - ./servers/_stateful/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION=1
             - PORT=27018
+            - NAME=[BR] Lory | Murder ~ [[ VIP GRATIS LIMITADO! ]] ~ Divirta-se!
+            - ARGS=+host_workshop_collection 1581506103 -tickrate 100
+            - MAP=gm_wwhouse
+            - GAMEMODE=murder
+            - MAXPLAYERS=24
         restart: always
         tty: true
         build:
