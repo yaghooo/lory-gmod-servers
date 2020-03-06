@@ -1,14 +1,17 @@
 version: '3.7'
 services:
     deathrun:
-        image: "ceifa/lory-gmod-deathrun"
+        image: "ceifa/gmod-server-docker"
         ports: 
             - "27017:27017"
             - "27017:27017/udp"
-        # volumes:
-        #     - ./servers/_stateful/deathrun/data:/server/garrysmod/data
-        #     - ./servers/_stateful/deathrun/sv.db:/server/garrysmod/sv.db
-        #     - ./servers/_stateful/cache:/server/garrysmod/cache
+        volumes:
+            - ./servers/_build/deathrun/addons:/server/garrysmod/addons
+            - ./servers/_build/deathrun/cfg:/server/garrysmod/cfg
+            - ./servers/_build/deathrun/data:/server/garrysmod/data
+            - ./servers/_build/deathrun/gamemodes:/server/garrysmod/gamemodes
+            - ./servers/_build/deathrun/sv.db:/server/garrysmod/sv.db
+            - ./servers/_build/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION
             - PORT=27017
@@ -26,14 +29,17 @@ services:
             - lory
 
     murder:
-        image: "ceifa/lory-gmod-murder"
+        image: "ceifa/gmod-server-docker"
         ports: 
             - "27018:27018"
             - "27018:27018/udp"
-        # volumes:
-        #     - ./servers/_stateful/murder/data:/server/garrysmod/data
-        #     - ./servers/_stateful/murder/sv.db:/server/garrysmod/sv.db
-        #     - ./servers/_stateful/cache:/server/garrysmod/cache
+        volumes:
+            - ./servers/_build/murder/addons:/server/garrysmod/addons
+            - ./servers/_build/murder/cfg:/server/garrysmod/cfg
+            - ./servers/_build/murder/data:/server/garrysmod/data
+            - ./servers/_build/murder/gamemodes:/server/garrysmod/gamemodes
+            - ./servers/_build/murder/sv.db:/server/garrysmod/sv.db
+            - ./servers/_build/cache:/server/garrysmod/cache
         environment:
             - PRODUCTION
             - PORT=27018
