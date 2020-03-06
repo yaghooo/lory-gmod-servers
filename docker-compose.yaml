@@ -1,7 +1,7 @@
 version: '3.7'
 services:
     deathrun:
-        image: "ceifa/gmod-server-docker"
+        image: "ceifa/gmod-server:root"
         ports: 
             - "27017:27017"
             - "27017:27017/udp"
@@ -22,14 +22,11 @@ services:
             - MAXPLAYERS=24
         restart: always
         tty: true
-        build:
-            context: .
-            dockerfile: ./servers/deathrun/Dockerfile
         networks:
             - lory
 
     murder:
-        image: "ceifa/gmod-server-docker"
+        image: "ceifa/gmod-server:root"
         ports: 
             - "27018:27018"
             - "27018:27018/udp"
@@ -50,9 +47,6 @@ services:
             - MAXPLAYERS=24
         restart: always
         tty: true
-        build:
-            context: .
-            dockerfile: ./servers/murder/Dockerfile
         networks:
             - lory
 
