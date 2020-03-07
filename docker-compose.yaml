@@ -10,10 +10,12 @@ services:
             - ./servers/_build/deathrun/cfg:/server/garrysmod/cfg
             - ./servers/_build/deathrun/data:/server/garrysmod/data
             - ./servers/_build/deathrun/gamemodes:/server/garrysmod/gamemodes
-            - ./servers/_build/deathrun/sv.db:/server/garrysmod/sv.db
-            - ./servers/_build/cache:/server/garrysmod/cache
+            - ./servers/_stateful/deathrun/sv.db:/server/garrysmod/sv.db
+            - ./servers/_stateful/deathrun/debug.log:/server/debug.log
+            - ./servers/_stateful/cache:/server/garrysmod/cache
+            - ./servers/_stateful/steam_cache:/server/steam_cache/content
         environment:
-            - PRODUCTION
+            - PRODUCTION=0
             - PORT=27017
             - NAME=[BR] Lory | Deathrun ~ 128 tickrate ~ Divirta-se!
             - ARGS=+host_workshop_collection 382793424 -tickrate 100
@@ -21,6 +23,7 @@ services:
             - GAMEMODE=deathrun
             - MAXPLAYERS=24
         restart: always
+        stdin_open: true
         tty: true
         networks:
             - lory
@@ -35,14 +38,17 @@ services:
             - ./servers/_build/murder/cfg:/server/garrysmod/cfg
             - ./servers/_build/murder/data:/server/garrysmod/data
             - ./servers/_build/murder/gamemodes:/server/garrysmod/gamemodes
-            - ./servers/_build/murder/sv.db:/server/garrysmod/sv.db
-            - ./servers/_build/cache:/server/garrysmod/cache
+            - ./servers/_stateful/murder/sv.db:/server/garrysmod/sv.db
+            - ./servers/_stateful/murder/debug.log:/server/debug.log
+            - ./servers/_stateful/cache:/server/garrysmod/cache
+            - ./servers/_stateful/steam_cache:/server/steam_cache/content
         environment:
-            - PRODUCTION
+            - PRODUCTION=0
             - PORT=27018
             - NAME=[BR] Lory | Murder ~ [[ VIP GRATIS LIMITADO! ]] ~ Divirta-se!
             - ARGS=+host_workshop_collection 1581506103 -tickrate 100
             - MAP=gm_wwhouse
+            - MAP=gm_construct
             - GAMEMODE=murder
             - MAXPLAYERS=24
         restart: always
