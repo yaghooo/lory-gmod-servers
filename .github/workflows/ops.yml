@@ -32,7 +32,7 @@ name: Deploy to Amazon ECS
 
 jobs:
   build:
-    name: Build
+    name: Create artifact
     runs-on: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
@@ -42,8 +42,17 @@ jobs:
         with:
           version: '12.x'
 
-      - name: Build artifact
+      - name: Build
         run: node lory build murder,deathrun prod
+      
+      - name: Create distributable
+        run: mkdir dist && cp -R build dist && cp -R stateful dist && cp docker-compose.yaml dist
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Distributable
+          path: dist
 #   deploy:
 #     name: Deploy
 #     runs-on: [ubuntu-18.04]
