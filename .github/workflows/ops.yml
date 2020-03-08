@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.RSA_KEY }}
-          target: ~/dist
+          target: ~/
           source: dist
           rm: true
           overwrite: true
