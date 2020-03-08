@@ -37,4 +37,4 @@ jobs:
       run: echo ${{ secrets.INSTANCE_SSH_KEY }} > lory.pem
     
     - name: Send files through ssh
-      run: scp dist -i lory.pem -r {{ secrets.SSH_STR }}
+      run: scp dist -i lory.pem -r ${{ secrets.SSH_STR }}
