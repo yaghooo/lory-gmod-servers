@@ -15,7 +15,7 @@ services:
             - ./servers/_stateful/cache:/server/garrysmod/cache
             - ./servers/_stateful/steam_cache:/server/steam_cache/content
         environment:
-            - PRODUCTION=0
+            - PRODUCTION
             - PORT=27017
             - NAME=[BR] Lory | Deathrun ~ 128 tickrate ~ Divirta-se!
             - ARGS=+host_workshop_collection 382793424 -tickrate 100
@@ -43,7 +43,7 @@ services:
             - ./servers/_stateful/cache:/server/garrysmod/cache
             - ./servers/_stateful/steam_cache:/server/steam_cache/content
         environment:
-            - PRODUCTION=0
+            - PRODUCTION
             - PORT=27018
             - NAME=[BR] Lory | Murder ~ [[ VIP GRATIS LIMITADO! ]] ~ Divirta-se!
             - ARGS=+host_workshop_collection 1581506103 -tickrate 100
