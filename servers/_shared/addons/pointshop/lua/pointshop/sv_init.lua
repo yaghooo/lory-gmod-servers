@@ -274,7 +274,7 @@ end
 
 function PS:GetPlayerData(ply, callback)
     self.DataProvider:GetData(ply, function(points, items)
-        callback(PS:ValidatePoints(tonumber(points)), PS:ValidateItems(items))
+        callback(PS:ValidatePoints(tonumber(points)), items)
     end)
 end
 

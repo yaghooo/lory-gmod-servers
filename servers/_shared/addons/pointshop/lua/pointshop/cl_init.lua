@@ -98,7 +98,7 @@ end)
 net.Receive("PS_Items", function(length)
     local ply = net.ReadEntity()
     local items = net.ReadTable()
-    ply.PS_Items = PS:ValidateItems(items)
+    ply.PS_Items = items
 end)
 
 net.Receive("PS_Points", function(length)
