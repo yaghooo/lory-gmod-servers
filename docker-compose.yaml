@@ -48,7 +48,6 @@ services:
             - NAME=[BR] Lory | Murder ~ [[ VIP GRATIS LIMITADO! ]] ~ Divirta-se!
             - ARGS=+host_workshop_collection 1581506103 -tickrate 100
             - MAP=gm_wwhouse
-            - MAP=gm_construct
             - GAMEMODE=murder
             - MAXPLAYERS=24
         restart: always
