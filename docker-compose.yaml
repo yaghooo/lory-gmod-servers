@@ -6,14 +6,14 @@ services:
             - "27017:27017"
             - "27017:27017/udp"
         volumes:
-            - ./servers/_build/deathrun/addons:/server/garrysmod/addons
-            - ./servers/_build/deathrun/cfg:/server/garrysmod/cfg
-            - ./servers/_build/deathrun/data:/server/garrysmod/data
-            - ./servers/_build/deathrun/gamemodes:/server/garrysmod/gamemodes
-            - ./servers/_stateful/deathrun/sv.db:/server/garrysmod/sv.db
-            - ./servers/_stateful/deathrun/debug.log:/server/debug.log
-            - ./servers/_stateful/cache:/server/garrysmod/cache
-            - ./servers/_stateful/steam_cache:/server/steam_cache/content
+            - ./build/deathrun/addons:/server/garrysmod/addons
+            - ./build/deathrun/cfg:/server/garrysmod/cfg
+            - ./build/deathrun/data:/server/garrysmod/data
+            - ./build/deathrun/gamemodes:/server/garrysmod/gamemodes
+            - ./stateful/deathrun/sv.db:/server/garrysmod/sv.db
+            - ./stateful/deathrun/debug.log:/server/debug.log
+            - ./stateful/cache:/server/garrysmod/cache
+            - ./stateful/steam_cache:/server/steam_cache/content
         environment:
             - PRODUCTION
             - PORT=27017
@@ -34,14 +34,14 @@ services:
             - "27018:27018"
             - "27018:27018/udp"
         volumes:
-            - ./servers/_build/murder/addons:/server/garrysmod/addons
-            - ./servers/_build/murder/cfg:/server/garrysmod/cfg
-            - ./servers/_build/murder/data:/server/garrysmod/data
-            - ./servers/_build/murder/gamemodes:/server/garrysmod/gamemodes
-            - ./servers/_stateful/murder/sv.db:/server/garrysmod/sv.db
-            - ./servers/_stateful/murder/debug.log:/server/debug.log
-            - ./servers/_stateful/cache:/server/garrysmod/cache
-            - ./servers/_stateful/steam_cache:/server/steam_cache/content
+            - ./build/murder/addons:/server/garrysmod/addons
+            - ./build/murder/cfg:/server/garrysmod/cfg
+            - ./build/murder/data:/server/garrysmod/data
+            - ./build/murder/gamemodes:/server/garrysmod/gamemodes
+            - ./stateful/murder/sv.db:/server/garrysmod/sv.db
+            - ./stateful/murder/debug.log:/server/debug.log
+            - ./stateful/cache:/server/garrysmod/cache
+            - ./stateful/steam_cache:/server/steam_cache/content
         environment:
             - PRODUCTION
             - PORT=27018

@@ -42,10 +42,10 @@ async function build([servers, env]) {
 	env = env || "prod";
 	console.log(`Building servers on ${env} mode`);
 
-	const buildDir = path.resolve(serversDir, "_build");
+	const buildDir = path.resolve(__dirname, "build");
 	await mkdirOrIgnore(buildDir);
 
-	const stateDir = path.resolve(serversDir, "_stateful");
+	const stateDir = path.resolve(__dirname, "stateful");
 	await mkdirOrIgnore(stateDir);
 
 	for (const serverName of serversToBuild) {
