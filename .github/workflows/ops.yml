@@ -40,7 +40,7 @@ jobs:
           version: '12.x'
       
       - name: Build artifact
-        run: node lory build murder,deathrun prod
+        run: node lory.js build murder,deathrun prod
 #   deploy:
 #     name: Deploy
 #     runs-on: [ubuntu-18.04]
