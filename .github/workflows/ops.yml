@@ -28,24 +28,14 @@ jobs:
         with:
           name: Distributable
           path: dist
-      
-  deploy:
-    name: Deploy
-    runs-on: [ubuntu-18.04]
-    steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v1.0.0
-      with:
-        name: Distributable
-        path: dist
-
-    - name: Send files to server
-      uses: appleboy/scp-action@v0.0.7
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.RSA_KEY }}
-        target: ~/dist
-        source: dist
-        rm: true
-        overwrite: true
+          
+      - name: Send files to server
+        uses: appleboy/scp-action@v0.0.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.RSA_KEY }}
+          target: ~/dist
+          source: dist
+          rm: true
+          overwrite: true
