@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node.js for use with actions
         uses: actions/setup-node@v1.1.0
         with:
-          version: 'lts'
+          version: '12.x'
       
       - name: Build artifact
         run: node lory build murder,deathrun prod
