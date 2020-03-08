@@ -33,8 +33,13 @@ jobs:
     name: Deploy
     runs-on: [ubuntu-18.04]
     steps:
-    - name: Create ssh permission file
-      run: echo ${{ secrets.INSTANCE_SSH_KEY }} > lory.pem && chmod 400 lory.pem && cat lory.pem
-    
-    - name: Send files through ssh
-      run: ssh -o StrictHostKeyChecking=no -i lory.pem ${{ secrets.SSH_SERVER }} uptime && scp dist -o StrictHostKeyChecking=no -i lory.pem -r ${{ secrets.SSH_SERVER }}:~/
+    - name: SCP Command to Transfer Files
+      uses: appleboy/scp-action@v0.0.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.RSA_KEY }}
+        target: ~/dist
+        source: dist
+        rm: true
+        overwrite: true
