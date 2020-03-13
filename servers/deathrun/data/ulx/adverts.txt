@@ -31,7 +31,7 @@
 	"time" "450"
 }
 {
-	"text" "Compre VIP mensal por apenas R$4,99 e tenha beneficios! Fale com um admin."
+	"text" "Compre VIP mensal por apenas R$9,99 e tenha beneficios! Fale com um admin."
 	"red" "255"
 	"green" "229"
 	"blue" "0"

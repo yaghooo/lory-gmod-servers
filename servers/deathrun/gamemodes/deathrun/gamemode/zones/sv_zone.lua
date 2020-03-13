@@ -21,8 +21,12 @@ function ZONE:Load()
     end
 
     local json = file.Read(path, "DATA")
-    local tab = util.JSONToTable(json) or {}
-    self.zones = table.Copy(tab)
+
+    if json then
+        local tab = util.JSONToTable(json) or {}
+        self.zones = table.Copy(tab)
+    end
+
     print("Zones were loaded.")
 end
 

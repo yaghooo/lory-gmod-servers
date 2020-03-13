@@ -54,7 +54,6 @@ async function build([servers, env]) {
 
 		const serverStateDir = path.resolve(stateDir, serverName);
 		await mkdirOrIgnore(serverStateDir);
-		await fs.writeFile(path.resolve(serverStateDir, "sv.db"), "");
 		await fs.writeFile(path.resolve(serverStateDir, "debug.log"), "");
 
 		const sharedDir = path.resolve(serversDir, "_shared");

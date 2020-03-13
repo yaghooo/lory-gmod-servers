@@ -18,8 +18,6 @@ de_port
 de_prodigy
 de_tides
 de_train
-deathrun_windows_xp
-dr_zombie_survival
 gm_construct
 gm_flatgrass
 test_hardware
