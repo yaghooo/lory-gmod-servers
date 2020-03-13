@@ -35,6 +35,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.RSA_KEY }}
-          target: ~/dist
+          target: ~/
           source: dist/*
           overwrite: true
+
+      - name: Set file permissions
+        run: sudo chmod 777 -R dist/
