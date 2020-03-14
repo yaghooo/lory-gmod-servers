@@ -23,7 +23,7 @@ services:
             - GAMEMODE=deathrun
             - MAXPLAYERS=24
         restart: always
-        stdin_open: true
+        privileged: true
         tty: true
         networks:
             - lory
@@ -51,6 +51,7 @@ services:
             - GAMEMODE=murder
             - MAXPLAYERS=24
         restart: always
+        privileged: true
         tty: true
         networks:
             - lory
