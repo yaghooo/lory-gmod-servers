@@ -38,3 +38,6 @@ jobs:
           target: ~/
           source: dist/*
           overwrite: true
+
+      - name: Set file permissions	
+        run: sudo chown $USER:$USER ~ -R
