@@ -38,6 +38,3 @@ jobs:
           target: ~/
           source: dist/*
           overwrite: true
-
-      - name: Set file permissions
-        run: sudo chmod 777 -R dist/
