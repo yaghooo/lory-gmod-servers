@@ -1,7 +1,7 @@
 version: '3.7'
 services:
     deathrun:
-        image: "ceifa/gmod-server:root"
+        image: "ceifa/gmod-server:ubuntu"
         ports: 
             - "27017:27017"
             - "27017:27017/udp"
@@ -15,6 +15,7 @@ services:
             - ./stateful/cache:/server/garrysmod/cache
             - ./stateful/steam_cache:/server/steam_cache/content
         environment:
+            - AUTHKEY
             - PRODUCTION
             - PORT=27017
             - NAME=[BR] Lory | Deathrun ~ 128 tickrate ~ Divirta-se!
@@ -29,7 +30,7 @@ services:
             - lory
 
     murder:
-        image: "ceifa/gmod-server:root"
+        image: "ceifa/gmod-server:ubuntu"
         ports: 
             - "27018:27018"
             - "27018:27018/udp"
@@ -43,6 +44,7 @@ services:
             - ./stateful/cache:/server/garrysmod/cache
             - ./stateful/steam_cache:/server/steam_cache/content
         environment:
+            - AUTHKEY
             - PRODUCTION
             - PORT=27018
             - NAME=[BR] Lory | Murder ~ [[ VIP GRATIS LIMITADO! ]] ~ Divirta-se!
