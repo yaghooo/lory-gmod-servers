@@ -34,7 +34,7 @@ module.exports.installSteamCmd = async (next, state) => {
             await fs.promises.rmdir(state.steamCmdInstallDir, { recursive: true });
         } else {
             logger.trace('Skipping download of steamcmd installer')
-            return;
+            return next(state);
         }
     }
 
@@ -59,19 +59,19 @@ module.exports.installSteamCmd = async (next, state) => {
 
 module.exports.installServer = async (next, state) => {
     state.serverDir = path.resolve(state.serversDir, state.serverName);
+    state.updateDir = path.resolve(state.serverDir, 'update.txt');
+
     if (await file.fileExists(state.serverDir)) {
         if (state.force) {
             logger.trace(`Deleting current server '${state.serverName}' directory: ${state.serverDir}`)
             await fs.promises.rmdir(state.serverDir, { recursive: true });
         } else {
             logger.trace(`Skipping download of server '${state.serverName}'`)
-            return;
+            return next(state);
         }
     }
 
     await fs.promises.mkdir(state.serverDir);
-
-    state.updateDir = path.resolve(state.serverDir, 'update.txt');
     await fs.promises.writeFile(state.updateDir, updateFileTemplate(state.serverDir));
 
     const child = child_process.exec(`${state.steamCmdDir} +runscript ${state.updateDir} +quit`, (err, stdout, stdin) => {
@@ -102,7 +102,7 @@ module.exports.installMounts = async (next, state) => {
                 await fs.promises.rmdir(mount.dir, { recursive: true });
             } else {
                 logger.trace(`Skipping download of mount '${mount.name}'`)
-                return;
+                return next(state);
             }
         }
 

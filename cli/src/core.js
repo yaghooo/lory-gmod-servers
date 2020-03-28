@@ -15,9 +15,7 @@ module.exports = {
             .pipe(steam.installSteamCmd)
             .pipe(async (next, state) => {
                 state.serversDir = path.resolve(state.dir, 'server');
-                if (!await file.fileExists(state.serversDir)) {
-                    await fs.promises.mkdir(serverDir);
-                }
+                await file.createDirOrIgnore(state.serversDir);
 
                 const servers = typeof state.servers === 'string' ? [state.servers] : state.servers;
                 for (const server of servers) {
@@ -28,9 +26,7 @@ module.exports = {
             .pipe({
                 action: async (next, state) => {
                     state.mountsDir = path.resolve(state.dir, 'mounts');
-                    if (!await file.fileExists(state.mountsDir)) {
-                        await fs.promises.mkdir(state.mountsDir);
-                    }
+                    await file.createDirOrIgnore(state.mountsDir);
 
                     state.mounts = [
                         {
