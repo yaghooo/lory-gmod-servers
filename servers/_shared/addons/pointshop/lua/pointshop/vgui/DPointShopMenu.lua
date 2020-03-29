@@ -444,8 +444,14 @@ end
 function MENU:UserHasItemOnCategory(category)
     local userItems = LocalPlayer():PS_GetItems()
 
+    if not category then
+        return false
+    end
+
     for k, item in pairs(userItems) do
-        if PS.Items[k].Category == category.Name then return true end
+        if PS.Items[k] and PS.Items[k].Category == category.Name then
+            return true
+        end
     end
 
     return false
