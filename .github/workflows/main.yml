@@ -37,25 +37,13 @@ jobs:
       uses: actions/download-artifact@v1.0.0
       with:
         name: Distributable
-        path: dist
+        path: garrysmod
 
-    - name: Upload deathrun addons
+    - name: Upload deathrun
       uses: sebastianpopp/ftp-action@releases/v2
       with:
-        host: ${{ secrets.DEATHRUN_FTP_SERVER }}
-        user: ${{ secrets.DEATHRUN_FTP_USERNAME }}
-        password: ${{ secrets.DEATHRUN_FTP_PASSWORD }}
-        port: ${{ secrets.DEATHRUN_FTP_PORT }}
-        localDir: "dist/deathrun/addons"
-        remoteDir: "garrysmod/addons"
-        
-    - name: Upload deathrun gamemode
-      uses: isthatcentered/dist-to-ftp@master
-      with:
-        host: ${{ secrets.DEATHRUN_FTP_SERVER }}
-        user: ${{ secrets.DEATHRUN_FTP_USERNAME }}
-        password: ${{ secrets.DEATHRUN_FTP_PASSWORD }}
-        port: ${{ secrets.DEATHRUN_FTP_PORT }}
-        path: "dist/deathrun/gamemodes/deathrun"
-        into: "garrysmod/gamemodes/deathrun"
-        cleanupExisting: true
+        ftp-server: ${{ secrets.DEATHRUN_FTP_SERVER }}
+        ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: garrysmod
+        git-ftp-args: --insecure
