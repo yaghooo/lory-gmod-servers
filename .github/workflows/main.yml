@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-18.04
     
     steps:
+    - uses: actions/checkout@v2
+
     - name: Build
       run: |
         mkdir dist && mkdir dist/murder && mkdir dist/deathrun
@@ -26,6 +28,7 @@ jobs:
    
   deploy:
     runs-on: ubuntu-18.04
+    needs: [build]
 
     steps:
     - uses: actions/checkout@v2
@@ -42,6 +45,7 @@ jobs:
         host: ${{ secrets.DEATHRUN_FTP_SERVER }}
         user: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         password: ${{ secrets.DEATHRUN_FTP_PASSWORD }}
+        port: ${{ secrets.DEATHRUN_FTP_PORT }}
         localDir: "dist/deathrun/addons"
         remoteDir: "garrysmod/addons"
         
