@@ -1,13 +1,13 @@
 local chatCommand = "!rewards"
 local buttonCommand = "F4"
 
-hook.Add("OnPlayerChat", "HelloCommand", function(ply, text, team, dead)
+hook.Add("OnPlayerChat", "REWARDS_ToggleCommand", function(ply, text, team, dead)
 	if ply == LocalPlayer() and string.lower(text) == chatCommand then
 		REWARDS:ToggleRewardsMenu()
 	end
 end)
 
-hook.Add("PlayerButtonDown", "PS_ToggleKey", function(ply, btn)
+hook.Add("PlayerButtonDown", "REWARDS_ToggleKey", function(ply, btn)
 	if IsFirstTimePredicted() and ply == LocalPlayer() and btn == _G["KEY_" .. buttonCommand] then
 		REWARDS:ToggleRewardsMenu()
 	end

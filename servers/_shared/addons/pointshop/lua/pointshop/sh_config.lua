@@ -4,7 +4,6 @@ PS.Config = {}
 PS.Config.CommunityName = "LORYSHOP"
 PS.Config.DataProvider = "sqlite"
 PS.Config.ShopKey = "F3" -- Any Uppercase key or blank to disable
-PS.Config.ShopCommand = "" -- Console command to open the shop, set to blank to disable
 PS.Config.ShopChatCommand = "!loja" -- Chat command to open the shop, set to blank to disable
 PS.Config.NotifyOnJoin = true -- Should players be notified about opening the shop when they spawn?
 PS.Config.LootChance = 0.03

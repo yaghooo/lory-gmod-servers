@@ -154,6 +154,18 @@ net.Receive("PS_SendNotification", function(length)
 end)
 
 -- hooks
+hook.Add("OnPlayerChat", "PS_ToggleCommand", function(ply, text, team, dead)
+    if ply == LocalPlayer() and string.lower(text) == PS.Config.ShopChatCommand then
+        PS:ToggleMenu()
+    end
+end)
+
+hook.Add("PlayerButtonDown", "PS_ToggleKey", function(ply, btn)
+    if IsFirstTimePredicted() and ply == LocalPlayer() and btn == _G["KEY_" .. PS.Config.ShopKey] then
+        PS:ToggleMenu()
+    end
+end)
+
 hook.Add("Think", "PS_Think", function()
     for ply, items in pairs(invalidplayeritems) do
         if IsValid(ply) then

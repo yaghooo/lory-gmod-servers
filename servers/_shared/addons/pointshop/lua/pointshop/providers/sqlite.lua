@@ -11,7 +11,7 @@ end
 
 sql.Query("CREATE TABLE IF NOT EXISTS `pointshop_data` ( `sid64` STRING, `points` REAL, `items` STRING, PRIMARY KEY(sid64) )")
 
-function PROVIDER:GetData(ply, callback)
+function PROVIDER:GetData(ply)
     local query = [[SELECT * FROM `pointshop_data` WHERE sid64 = '%s']]
     local data = sql.Query(string.format(query, ply:SteamID64()))
 
@@ -19,9 +19,15 @@ function PROVIDER:GetData(ply, callback)
         local row = data[1]
         local points = row.points or 0
         local items = util.JSONToTable(row.items or "{}")
-        callback(points, items)
+        return {
+            Points = points,
+            Items = items
+        }
     else
-        callback(0, {})
+        return {
+            Points = 0,
+            Items = {}
+        }
     end
 end
 

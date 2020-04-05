@@ -167,17 +167,6 @@ net.Receive("PS_TakeItem", function(length, ply)
 end)
 
 -- hooks
--- Ability to use any button to open pointshop.
-hook.Add("PlayerButtonDown", "PS_ToggleKey", function(ply, btn)
-    if PS.Config.ShopKey and PS.Config.ShopKey ~= "" then
-        local psButton = _G["KEY_" .. string.upper(PS.Config.ShopKey)]
-
-        if psButton and psButton == btn then
-            ply:PS_ToggleMenu()
-        end
-    end
-end)
-
 hook.Add("PlayerSpawn", "PS_PlayerSpawn", function(ply)
     ply:PS_PlayerSpawn()
 end)
@@ -205,8 +194,8 @@ timer.Create("PS_Loots", 60 * 3, 0, function()
 
     for _, v in pairs(player.GetAll()) do
         if not IsValid(v) or v.Spectating then return end
-
         local chance = PS.Config.LootChance
+
         if v:PS_IsElegibleForDouble() then
             chance = chance * 1.5
         end
@@ -221,13 +210,26 @@ timer.Create("PS_Loots", 60 * 3, 0, function()
     end
 end)
 
-hook.Add("PlayerSay", "PS_PlayerSay", function(ply, text)
-    if string.len(PS.Config.ShopChatCommand) > 0 and string.sub(text, 0, string.len(PS.Config.ShopChatCommand)) == PS.Config.ShopChatCommand then
-        ply:PS_ToggleMenu()
+if PS.Config.PointsOverTime then
+    timer.Create("PS_PointsOverTime", PS.Config.PointsOverTimeDelay * 60, 0, function()
+        for _, ply in ipairs(player.GetAll()) do
+            if not IsValid(ply) or ply.Spectating then return end
+            ply:PS_GivePoints(PS.Config.PointsOverTimeAmount)
+            ply:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
+            local amt = PS.Config.PointsOverTimeAmount * 0.5
 
-        return ""
-    end
-end)
+            if ply:PS_IsElegibleForDouble() then
+                ply:PS_GivePoints(amt)
+                ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
+            end
+
+            if ply:IsUserGroup("vip") then
+                ply:PS_GivePoints(amt)
+                ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ser vip!")
+            end
+        end
+    end)
+end
 
 -- ugly networked strings
 util.AddNetworkString("PS_Items")
@@ -251,11 +253,6 @@ util.AddNetworkString("PS_SendNotification")
 util.AddNetworkString("PS_ToggleMenu")
 util.AddNetworkString("PS_OpenCase")
 
--- console commands
-concommand.Add(PS.Config.ShopCommand, function(ply, cmd, args)
-    ply:PS_ToggleMenu()
-end)
-
 -- data providers
 function PS:LoadDataProvider()
     local path = "pointshop/providers/" .. self.Config.DataProvider .. ".lua"
@@ -273,9 +270,11 @@ function PS:LoadDataProvider()
 end
 
 function PS:GetPlayerData(ply, callback)
-    self.DataProvider:GetData(ply, function(points, items)
-        callback(PS:ValidatePoints(tonumber(points)), items)
-    end)
+    local data = self.DataProvider:GetData(ply)
+    return {
+        Points = PS:ValidatePoints(tonumber(data.Points)),
+        Items = data.Items
+    }
 end
 
 function PS:SetPlayerData(ply, points, items)

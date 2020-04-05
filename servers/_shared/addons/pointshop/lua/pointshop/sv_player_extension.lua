@@ -3,11 +3,15 @@ PS_ITEM_HOLSTER = 2
 PS_ITEM_MODIFY = 3
 local Player = FindMetaTable("Player")
 
-function Player:PS_PlayerSpawn()
+function Player:PS_PlayerSpawn(tries)
+    if not self.PS_Items then
+        self:PS_LoadData()
+    end
+
     for item_id, item in pairs(self.PS_Items) do
         local ITEM = PS.Items[item_id]
 
-        if item.Equipped and not ITEM.SupressEquip and self:PS_CanEquipItem(ITEM) then
+        if ITEM and item.Equipped and not ITEM.SupressEquip and self:PS_CanEquipItem(ITEM) then
             local CATEGORY = PS:FindCategoryByName(ITEM.Category)
 
             if ITEM.OnEquip then
@@ -54,14 +58,6 @@ function Player:PS_PlayerInitialSpawn()
             end)
         end
 
-        if PS.Config.ShopCommand ~= "" then
-            timer.Simple(5, function()
-                -- Give them time to load up
-                if not IsValid(self) then return end
-                self:PS_Notify("Escreva " .. PS.Config.ShopCommand .. " no console para abrir a loja!")
-            end)
-        end
-
         if PS.Config.ShopChatCommand ~= "" then
             timer.Simple(5, function()
                 -- Give them time to load up
@@ -74,25 +70,6 @@ function Player:PS_PlayerInitialSpawn()
             -- Give them time to load up
             if not IsValid(self) then return end
             self:PS_Notify("Você tem " .. self:PS_GetPoints() .. " " .. PS.Config.PointsName .. " para gastar!")
-        end)
-    end
-
-    if PS.Config.PointsOverTime then
-        timer.Create("PS_PointsOverTime_" .. self:UniqueID(), PS.Config.PointsOverTimeDelay * 60, 0, function()
-            if not IsValid(self) or self.Spectating then return end
-            self:PS_GivePoints(PS.Config.PointsOverTimeAmount)
-            self:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
-            local amt = PS.Config.PointsOverTimeAmount * 0.5
-
-            if self:PS_IsElegibleForDouble() then
-                self:PS_GivePoints(amt)
-                self:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
-            end
-
-            if self:IsUserGroup("vip") then
-                self:PS_GivePoints(amt)
-                self:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ser vip!")
-            end
         end)
     end
 end
@@ -110,15 +87,11 @@ function Player:PS_Save()
 end
 
 function Player:PS_LoadData()
-    self.PS_Points = 0
-    self.PS_Items = {}
-
-    PS:GetPlayerData(self, function(points, items)
-        self.PS_Points = points
-        self.PS_Items = items
-        self:PS_SendPoints()
-        self:PS_SendItems()
-    end)
+    local data = PS:GetPlayerData(self)
+    self.PS_Points = data.Points
+    self.PS_Items = data.Items
+    self:PS_SendPoints()
+    self:PS_SendItems()
 end
 
 -- points
@@ -149,7 +122,7 @@ function Player:PS_HasPoints(points)
 end
 
 function Player:PS_IsElegibleForDouble()
-    return string.match(string.lower(self:GetName()), "lory")
+    return string.match(string.lower(self:GetName()), "lory") or self:PS_HasItemEquipped("doublepoints")
 end
 
 -- give/take items
@@ -287,7 +260,7 @@ function Player:PS_SellItem(item_id)
 end
 
 function Player:PS_HasItem(item_id)
-    return self.PS_Items[item_id] or false
+    return self.PS_Items and self.PS_Items[item_id] or false
 end
 
 function Player:PS_HasItemEquipped(item_id)

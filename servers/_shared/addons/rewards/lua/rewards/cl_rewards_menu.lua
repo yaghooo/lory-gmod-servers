@@ -66,6 +66,10 @@ function REWARD_ITEM:SetItem(item)
         else
             button:SetText(REWARDS.Prizes[item.Id].Status)
             button:SetEnabled(REWARDS.Prizes[item.Id].Status == "RESGATAR" or REWARDS.Prizes[item.Id].Status == "ELEGIVEL")
+
+            if REWARDS.Prizes[item.Id].Status == "ELEGIVEL" then
+                button:SetBackgroundColor(THEME.Color.Success)
+            end
         end
     end
 end
