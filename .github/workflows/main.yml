@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - name: Build
+      run: |
+        mkdir dist && mkdir dist/murder && mkdir dist/deathrun
+        cp -R ./servers/_shared/* dist/murder/
+        cp -R ./servers/_shared/* dist/deathrun/
+        cp -R ./servers/murder/* dist/murder/
+        cp -R ./servers/deathrun/* dist/deathrun/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Distributable
+        path: dist
+
+   
+  deploy:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Download artifact
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: Distributable
+        path: dist
+
+    - name: Upload deathrun addons
+      uses: sebastianpopp/ftp-action@releases/v2
+      with:
+        host: ${{ secrets.DEATHRUN_FTP_SERVER }}
+        user: ${{ secrets.DEATHRUN_FTP_USERNAME }}
+        password: ${{ secrets.DEATHRUN_FTP_PASSWORD }}
+        localDir: "dist/deathrun/addons"
+        remoteDir: "garrysmod/addons"
+        
+    - name: Upload deathrun gamemode
+      uses: isthatcentered/dist-to-ftp@master
+      with:
+        host: ${{ secrets.DEATHRUN_FTP_SERVER }}
+        user: ${{ secrets.DEATHRUN_FTP_USERNAME }}
+        password: ${{ secrets.DEATHRUN_FTP_PASSWORD }}
+        port: ${{ secrets.DEATHRUN_FTP_PORT }}
+        path: "dist/deathrun/gamemodes/deathrun"
+        into: "garrysmod/gamemodes/deathrun"
+        cleanupExisting: true
