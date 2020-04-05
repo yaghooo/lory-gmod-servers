@@ -80,9 +80,6 @@ hook.Add("PostDrawTranslucentRenderables", "DeathrunZoneCuboidDrawing", function
                 end
 
                 ZONE:DrawCuboid(z.pos1, z.pos2, tempcolor, alt)
-                --if string.sub( z.type, 1, 4 ) == "deny" then
-                --ZONE:DrawCuboid( z.pos1, z.pos2, tempcolor, true )
-                --end
             end
         end
     end

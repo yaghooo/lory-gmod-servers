@@ -148,12 +148,14 @@ ROUND:AddState(ROUND_PREP, function()
         local runners = {}
         local pool = table.Copy(player.GetAllPlaying())
 
-        if not string.StartWith(game.GetMap(), "mg_") then
+        local isSubmarine = game.GetMap() == "mg_awp_submarine_v2" or string.match(game.GetMap(), "multigame")
+        if not string.StartWith(game.GetMap(), "mg_") or isSubmarine then
             -- let's pick deaths at random, but ignore if they have been death the 2 previous rounds
             local deaths = {}
-            local deathsNeeded = math.ceil(DeathRatio:GetFloat() * #player.GetAllPlaying())
+            local ratio = isSubmarine and 0.5 or DeathRatio:GetFloat()
+            local deathsNeeded = math.ceil(ratio * #player.GetAllPlaying())
 
-            if deathsNeeded > DeathMax:GetInt() then
+            if not isSubmarine and deathsNeeded > DeathMax:GetInt() then
                 deathsNeeded = DeathMax:GetInt()
             end
 
@@ -336,7 +338,7 @@ end, function()
 
         if (#deaths == 0 and #runners == 0) or ROUND:GetTimer() == 0 then
             ROUND:FinishRound(WIN_STALEMATE)
-        elseif #deaths == 0 and not string.StartWith(game.GetMap(), "mg_") then
+        elseif #deaths == 0 and (not string.StartWith(game.GetMap(), "mg_") or game.GetMap() == "mg_awp_submarine_v2" or string.match(game.GetMap(), "multigame")) then
             ROUND:FinishRound(WIN_RUNNER)
         elseif #runners == 0 then
             ROUND:FinishRound(WIN_DEATH)

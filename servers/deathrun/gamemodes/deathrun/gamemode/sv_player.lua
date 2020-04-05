@@ -1,5 +1,4 @@
 local PLAYER = FindMetaTable("Player")
-hook.Add("PlayerSpawn", "test", function(ply) end) --print(ply, ply.Spectating)
 
 function PLAYER:BeginSpectate()
     --print(self:Nick(),"deathteam",self:Team(), TEAM_DEATH, "voluntary:", self.VoluntarySpec)

@@ -419,10 +419,6 @@ end
 
 vgui.Register("deathrun_multipanel", MPANEL)
 
-concommand.Add("deathrun_test_derma", function()
-    vgui.Create("deathrun_window")
-end)
-
 function surface.EasyPoly(tbl)
     local poly = {}
 

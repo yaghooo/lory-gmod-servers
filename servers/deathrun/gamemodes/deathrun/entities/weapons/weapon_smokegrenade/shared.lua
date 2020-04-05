@@ -10,7 +10,6 @@ if (CLIENT) then
         SWEP.Slot                               = 2
         SWEP.SlotPos                    = 0
         SWEP.DrawAmmo                   = false
-        SWEP.DrawCrosshair              = false
         SWEP.ViewModelFOV                       = 65
         SWEP.ViewModelFlip              = false
         SWEP.CSMuzzleFlashes            = false

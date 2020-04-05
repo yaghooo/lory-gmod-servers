@@ -176,10 +176,6 @@ DR:AddChatCommand("zones", function(ply)
     ply:ConCommand("deathrun_open_zone_editor")
 end)
 
-DR:AddChatCommand("info", function(ply)
-    ply:ConCommand("deathrun_open_quickinfo")
-end)
-
 DR:AddChatCommand("1p", function(ply)
     ply:ConCommand("deathrun_thirdperson_enabled 0")
 end)

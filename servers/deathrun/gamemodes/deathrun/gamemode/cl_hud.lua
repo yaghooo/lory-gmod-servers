@@ -1,7 +1,4 @@
-print("Loaded cl_hud.lua")
---start and end cues
 local CuesConVar = CreateClientConVar("deathrun_round_cues", 1, true, false)
--- convars to adjust hud positioning
 local HudPos = CreateClientConVar("deathrun_hud_position", 6, true, false) -- 0 topleft, 1 topcenter, 2 topright, 3 centerleft, 4 centercenter, 5 centerright, 6 bottomleft, 7 bottomcenter, 8 bottomright
 local HudAmmoPos = CreateClientConVar("deathrun_hud_ammo_position", 8, true, false)
 local HudTheme = CreateClientConVar("deathrun_hud_theme", 0, true, false) -- different themes
@@ -95,15 +92,8 @@ end)
 --defaulthud with time
 DR:AddCustomHUD(1, DR.HUDDrawFunctions[0][1], DR.HUDDrawFunctions[0][2])
 
---sasshud
-DR:AddCustomHUD(2, function(x, y)
-    DR:DrawPlayerHUDSass(x, y)
-end, function(x, y)
-    DR:DrawPlayerHUDAmmoSass(x, y)
-end)
-
 --classichud
-DR:AddCustomHUD(3, function(x, y)
+DR:AddCustomHUD(2, function(x, y)
     DR:DrawPlayerHUDClassic(x, y)
 end, function(x, y)
     DR:DrawPlayerHUDAmmoClassic(x, y)
@@ -193,11 +183,12 @@ local lastTargetCycle = CurTime()
 local TargetIDFadeTime = CreateClientConVar("deathrun_targetid_fade_duration", 1, true, false)
 
 function DR:DrawTargetID()
+    local client = LocalPlayer()
     local dt = CurTime() - lastTargetCycle
     lastTargetCycle = CurTime()
     local fps = 1 / dt
     local fmul = 100 / fps
-    local tr = LocalPlayer() and LocalPlayer():GetEyeTrace() or {}
+    local tr = client and client:GetEyeTrace() or {}
 
     if tr.Hit and tr.Entity and tr.Entity:IsPlayer() and tr.Entity:Team() ~= TEAM_GHOST then
         DR.TargetIDAlpha = 255
@@ -222,19 +213,19 @@ function DR:DrawTargetID()
         local data = ply:EyePos():ToScreen()
         local draw = false
 
-        if ply:Alive() and ply:Team() ~= TEAM_SPECTATOR and ply ~= LocalPlayer() then
-            if LocalPlayer():Team() == ply:Team() and LocalPlayer():Alive() then
+        if ply:Alive() and ply:Team() ~= TEAM_SPECTATOR and ply ~= client and ply:Team() == client:Team() then
+            if client:Team() == ply:Team() and client:Alive() then
                 draw = true
             end
 
-            if (LocalPlayer():Team() ~= TEAM_RUNNER) and (ply:Team() ~= TEAM_GHOST) or (LocalPlayer():Alive() == false) and (ply ~= LocalPlayer():GetObserverTarget()) or (LocalPlayer():GetObserverMode() ~= OBS_MODE_IN_EYE) then
+            if (client:Team() ~= TEAM_RUNNER) and (ply:Team() ~= TEAM_GHOST) or (client:Alive() == false) and (ply ~= client:GetObserverTarget()) or (client:GetObserverMode() ~= OBS_MODE_IN_EYE) then
                 draw = true
             end
         end
 
         if draw then
             local a = 0
-            local dist = LocalPlayer():EyePos():Distance(ply:EyePos())
+            local dist = client:EyePos():Distance(ply:EyePos())
 
             if dist > 750 then
                 a = 0
@@ -252,12 +243,11 @@ function DR:DrawTargetID()
     end
 end
 
-local clouds = table.Copy(DR.Colors.Clouds)
+local clouds = table.Copy(THEME.Color.Secondary)
 local aliz = table.Copy(DR.Colors.Alizarin)
+local turq = table.Copy(DR.Colors.Turq) -- store these separately so we can edit their alpha values
 
---local turq = table.Copy(DR.Colors.Turq) -- store these separately so we can edit their alpha values
 function DR:DrawPlayerHUD(x, y)
-    turq = table.Copy(DR.Colors.Turq)
     local alpha = HudAlpha:GetInt()
     -- 228x16 text size 12
     -- 228x16 text size 12'
@@ -425,21 +415,6 @@ function DR:DrawPlayerHUDAmmo(x, y)
     surface.DrawRect(dx, dy, 228, 16)
 end
 
--- make a notification thing
-local notifications = {}
-
-local emptynotification = {
-    x = 0,
-    y = 0,
-    text = "",
-    dx = 0,
-    dy = 0,
-    ddx = 0,
-    ddy = 0,
-    dur = 10,
-    born = 0
-}
-
 function dirac(x, a)
     if a <= 0.001 then
         a = 0.001
@@ -447,64 +422,6 @@ function dirac(x, a)
 
     return (1 / (a * math.sqrt(math.pi))) * math.exp(-(x ^ 2) / (a ^ 2))
 end
-
-net.Receive("DeathrunNotification", function()
-    DR:AddNotification(net.ReadString(), ScrW() - 32, ScrH() / 6, 0, -0.35, 0, -0.00025, 10)
-end)
-
-function DR:AddNotification(msg, x, y, dx, dy, ddx, ddy, dur)
-    msg = string.Replace(msg, "%newline%", "\n")
-    local new = table.Copy(emptynotification)
-    new.text = msg
-    new.x = x or 0
-    new.y = y or 0
-    new.dx = dx or 0
-    new.dy = dy or 0
-    new.ddx = ddx or 0
-    new.ddy = ddy or 0
-    new.dur = dur or 10
-    new.born = CurTime()
-    table.insert(notifications, new)
-    MsgC(Color(0, 255, 0), msg .. "\n")
-end
-
-concommand.Add("deathrun_test_notification", function(ply, cmd, args)
-    local msg = ""
-
-    for i = 1, #args do
-        msg = msg .. args[i] .. " "
-    end
-
-    DR:AddNotification(msg, ScrW() / 2, ScrH() / 2, 0, 0, 0, 0, 10)
-end)
-
-local lastCycle = CurTime()
-
-function DR:UpdateNotifications()
-    local dt = CurTime() - lastCycle
-    lastCycle = CurTime()
-    local fps = (1 / dt)
-    local fmul = 100 / fps
-
-    for k, v in ipairs(notifications) do
-        local aliveFor = CurTime() - v.born
-        local fadein = math.Clamp(Lerp(InverseLerp(aliveFor, 0, 0.5), 0, 255), 0, 255)
-        deathrunShadowTextSimple(v.text, "deathrun_hud_Medium", v.x + 1, v.y + 1, Color(0, 0, 0, fadein), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
-        deathrunShadowTextSimple(v.text, "deathrun_hud_Medium", v.x, v.y, Color(255, 255, 255, fadein), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
-        v.x = v.x + v.dx * fmul
-        v.y = v.y + v.dy * fmul
-        v.dx = v.dx + v.ddx * fmul
-        v.dy = v.dy + v.ddy * fmul
-
-        if CurTime() - v.born > v.dur then
-            table.remove(notifications, k)
-        end
-    end
-end
-
-hook.Add("HUDPaint", "DeathrunNotifications", function()
-    DR:UpdateNotifications()
-end)
 
 function DR:DrawWinners(winteam, tbl_mvps, x, y, stalemate)
     local col = stalemate == false and team.GetColor(winteam) or HexColor("#303030")
@@ -543,165 +460,6 @@ end
 
 function GM:HUDAmmoPickedUp(name, amt)
     DR:AddKillNote("+ " .. (amt or 0) .. " " .. (name or "Ammo"), 2)
-end
-
--- sass hud
-surface.CreateFont("sassLarge", {
-    font = "Coolvetica",
-    size = 56,
-    antialias = true
-})
-
-surface.CreateFont("sassMedium", {
-    font = "Coolvetica",
-    size = 36,
-    antialias = true,
-    weight = 100
-})
-
-surface.CreateFont("sassSmall", {
-    font = "Coolvetica",
-    size = 20,
-    antialias = true,
-    weight = 500
-})
-
-surface.CreateFont("sassTiny", {
-    font = "Coolvetica",
-    size = 12,
-    antialias = true,
-    weight = 500
-})
-
-local avatar
-
-if IsValid(avatar) then
-    avatar:Remove()
-end
-
-avatar = IsValid(avatar) and avatar or vgui.Create("AvatarImage")
-avatar:SetSize(46, 46)
-avatar:SetPos(0, 0)
-avatar:SetPlayer(LocalPlayer(), 64)
-avatar.ply = LocalPlayer()
-avatar.visible = true
-avatar.desiredpos = {-128, 0}
-
-function avatar:Think()
-    local ply = LocalPlayer()
-    if not self.desiredpos then return end
-    if not IsValid(ply) then return end
-
-    if ply:GetObserverMode() ~= OBS_MODE_NONE and IsValid(ply:GetObserverTarget()) then
-        ply = ply:GetObserverTarget()
-    end
-
-    if ply ~= self.ply then
-        self.ply = ply
-        self:SetPlayer(ply, 64)
-    end
-
-    if HudTheme:GetInt() == 2 and self.visible == false then
-        self:SetPos(self.desiredpos[1] or 0, self.desiredpos[2] or 0)
-        self.visible = true
-    elseif HudTheme:GetInt() ~= 2 and self.visible == true then
-        self:SetPos(-128, self.desiredpos[2] or 0)
-        self.visible = false
-    end
-
-    self:SetAlpha(HudAlpha:GetInt())
-end
-
-function DR:DrawPlayerHUDSass(x, y)
-    -- dimensions:
-    -- 228 x 108
-    local ply = LocalPlayer()
-
-    if ply:GetObserverMode() ~= OBS_MODE_NONE and IsValid(ply:GetObserverTarget()) then
-        ply = ply:GetObserverTarget()
-    end
-
-    local w, h = 228, 108
-    local alpha = HudAlpha:GetInt()
-    local amul = alpha / 255
-    surface.SetDrawColor(255, 0, 0)
-    --surface.DrawOutlinedRect( x,y,w,h )
-    surface.SetDrawColor(HexColor("#101010", alpha))
-    --size of avatar: 46x46
-    --size of container: 48x48
-    draw.RoundedBox(2, x + 8, y + h / 2 - 24, 48, 48, HexColor("#101010", alpha))
-    -- hp bar
-    -- width 228 - 16 - 48
-    -- height 20
-    draw.RoundedBox(2, x + 8 + 48, y + h / 2 - 10, 228 - 16 - 48, 20, HexColor("#101010", alpha))
-    surface.SetDrawColor(HexColor("#909090", alpha / 2))
-    surface.DrawRect(x + 8 + 48, y + h / 2 - 10 + 2, 228 - 16 - 48 - 2, 16)
-    -- velocity
-    draw.RoundedBox(2, x + 8 + 48, y + h / 2 + 8, 228 - 16 - 48, 10, HexColor("#101010", alpha))
-    surface.SetDrawColor(HexColor("#909090", alpha / 2))
-    surface.DrawRect(x + 8 + 48, y + h / 2 + 8 + 2, 228 - 16 - 48 - 2, 6)
-    local maxvel = 1500 -- yeah fuck yall
-    local curvel = math.Round(math.Clamp(ply:GetVelocity():Length2D(), 0, maxvel))
-    local velfrac = InverseLerp(curvel, 0, maxvel)
-    surface.SetDrawColor(Color(50, 50, 255, alpha))
-    surface.DrawRect(x + 8 + 48, y + h / 2 + 8 + 2, (228 - 16 - 48 - 2) * velfrac, 6)
-    surface.SetDrawColor(Color(255, 255, 255, 5 * amul))
-    surface.DrawRect(x + 8 + 48, y + h / 2 + 8 + 2, (228 - 16 - 48 - 2) * velfrac, 2)
-    local maxhp = 100 -- yeah fuck yall
-    local curhp = math.Clamp(ply:Health(), 0, 999)
-    local hpfrac = math.Clamp(InverseLerp(curhp, 0, maxhp), 0, 1)
-    surface.SetDrawColor(Color(50, 255, 50, alpha))
-    surface.DrawRect(x + 8 + 48, y + h / 2 - 10 + 2, (228 - 16 - 48 - 2) * hpfrac, 16)
-    surface.SetDrawColor(Color(255, 255, 255, 40 * amul))
-    surface.DrawRect(x + 8 + 48, y + h / 2 - 10 + 2, (228 - 16 - 48 - 2) * hpfrac, 7)
-    -- HP TEXT
-    deathrunShadowTextSimple(tostring(curhp), "sassLarge", x + 128, y + h / 2 + 2, Color(255, 255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 2)
-    deathrunShadowTextSimple("HP", "sassSmall", x + 132, y + h / 2 + 1, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2)
-    deathrunShadowTextSimple(tostring(curvel) .. " VL", "sassSmall", x + w - 12, y + h / 2 + 24 + 1, Color(255, 255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 2)
-    -- team text
-    local teamtext = team.GetName(ply:Team())
-
-    -- must be spectating
-    if ply ~= LocalPlayer() then
-        teamtext = ply:Nick()
-    end
-
-    deathrunShadowTextSimple(teamtext .. " - " .. string.ToMinutesSeconds(math.Clamp(ROUND:GetTimer(), 0, 99999)), "sassSmall", x + 8, y + h / 2 + 24, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 2)
-    -- position avatar
-    local avx, avy = avatar:GetPos()
-
-    if avx ~= x + 9 or avy ~= y + h / 2 - 24 + 1 then
-        avatar:SetPos(x + 9, y + h / 2 - 23)
-    end
-
-    avatar.desiredpos = {avx, avy}
-end
-
-function DR:DrawPlayerHUDAmmoSass(x, y)
-    local w, h = 228, 108
-    surface.SetDrawColor(255, 0, 0)
-    local ply = LocalPlayer()
-
-    if ply:GetObserverMode() ~= OBS_MODE_NONE and IsValid(ply:GetObserverTarget()) then
-        ply = ply:GetObserverTarget()
-    end
-
-    local wep = ply:GetActiveWeapon()
-    if not IsValid(wep) then return end
-    local wepdata = GetWeaponHUDData(ply)
-
-    if IsValid(wep) then
-        local frac = wepdata.Clip1 / wepdata.Clip1Max
-        frac = math.Clamp(frac, 0, 1)
-
-        --print( wepdata.ShouldDrawHUD )
-        if wepdata.ShouldDrawHUD == true then
-            deathrunShadowTextSimple(wepdata.Name, "sassSmall", x + w - 4, y + h - 68, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM, 2)
-            deathrunShadowTextSimple(tostring(wepdata.Clip1) .. " +" .. tostring(wepdata.Remaining1), "sassLarge", x + w - 4, y + h - 20, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM, 2)
-        end
-    else
-        return
-    end
 end
 
 -- draw classic deathrun HUD
@@ -797,53 +555,10 @@ function GetWeaponHUDData(ply)
     return data
 end
 
-if IsValid(DR.TVBorder) then
-    DR.TVBorder:Remove()
-end
-
-local meme = CreateClientConVar("deathrun_vhs7", 0, false, false)
-
-if meme:GetBool() == true then
-    DR.TVBorder = vgui.Create("DHTML")
-    DR.TVBorder:SetSize(ScrW(), ScrH())
-    DR.TVBorder:SetPos(0, 0)
-    DR.TVBorder:OpenURL("http://arizard.github.io/overlay.html")
-end
-
-hook.Add("RenderScreenspaceEffects", "DeathrunTVBorder", function()
-    if meme:GetBool() == true then
-        DrawSharpen(1.1, 1.7)
-        DrawMotionBlur(0.4, 0.8, 0.005)
-    end
-end)
-
 hook.Add("DeathrunBeginActive", "ResetStartTime", function()
     LocalPlayer().StartTime = CurTime()
 end)
 
-cvars.AddChangeCallback("deathrun_vhs7", function(name, old, new)
-    if IsValid(DR.TVBorder) then
-        DR.TVBorder:Remove()
-    end
-
-    if tonumber(new) == 1 then
-        DR.TVBorder = vgui.Create("DHTML")
-        DR.TVBorder:SetSize(ScrW(), ScrH())
-        DR.TVBorder:SetPos(0, 0)
-        DR.TVBorder:OpenURL("http://arizard.github.io/overlay.html")
-    end
-end, "tvborder_callback")
-
-hook.Add("HUDPaintBackground", "Vaporwave", function()
-    local M = Matrix()
-    M:Translate(Vector(ScrW() / 2, ScrH() / 2))
-    M:Rotate(Angle(0, 5 * math.sin(CurTime() * 0.5), 0))
-    M:Scale(Vector(1, 1, 1) * (0.9 + 0.2 * math.sin(CurTime() * 0.3)))
-    M:Translate(-Vector(ScrW() / 2, ScrH() / 2))
-end)
-
---cam.PushModelMatrix( M )
-hook.Add("PostDrawHUD", "Vaporwave", function() end) --cam.PopModelMatrix()
 -- redo killfeed
 local killfeed = {}
 
@@ -864,15 +579,10 @@ net.Receive("DeathrunAddKillNote", function(len)
 end)
 
 function DR:AddKillNote(msg, mod)
-    --newKillNote(attname.."\t"..(direct and "◎" or "➤" ).."\t"..vicname.."\t["..wepname.."]", mod)
     newKillNote(msg, mod)
 end
 
 local modecol = {Color(255, 255, 255), Color(0, 255, 0), Color(255, 0, 0)}
-
-concommand.Add("deathrun_testkillnote", function()
-    DR:AddKillNote("Hello World", 1)
-end)
 
 function DeathrunDrawKillfeed(x, y)
     local dy = 0

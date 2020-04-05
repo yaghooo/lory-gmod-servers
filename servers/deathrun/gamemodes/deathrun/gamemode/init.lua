@@ -50,7 +50,6 @@ include("sh_statistics.lua")
 AddCSLuaFile("sh_statistics.lua")
 util.AddNetworkString("DeathrunChatMessage")
 util.AddNetworkString("DeathrunSyncMutelist")
-util.AddNetworkString("DeathrunNotification")
 util.AddNetworkString("DeathrunSpectatorNotification")
 util.AddNetworkString("DeathrunForceSpectator")
 util.AddNetworkString("DeathrunAddKillNote")
@@ -134,6 +133,7 @@ hook.Add("PlayerSpawn", "DeathrunPlayerSpawn", function(ply)
     ply.CanGetRecord = true
     ply:SetMoveType(MOVETYPE_WALK)
     ply:SetNoCollideWithTeammates(true) -- so we don't block eachother's bhopes
+    ply:SetCollisionGroup(11)
     ply:SetLagCompensated(true)
 
     if ply.FirstSpawn == true then
@@ -208,7 +208,7 @@ function GM:PlayerLoadout(ply)
     ply:SetJumpPower(290)
     ply:SetGravity(1)
 
-    if ply:Team() == TEAM_DEATH then
+    if ply:Team() == TEAM_DEATH and not string.StartWith(game.GetMap(), "mg_") then
         ply:SetRunSpeed(GetConVar("deathrun_death_sprint"):GetFloat())
     end
 
@@ -241,11 +241,12 @@ function GM:PlayerDeath(ply, inflictor, attacker)
     end
 
     local waitTime = string.StartWith(game.GetMap(), "mg_") and 1 or 4
+
     timer.Simple(waitTime, function()
         if not IsValid(ply) then return end -- incase they die and disconnect, prevents console errors.
 
         if not ply:Alive() then
-            if string.StartWith(game.GetMap(), "mg_") and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 or game.GetMap() == "mg_100traps_v3" then
+            if string.StartWith(game.GetMap(), "mg_") and not (game.GetMap() == "mg_awp_submarine_v2" or string.match(game.GetMap(), "multigame")) and ROUND:GetTimer() > GetConVarNumber("deathrun_round_duration") - 30 or game.GetMap() == "mg_100traps_v3" then
                 ply:Spawn()
             else
                 ply.JustDied = true
@@ -293,52 +294,6 @@ function GM:PlayerDeath(ply, inflictor, attacker)
     DR:DeathNotification(msg, 1)
 end
 
--- DR.KillList = {}
--- timer.Create("DeathrunSendKillList", 0.5,0,function()
--- 	if #DR.KillList > 0 then
--- 		local message = ""
--- 		-- this is a speed hole
--- 		-- it makes the code go faster
--- 		if type(DR.KillList[1]) == "string" then
--- 			DR:DeathNotification( DR.KillList[1] )
--- 			table.remove( DR.KillList, 1 )
--- 		elseif type(DR.KillList[1]) == "table" then
--- 			local ply = DR.KillList[1][1]
--- 			local att = DR.KillList[1][2]
--- 			if not IsValid( ply ) then return end
--- 			message = ply:Nick().." was killed"
--- 			if IsValid(att) then
--- 				if att:IsPlayer() then
--- 					message = message.." by "..att:Nick().."!"
--- 				else
--- 					message = message.." by a mysterious cause!"
--- 				end
--- 			else
--- 				message = message.."!"
--- 			end
--- 			DR:DeathNotification( message )
--- 			table.remove( DR.KillList, 1 )
--- 		end
--- 		-- for i = 1, #DR.KillList do
--- 		-- 	local ply = DR.KillList[i]
--- 		-- 	if IsValid(ply) then
--- 		-- 		if i < #DR.KillList-1 then
--- 		-- 			message = message..(i == 1 and "" or " ")..ply:Nick()..","
--- 		-- 			if i%4 == 0 then
--- 		-- 				message = message.."%newline%"
--- 		-- 			end
--- 		-- 		elseif i == #DR.KillList - 1 then
--- 		-- 			message = message.." "..ply:Nick().." and"
--- 		-- 		else
--- 		-- 			message = message.." "..ply:Nick()
--- 		-- 		end
--- 		-- 	end
--- 		-- end
--- 		-- message = message .. (#DR.KillList == 1 and " was" or " were").." killed!"
--- 		-- DR:DeathNotification( message )
--- 		-- DR.KillList = {}
--- 	end
--- end)
 function DR:DeathNotification(msg, mod)
     net.Start("DeathrunAddKillNote")
     net.WriteString(msg or "nil")
@@ -622,10 +577,6 @@ function DR:PardonDeathAvoid(ply, amt)
 
     DR.BarredPlayers[id].rounds = math.Clamp(DR.BarredPlayers[id].rounds - (amt or 1), 0, 99)
 end
-
-concommand.Add("test_avoid", function(ply)
-    DR:PunishDeathAvoid(ply, 10)
-end)
 
 -- drowning compatibility
 -- needs a timer to check for last time not submerged

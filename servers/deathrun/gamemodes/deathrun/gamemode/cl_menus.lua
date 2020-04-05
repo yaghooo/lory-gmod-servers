@@ -21,7 +21,7 @@ concommand.Add("deathrun_open_help", function()
     DR:OpenHelp()
 end)
 
-local deathrun_settings = {{"header", "HUD Settings"}, {"number", "deathrun_hud_theme", 0, 4, "HUD Theme"}, {"number", "deathrun_hud_position", 0, 8, "Position of the HUD (HP, Velocity, Time)"}, {"number", "deathrun_hud_ammo_position", 0, 8, "Position of the Ammo HUD"}, {"number", "deathrun_hud_alpha", 0, 255, "Transparency of the HUD background"}, {"number", "deathrun_targetid_fade_duration", 0, 10, "TargetID fade duration"}, {"boolean", "deathrun_zones_visibility", "Toggle Zone Visibility"}, {"boolean", "deathrun_stats_visibility", "Toggle the YOUR STATS popup"}, {"header", "Spectator Settings"}, {"boolean", "deathrun_spectate_only", "Spectate-only mode"}, {"header", "Thirdperson Settings"}, {"boolean", "deathrun_thirdperson_enabled", "Thirdperson mode"}, {"number", "deathrun_thirdperson_opacity", 5, 255, "Transparency of your playermodel in Thirdperson mode"}, {"number", "deathrun_thirdperson_offset_x", -40, 40, "Thirdperson camera horizontal offset"}, {"number", "deathrun_thirdperson_offset_y", -40, 40, "Thirdperson camera vertical offset"}, {"number", "deathrun_thirdperson_offset_z", -75, 75, "Thirdperson camera forward-backward offset"}, {"number", "deathrun_thirdperson_offset_pitch", -75, 75, "Thirdperson camera Pitch offset"}, {"number", "deathrun_thirdperson_offset_yaw", -75, 75, "Thirdperson camera Yaw offset"}, {"number", "deathrun_thirdperson_offset_roll", -75, 75, "Thirdperson camera Roll offset"}, {"header", "Other Settings"}, {"boolean", "deathrun_round_cues", "Audible round cues at starts and ends of rounds"}, {"boolean", "deathrun_info_on_join", "Show the info menu when joining the server"}, {"boolean", "deathrun_autojump", "Autojump (Enabling this limits velocity depending on server settings.)"}, {"number", "deathrun_teammate_fade_distance", 0, 512, "Teammate fade distance."}}
+local deathrun_settings = {{"header", "HUD Settings"}, {"number", "deathrun_hud_theme", 0, 3, "HUD Theme"}, {"number", "deathrun_hud_position", 0, 8, "Position of the HUD (HP, Velocity, Time)"}, {"number", "deathrun_hud_ammo_position", 0, 8, "Position of the Ammo HUD"}, {"number", "deathrun_hud_alpha", 0, 255, "Transparency of the HUD background"}, {"number", "deathrun_targetid_fade_duration", 0, 10, "TargetID fade duration"}, {"boolean", "deathrun_zones_visibility", "Toggle Zone Visibility"}, {"boolean", "deathrun_stats_visibility", "Toggle the YOUR STATS popup"}, {"header", "Spectator Settings"}, {"boolean", "deathrun_spectate_only", "Spectate-only mode"}, {"header", "Thirdperson Settings"}, {"boolean", "deathrun_thirdperson_enabled", "Thirdperson mode"}, {"number", "deathrun_thirdperson_opacity", 5, 255, "Transparency of your playermodel in Thirdperson mode"}, {"number", "deathrun_thirdperson_offset_x", -40, 40, "Thirdperson camera horizontal offset"}, {"number", "deathrun_thirdperson_offset_y", -40, 40, "Thirdperson camera vertical offset"}, {"number", "deathrun_thirdperson_offset_z", -75, 75, "Thirdperson camera forward-backward offset"}, {"number", "deathrun_thirdperson_offset_pitch", -75, 75, "Thirdperson camera Pitch offset"}, {"number", "deathrun_thirdperson_offset_yaw", -75, 75, "Thirdperson camera Yaw offset"}, {"number", "deathrun_thirdperson_offset_roll", -75, 75, "Thirdperson camera Roll offset"}, {"header", "Other Settings"}, {"boolean", "deathrun_round_cues", "Audible round cues at starts and ends of rounds"}, {"boolean", "deathrun_info_on_join", "Show the info menu when joining the server"}, {"boolean", "deathrun_autojump", "Autojump (Enabling this limits velocity depending on server settings.)"}, {"number", "deathrun_teammate_fade_distance", 0, 512, "Teammate fade distance."}}
 DR.DeathrunSettings = deathrun_settings
 
 function DR:AddSetting(tbl)
@@ -381,88 +381,6 @@ concommand.Add("deathrun_open_zone_editor", function(ply, cmd)
     if DR:CanAccessCommand(ply, cmd) then
         DR:OpenZoneEditor()
     end
-end)
-
-local MOTDConVars = {}
-MOTDConVars.Enabled = GetConVar("deathrun_motd_enabled")
-MOTDConVars.Title = GetConVar("deathrun_motd_title")
-MOTDConVars.URL = GetConVar("deathrun_motd_url")
-DR.MOTDEnabled = MOTDConVars.Enabled:GetBool()
-DR.MOTDTitle = MOTDConVars.Title:GetString() or "Deathrun Information"
-DR.MOTDWidth = DR.MOTDWidth or ScrW() - 320
-DR.MOTDHeight = DR.MOTDHeight or ScrH() - 240
-DR.MOTDPage = MOTDConVars.URL:GetString() or "http://arizard.github.io/deathruninfo.html"
-
-function DR:SetMOTDEnabled(enabled)
-    print("DR:SetMOTDEnabled is deprecated! Instead please use the server convar deathrun_motd_enabled <0/1>")
-    DR.MOTDEnabled = enabled
-end
-
-function DR:SetMOTDTitle(title)
-    DR.MOTDTitle = title
-    print("DR:SetMOTDTitle is deprecated! Instead please use the server convar deathrun_motd_title <string title>")
-end
-
-function DR:SetMOTDSize(w, h)
-    DR.MOTDWidth = w
-    DR.MOTDHeight = h
-end
-
-function DR:SetMOTDPage(url)
-    print("DR:SetMOTDPage is deprecated! Instead please use the server convar deathrun_motd_url <string url>")
-    DR.MOTDPage = url
-end
-
-function DR:OpenQuickInfo()
-    local frame = vgui.Create("deathrun_window")
-    frame:SetSize(DR.MOTDWidth, DR.MOTDHeight)
-    frame:Center()
-    frame:MakePopup()
-    frame:SetTitle(DR.MOTDTitle)
-
-    function frame:OnClose()
-        if ROUND:GetCurrent() == ROUND_WAITING then
-            DR:OpenWaitingMenu()
-        end
-    end
-
-    local lbl = vgui.Create("DLabel", frame)
-    lbl:SetText("Please wait while page loads...")
-    lbl:SetFont("deathrun_derma_Large")
-    lbl:SizeToContents()
-    lbl:Center()
-    local html = vgui.Create("DHTML", frame)
-    html:SetSize(frame:GetWide() - 8, frame:GetTall() - 44)
-    html:SetPos(4, 32)
-    html:OpenURL(DR.MOTDPage)
-    html:SetAllowLua(true)
-    DR.QuickInfoFrame = frame
-end
-
-function OpenSteamGroup()
-    if IsValid(DR.QuickInfoFrame) then
-        DR.QuickInfoFrame:Close()
-        gui.OpenURL("http://steamcommunity.com/groups/vhs7")
-    end
-end
-
-concommand.Add("deathrun_open_quickinfo", function()
-    DR:OpenQuickInfo()
-end)
-
-concommand.Add("deathrun_open_motd", function()
-    DR:OpenQuickInfo()
-end)
-
-infoOpened = infoOpened ~= nil and infoOpened or false -- needs to be global
-local ShowInfo = CreateClientConVar("deathrun_info_on_join", 1, true, false) -- whether we see info on join
-
-hook.Add("HUDPaint", "openquickinfo", function()
-    if infoOpened == false and ShowInfo:GetBool() == true and DR.MOTDEnabled == true then
-        DR:OpenQuickInfo()
-    end
-
-    infoOpened = true -- only check once, then leave it
 end)
 
 function DR:GetWordWrapText(text, w, font)

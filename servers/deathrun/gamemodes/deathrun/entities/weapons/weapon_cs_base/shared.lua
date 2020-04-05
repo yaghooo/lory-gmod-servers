@@ -464,7 +464,7 @@ if CLIENT then
             surface.DrawRect(0 + x - 500, y + 0 - 700, 500 + ScrW() / 2 - scoperadius + 5, ScrH() + 1200)
             surface.DrawRect(x + ScrW() / 2 + scoperadius - 5, y + 0 - 750, ScrW() / 2 - scoperadius + 5 + 500, ScrH() + 1200)
             surface.DrawRect(x + 0 - 100, y + ScrH() / 2 + scoperadius - 5, ScrW() + 200, ScrH() / 2 - scoperadius + 700)
-            surface.DrawRect(ScrW() / 2  - scoperadius, ScrH() / 2 + 2, scoperadius * 2, 2)
+            surface.DrawRect(ScrW() / 2 - scoperadius, ScrH() / 2 + 2, scoperadius * 2, 2)
             surface.DrawRect(ScrW() / 2, ScrH() / 2 - scoperadius, 2, scoperadius * 2)
             surface.SetTexture(scopedirt)
             surface.DrawTexturedRectUV(x + (ScrW() / 2) - scoperadius, y + (ScrH() / 2) - scoperadius, scoperadius, scoperadius, 1, 1, 0, 0)

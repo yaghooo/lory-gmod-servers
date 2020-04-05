@@ -177,10 +177,6 @@ if SERVER then
         end
     end)
 
-    concommand.Add("stats_test", function(ply, cmd, args)
-        PrintTable(sql.Query("SELECT * FROM deathrun_stats WHERE sid = '" .. ply:SteamID() .. "'"))
-    end)
-
     -- displays a player's stats in front of their face
     function DR:DisplayStats(ply)
         if IsValid(ply) then

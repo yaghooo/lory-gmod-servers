@@ -16,14 +16,6 @@ include("sh_buttonclaiming.lua")
 include("sh_pointshopsupport.lua")
 include("sh_statistics.lua")
 
-concommand.Add("dr_test_menu", function()
-    local frame = vgui.Create("arizard_window")
-    frame:SetSize(640, 480)
-    frame:Center()
-    frame:MakePopup()
-    frame:SetTitle("Test Window Please Ignore")
-end)
-
 function DR:ChatMessage(msg)
     chat.AddText(DR.Colors.Text.Clouds, "[", DR.Colors.Text.Turq, "DEATHRUN", DR.Colors.Text.Clouds, "] ", msg)
 end
