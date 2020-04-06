@@ -40,8 +40,8 @@ jobs:
     - name: Upload deathrun addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
-        ftp-server: ${{ secrets.DEATHRUN_FTP_SERVER }}
+        ftp-server: ${{ secrets.DEATHRUN_FTP_SERVER }}/garrysmod/addons
         ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
         local-dir: dist/garrysmod/addons
-        git-ftp-args: --insecure --remote-root ./garrysmod/addons
+        git-ftp-args: --insecure
