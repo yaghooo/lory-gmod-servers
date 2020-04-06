@@ -13,15 +13,15 @@ jobs:
 
     - name: Build deathrun
       run: |
-        mkdir dist && mkdir dist/garrysmod
-        cp -R ./servers/_shared/* dist/garrysmod/
-        cp -R ./servers/deathrun/* dist/garrysmod/
+        mkdir garrysmod
+        cp -R ./servers/_shared/* garrysmod/
+        cp -R ./servers/deathrun/* garrysmod/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: Deathrun distributable
-        path: dist
+        path: garrysmod
 
    
   deploy:
@@ -35,7 +35,7 @@ jobs:
       uses: actions/download-artifact@v1.0.0
       with:
         name: Deathrun distributable
-        path: dist
+        path: garrysmod
 
     - name: Upload deathrun addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
@@ -43,5 +43,5 @@ jobs:
         ftp-server: ${{ secrets.DEATHRUN_FTP_SERVER }}
         ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: dist/garrysmod/addons
+        local-dir: garrysmod/addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
