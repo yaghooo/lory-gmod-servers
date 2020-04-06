@@ -35,7 +35,7 @@ jobs:
         path: gamemode
 
    
-  deploy addons:
+  deploy-addons:
     runs-on: ubuntu-18.04
     needs: [build]
 
@@ -58,7 +58,7 @@ jobs:
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
         
         
-  deploy gamemode:
+  deploy-gamemode:
     runs-on: ubuntu-18.04
     needs: [build]
 
