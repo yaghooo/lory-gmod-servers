@@ -20,8 +20,7 @@ function RECORDS:DisplayRecord(ply, record)
             local records = v:GetRecords()
 
             for k2, v2 in pairs(records) do
-                local name = sql.Query("SELECT name FROM users WHERE sid64='" .. v2.Sid64 .. "' LIMIT 1")
-                records[k2].Name = name and name[1] and name[1]["name"] or "Desconhecido"
+                records[k2].Name = SteamToNick(v2.Sid64)
                 records[k2].Sid64 = nil
             end
 
