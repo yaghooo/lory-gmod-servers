@@ -3,9 +3,6 @@ name: Deploy deathrun
 on:
   push:
     branches: [ master ]
-    paths:
-      - '/servers/_shared/*'
-      - '/servers/deathrun/*'
 
 jobs:
   build:
