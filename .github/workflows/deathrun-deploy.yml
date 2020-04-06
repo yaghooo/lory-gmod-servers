@@ -4,8 +4,8 @@ on:
   push:
     branches: [ master ]
     paths:
-      - '/servers/_shared'
-      - '/servers/deathrun'
+      - '/servers/_shared/*'
+      - '/servers/deathrun/*'
 
 jobs:
   build:
