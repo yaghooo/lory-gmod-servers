@@ -27,12 +27,15 @@ function Player:PS_PlayerDeath()
     for item_id, item in pairs(self.PS_Items) do
         if item.Equipped then
             local ITEM = PS.Items[item_id]
-            local CATEGORY = PS:FindCategoryByName(ITEM.Category)
 
-            if ITEM.OnHolster then
-                ITEM:OnHolster(self, item.Modifiers)
-            elseif CATEGORY.OnHolster then
-                CATEGORY:OnHolster(self, item.Modifiers, ITEM)
+            if ITEM then
+                local CATEGORY = PS:FindCategoryByName(ITEM.Category)
+
+                if ITEM.OnHolster then
+                    ITEM:OnHolster(self, item.Modifiers)
+                elseif CATEGORY.OnHolster then
+                    CATEGORY:OnHolster(self, item.Modifiers, ITEM)
+                end
             end
         end
     end
