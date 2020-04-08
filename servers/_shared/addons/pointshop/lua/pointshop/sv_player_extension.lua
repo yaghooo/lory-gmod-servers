@@ -275,7 +275,7 @@ function Player:PS_NumItemsEquippedFromCategory(cat_name)
     for item_id, item in pairs(self.PS_Items) do
         local ITEM = PS.Items[item_id]
 
-        if ITEM.Category == cat_name and item.Equipped then
+        if ITEM and ITEM.Category == cat_name and item.Equipped then
             count = count + 1
         end
     end
