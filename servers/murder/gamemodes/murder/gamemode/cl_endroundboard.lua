@@ -189,7 +189,7 @@ function GM:DisplayEndRoundBoard(data)
     end
 
     function add:DoClick()
-        gui.OpenURL("https://discord.gg/4xDjk5U")
+        gui.OpenURL("https://discord.gg/7FnEfXC")
         surface.PlaySound("UI/buttonclick.wav")
     end
 end

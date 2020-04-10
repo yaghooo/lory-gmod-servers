@@ -15,7 +15,7 @@ steamgroup:defaultAccess(ULib.ACCESS_ALL)
 steamgroup:help("Entre no nosso grupo da steam.")
 
 local discord = ulx.command(CATEGORY_NAME, "ulx discord", function(ply)
-    openUrl(ply, "https://discord.gg/6aWsG6U")
+    openUrl(ply, "https://discord.gg/7FnEfXC")
 end, {"!discord"})
 
 discord:defaultAccess(ULib.ACCESS_ALL)

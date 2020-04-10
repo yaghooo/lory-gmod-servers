@@ -176,7 +176,7 @@ function AWarn:TryDecayWarning( pl )
 	if not shouldDacay then return end
 	local plActiveWarnings = self:GetPlayerActiveWarnings( pl ) or 0
 	if plActiveWarnings <= 0 then return end
-	
+
 	self:DecayWarning( AWarn:SteamID64( pl ), plActiveWarnings - 1 )
 	if plActiveWarnings - 1 > 0 then
 		self:ResetDecayTimer( pl )
