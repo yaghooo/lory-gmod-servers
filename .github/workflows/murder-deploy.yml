@@ -1,0 +1,79 @@
+name: Deploy murder
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build addons
+      run: |
+        mkdir addons
+        cp -R ./servers/_shared/addons/* addons
+        cp -R ./servers/murder/addons/* addons
+    - name: Upload addons artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Murder addons
+        path: addons
+        
+    - name: Build gamemode
+      run: |
+        mkdir gamemode
+        cp -R ./servers/murder/gamemodes/murder/* gamemode
+    - name: Upload gamemode artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Murder gamemode
+        path: gamemode
+
+   
+  deploy-addons:
+    runs-on: ubuntu-18.04
+    needs: [build]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Download addons
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: Murder addons
+        path: addons
+
+    - name: Upload addons
+      uses: SamKirkland/FTP-Deploy-Action@3.0.0
+      with:
+        ftp-server: ${{ secrets.FTP_SERVER }}
+        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: addons
+        git-ftp-args: --insecure --remote-root ./garrysmod/addons
+        
+        
+  deploy-gamemode:
+    runs-on: ubuntu-18.04
+    needs: [build]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Download gamemode
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: Murder gamemode
+        path: gamemode
+
+    - name: Upload gamemode
+      uses: SamKirkland/FTP-Deploy-Action@3.0.0
+      with:
+        ftp-server: ${{ secrets.FTP_SERVER }}
+        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: gamemode
+        git-ftp-args: --insecure --remote-root ./garrysmod/gamemodes/murder
