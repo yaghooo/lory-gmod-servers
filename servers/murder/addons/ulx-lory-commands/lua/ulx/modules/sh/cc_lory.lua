@@ -7,6 +7,13 @@ end, {"!addons", "!addon"})
 addons:defaultAccess(ULib.ACCESS_ALL)
 addons:help("Ver addons do servidor.")
 
+local rules = ulx.command(CATEGORY_NAME, "ulx rules", function(ply)
+    openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/2257934448607145092/")
+end, {"!rules", "!regras"})
+
+rules:defaultAccess(ULib.ACCESS_ALL)
+rules:help("Ver regras do servidor.")
+
 local steamgroup = ulx.command(CATEGORY_NAME, "ulx steamgroup", function(ply)
     openUrl(ply, "https://steamcommunity.com/groups/lorybr")
 end, {"!steam", "!group", "!grupo"})
