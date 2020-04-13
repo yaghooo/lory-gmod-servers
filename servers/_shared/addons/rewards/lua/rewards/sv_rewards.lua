@@ -58,5 +58,9 @@ net.Receive("rewards_redeem", function(len, ply)
 end)
 
 hook.Add("PlayerInitialSpawn", "GetUserRewards", function(ply)
-    REWARDS:SendPrizes(ply)
+    timer.Simple(5, function()
+        if ply and IsValid(ply) then
+            REWARDS:SendPrizes(ply)
+        end
+    end)
 end)

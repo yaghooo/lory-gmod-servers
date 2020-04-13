@@ -213,19 +213,20 @@ end)
 if PS.Config.PointsOverTime then
     timer.Create("PS_PointsOverTime", PS.Config.PointsOverTimeDelay * 60, 0, function()
         for _, ply in ipairs(player.GetAll()) do
-            if not IsValid(ply) or ply.Spectating then return end
-            ply:PS_GivePoints(PS.Config.PointsOverTimeAmount)
-            ply:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
-            local amt = PS.Config.PointsOverTimeAmount * 0.5
+            if IsValid(ply) and not ply.Spectating then
+                ply:PS_GivePoints(PS.Config.PointsOverTimeAmount)
+                ply:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
+                local amt = PS.Config.PointsOverTimeAmount * 0.5
 
-            if ply:PS_IsElegibleForDouble() then
-                ply:PS_GivePoints(amt)
-                ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
-            end
+                if ply:PS_IsElegibleForDouble() then
+                    ply:PS_GivePoints(amt)
+                    ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
+                end
 
-            if ply:IsUserGroup("vip") then
-                ply:PS_GivePoints(amt)
-                ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ser vip!")
+                if ply:IsUserGroup("vip") then
+                    ply:PS_GivePoints(amt)
+                    ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ser vip!")
+                end
             end
         end
     end)
@@ -271,6 +272,7 @@ end
 
 function PS:GetPlayerData(ply, callback)
     local data = self.DataProvider:GetData(ply)
+
     return {
         Points = PS:ValidatePoints(tonumber(data.Points)),
         Items = data.Items

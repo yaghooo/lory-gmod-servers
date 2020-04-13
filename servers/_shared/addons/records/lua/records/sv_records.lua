@@ -20,7 +20,7 @@ function RECORDS:DisplayRecord(ply, record)
             local records = v:GetRecords()
 
             for k2, v2 in pairs(records) do
-                records[k2].Name = SteamToNick(v2.Sid64)
+                records[k2].Name = Sid64ToNick(v2.Sid64)
                 records[k2].Sid64 = nil
             end
 

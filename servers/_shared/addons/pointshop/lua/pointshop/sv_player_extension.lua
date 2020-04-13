@@ -79,10 +79,6 @@ end
 
 function Player:PS_PlayerDisconnected()
     PS.ClientsideModels[self] = nil
-
-    if timer.Exists("PS_PointsOverTime_" .. self:UniqueID()) then
-        timer.Remove("PS_PointsOverTime_" .. self:UniqueID())
-    end
 end
 
 function Player:PS_Save()

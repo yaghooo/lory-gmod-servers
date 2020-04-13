@@ -1,4 +1,4 @@
-PRIZE.Title = "ENTRE NO GRUPO STEAM"
+PRIZE.Title = "ENTRE NO GRUPO STEAM ~ DIGITE !grupo"
 PRIZE.Description = "Ganha 3.000 " .. PS.Config.PointsName .. " e uma caixa aleatória"
 PRIZE.Image = "calendar"
 PRIZE.GroupId = "lorybr"
