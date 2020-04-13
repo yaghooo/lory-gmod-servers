@@ -1,4 +1,4 @@
-local CATEGORY_NAME = "DEVX"
+local CATEGORY_NAME = "Lory"
 
 local addons = ulx.command(CATEGORY_NAME, "ulx addons", function(ply)
     openUrl(ply, "https://steamcommunity.com/sharedfiles/filedetails/?id=1581506103")
