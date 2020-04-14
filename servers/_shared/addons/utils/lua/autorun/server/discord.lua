@@ -17,7 +17,18 @@ concommand.Add("register_discord", function(_, __, args)
 
         if userExists and not DISCORD:IsRegistered(sid64) then
             local query = [[INSERT INTO users_discord VALUES(%s, %s)]]
-            return sql.Query(string.format(query, sid64, discordId))
+            local result = sql.Query(string.format(query, sid64, discordId))
+
+            if result ~= false then
+                local ply = player.GetBySteamID64(sid64)
+
+                if IsValid(ply) then
+                    ply:ChatPrint("<c=114,137,218>Você foi registrado com sucesso!</c>")
+                end
+
+                hook.Run("DISCORD_Register", sid64)
+                return
+            end
         end
     end
 
