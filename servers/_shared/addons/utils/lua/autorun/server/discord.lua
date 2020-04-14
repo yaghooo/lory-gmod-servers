@@ -9,11 +9,11 @@ function DISCORD:IsRegistered(sid64)
 end
 
 concommand.Add("register_discord", function(_, __, args)
-    local id64 = args[1]
+    local sid64 = args[1]
     local discordId = args[2]
 
-    if id64 and discordId then
-        local userExists = IsSid64Registered(id64)
+    if sid64 and discordId then
+        local userExists = IsSid64Registered(sid64)
 
         if userExists then
             local ply = player.GetBySteamID64(sid64)
@@ -39,7 +39,7 @@ concommand.Add("register_discord", function(_, __, args)
         end
     end
 
-    error("Failed to register user " .. id64 .. " with discord " .. discordId)
+    error("Failed to register user " .. sid64 .. " with discord " .. discordId)
 end)
 
 hook.Add("PlayerSay", "DiscordRegister", function(ply, text)

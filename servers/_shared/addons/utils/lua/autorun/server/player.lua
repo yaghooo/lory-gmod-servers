@@ -8,8 +8,8 @@ hook.Add("PlayerInitialSpawn", "RegisterUser", function(ply)
 end)
 
 function IsSid64Registered(sid64)
-    local result = sql.Query("SELECT name FROM users WHERE sid64='" .. sid64 .. "' LIMIT 1")
-    return (result and result[1]) ~= nil
+    local result = sql.Query("SELECT EXISTS(SELECT 1 FROM users WHERE sid64='" .. sid64 .. "' LIMIT 1) as e")
+    return result and result[1] and tobool(result[1]["e"]) == true
 end
 
 function Sid64ToNick(sid64)
