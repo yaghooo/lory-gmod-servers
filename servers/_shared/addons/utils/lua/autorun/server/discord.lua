@@ -20,7 +20,6 @@ concommand.Add("register_discord", function(_, __, args)
             if DISCORD:IsRegistered(sid64) then
                 if IsValid(ply) then
                     ply:ChatPrint("<c=200,0,0>Você já está registrado!</c>")
-                    return
                 end
             else
                 local query = [[INSERT INTO users_discord VALUES(%s, %s)]]
@@ -33,13 +32,14 @@ concommand.Add("register_discord", function(_, __, args)
 
                     hook.Run("DISCORD_Register", sid64)
                     print("Succeed registered " .. sid64 .. " with discord " .. discordId)
-                    return
                 end
             end
+        else
+            error("Failed to register user " .. sid64 .. " with discord " .. discordId)
         end
+    else
+        error("Failed to register user(incorrect parameters)")
     end
-
-    error("Failed to register user " .. sid64 .. " with discord " .. discordId)
 end)
 
 hook.Add("PlayerSay", "DiscordRegister", function(ply, text)

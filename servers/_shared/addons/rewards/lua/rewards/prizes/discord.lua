@@ -4,7 +4,7 @@ PRIZE.Image = "discord"
 PRIZE.Points = 3000
 
 function PRIZE:GetStatus(ply)
-    return ply.DiscordPrizeSessionLock and "NÃO REGISTRADO" or ply:GetPData("rewards:discord") or "RESGATAR"
+    return ply:GetPData("rewards:discord") or (ply.DiscordPrizeSessionLock and "NÃO REGISTRADO") or "RESGATAR"
 end
 
 function PRIZE:Redeem(ply)
