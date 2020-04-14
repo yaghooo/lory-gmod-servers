@@ -40,7 +40,7 @@ hook.Add("PlayerSay", "DiscordRegister", function(ply, text)
         timer.Simple(0.1, function()
             if IsValid(ply) then
                 ply:ChatPrint("Para registrar primeiramente entre no nosso discord pelo <c=114,137,218>!discord</c>")
-                ply:ChatPrint("Após entrar no discord, entre no canal <c=114,137,218>bots</c> e digite o seguinte comando:")
+                ply:ChatPrint("Após entrar no discord, entre no canal <c=114,137,218>registrar</c> e digite o seguinte comando:")
                 ply:ChatPrint("<c=114,137,218>!registrar " .. ply:SteamID64() .. "</c>")
                 ply:ChatPrint("Lembre-se: <c=255,0,0>É proibido se registrar como outro usuário e fazer isso resultará em banimento!</c>")
             end
