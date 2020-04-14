@@ -15,19 +15,26 @@ concommand.Add("register_discord", function(_, __, args)
     if id64 and discordId then
         local userExists = IsSid64Registered(id64)
 
-        if userExists and not DISCORD:IsRegistered(sid64) then
-            local query = [[INSERT INTO users_discord VALUES(%s, %s)]]
-            local result = sql.Query(string.format(query, sid64, discordId))
-
-            if result ~= false then
-                local ply = player.GetBySteamID64(sid64)
-
+        if userExists then
+            local ply = player.GetBySteamID64(sid64)
+            if DISCORD:IsRegistered(sid64) then
                 if IsValid(ply) then
-                    ply:ChatPrint("<c=114,137,218>Você foi registrado com sucesso!</c>")
+                    ply:ChatPrint("<c=200,0,0>Você já está registrado!</c>")
+                    return
                 end
+            else
+                local query = [[INSERT INTO users_discord VALUES(%s, %s)]]
+                local result = sql.Query(string.format(query, sid64, discordId))
 
-                hook.Run("DISCORD_Register", sid64)
-                return
+                if result ~= false then
+                    if IsValid(ply) then
+                        ply:ChatPrint("<c=114,137,218>Você foi registrado com sucesso!</c>")
+                    end
+
+                    hook.Run("DISCORD_Register", sid64)
+                    print("Succeed registered " .. sid64 .. " with discord " .. discordId)
+                    return
+                end
             end
         end
     end
