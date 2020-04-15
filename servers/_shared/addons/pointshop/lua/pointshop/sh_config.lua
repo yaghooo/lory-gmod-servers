@@ -6,6 +6,7 @@ PS.Config.DataProvider = "sqlite"
 PS.Config.ShopKey = "F3" -- Any Uppercase key or blank to disable
 PS.Config.ShopChatCommand = "!loja" -- Chat command to open the shop, set to blank to disable
 PS.Config.NotifyOnJoin = true -- Should players be notified about opening the shop when they spawn?
+PS.Config.LootDropDelay = 3 -- If so, how many minutes apart?
 PS.Config.LootChance = 0.03
 PS.Config.CrateItemQuantity = 200
 PS.Config.PointsOverTime = true -- Should players be given points over time?

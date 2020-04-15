@@ -183,7 +183,7 @@ hook.Add("PlayerDisconnected", "PS_PlayerDisconnected", function(ply)
     ply:PS_PlayerDisconnected()
 end)
 
-timer.Create("PS_Loots", 60 * 3, 0, function()
+timer.Create("PS_Loots", 60 * PS.Config.LootDropDelay, 0, function()
     local lootables = {}
 
     for _, v in pairs(PS.Items) do
@@ -200,7 +200,7 @@ timer.Create("PS_Loots", 60 * 3, 0, function()
             chance = chance * 1.5
         end
 
-        local drop = math.random() <= PS.Config.LootChance
+        local drop = math.random() <= chance
 
         if drop then
             local loot = table.Random(lootables)
