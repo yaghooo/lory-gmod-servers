@@ -508,17 +508,21 @@ local function pressedUse(ply)
     local tr = ply:GetEyeTraceNoCursor()
 
     -- press e on windows to break them
-    if IsValid(tr.Entity) and (tr.Entity:GetClass() == "func_breakable" or tr.Entity:GetClass() == "func_breakable_surf") and tr.HitPos:Distance(tr.StartPos) < 50 then
-        local dmg = DamageInfo()
-        dmg:SetAttacker(game.GetWorld())
-        dmg:SetInflictor(game.GetWorld())
-        dmg:SetDamage(10)
-        dmg:SetDamageType(DMG_BULLET)
-        dmg:SetDamageForce(ply:GetAimVector() * 500)
-        dmg:SetDamagePosition(tr.HitPos)
-        tr.Entity:TakeDamageInfo(dmg)
+    if IsValid(tr.Entity) and tr.HitPos:Distance(tr.StartPos) < 50 then
+        if tr.Entity:GetClass() == "func_breakable" then
+            local dmg = DamageInfo()
+            dmg:SetAttacker(game.GetWorld())
+            dmg:SetInflictor(game.GetWorld())
+            dmg:SetDamage(10)
+            dmg:SetDamageType(DMG_BULLET)
+            dmg:SetDamageForce(ply:GetAimVector() * 500)
+            dmg:SetDamagePosition(tr.HitPos)
+            tr.Entity:TakeDamageInfo(dmg)
 
-        return
+            return
+        elseif tr.Entity:GetClass() == "func_breakable_surf" then
+            tr.Entity:Fire("shatter", "0.5 0.5 4", 0)
+        end
     end
 
     -- disguise as ragdolls
