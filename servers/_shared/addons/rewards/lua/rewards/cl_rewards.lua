@@ -29,7 +29,7 @@ net.Receive("rewards_prizes", function()
 	local prizes = util.JSONToTable(net.ReadString())
 	REWARDS.Prizes = prizes
 
-	timer.Simple(10, function()
+	timer.Simple(5, function()
 		local prizesToClaim = 0
 
 		for k, v in pairs(REWARDS.Prizes) do
