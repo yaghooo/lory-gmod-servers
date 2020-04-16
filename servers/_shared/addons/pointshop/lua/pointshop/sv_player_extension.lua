@@ -402,6 +402,12 @@ function Player:PS_CanEquipItem(ITEM)
         return false
     end
 
+    if (ITEM.ShouldBeAlive or CATEGORY.ShouldBeAlive) and not self:Alive() then
+        self:PS_Notify("Você precisa estar vivo para usar isso!")
+
+        return false
+    end
+
     return true
 end
 
