@@ -28,6 +28,13 @@ end, {"!discord"})
 discord:defaultAccess(ULib.ACCESS_ALL)
 discord:help("Entre no nosso discord.")
 
+local vip = ulx.command(CATEGORY_NAME, "ulx vip", function(ply)
+    openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/1735508423601693879/")
+end, {"!vip", "!doador", "!doar", "!donate"})
+
+vip:defaultAccess(ULib.ACCESS_ALL)
+vip:help("Ver informações sobre o vip.")
+
 function openUrl(ply, url)
     ply:SendLua(string.format([[gui.OpenURL("%s")]], url))
 end
