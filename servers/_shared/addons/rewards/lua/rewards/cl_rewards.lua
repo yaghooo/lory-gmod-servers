@@ -46,5 +46,7 @@ net.Receive("rewards_prizes", function()
 			}
 			chat.AddText(unpack(parse))
 		end
+
+		REWARDS.PrizesToClaim = prizesToClaim
 	end)
 end)
