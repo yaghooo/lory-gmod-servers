@@ -1,11 +1,17 @@
 sql.Query("CREATE TABLE IF NOT EXISTS users_discord ( `sid64` STRING, `discord` STRING, PRIMARY KEY(sid64) )")
-
 DISCORD = {}
 DISCORD.__index = DISCORD
 
 function DISCORD:IsRegistered(sid64)
     local result = sql.Query("SELECT discord FROM users_discord WHERE sid64='" .. sid64 .. "' LIMIT 1")
+
     return (result and result[1]) ~= nil
+end
+
+function DISCORD:GetSid64ById(id)
+    local result = sql.Query("SELECT sid64 FROM users_discord WHERE discord='" .. id .. "' LIMIT 1")
+
+    return result and result[1] and result[1]["sid64"]
 end
 
 concommand.Add("register_discord", function(_, __, args)
@@ -17,6 +23,7 @@ concommand.Add("register_discord", function(_, __, args)
 
         if userExists then
             local ply = player.GetBySteamID64(sid64)
+
             if DISCORD:IsRegistered(sid64) then
                 if IsValid(ply) then
                     ply:ChatPrint("<c=200,0,0>Você já está registrado!</c>")
