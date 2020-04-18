@@ -2,6 +2,6 @@
 --  ConVars  --
 ---------------
 
-CreateConVar("donate_url", "http://www.google.com")
+CreateConVar( "donate_url", "http://www.google.com" )
 
-CreateConVar("explode_ragdolls", "0")
+CreateConVar( "explode_ragdolls", "0" )
