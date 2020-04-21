@@ -66,7 +66,7 @@ function GM:Think()
                 particle:SetRollDelta(0)
                 particle:SetColor(0, 0, 0)
             end
-        elseif ply.FogEmitter then
+        elseif IsValid(ply.FogEmitter) then
             ply.FogEmitter:Finish()
             ply.FogEmitter = nil
             self.FogEmitters[ply] = nil
