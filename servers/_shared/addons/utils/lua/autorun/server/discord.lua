@@ -66,11 +66,15 @@ end)
 hook.Add("PlayerAuthed", "KickNonRegistered", function(ply, steamId)
     local sid64 = IsValid(ply) and ply:SteamID64() or util.SteamIDTo64(steamId)
     if not DISCORD:IsRegistered(sid64) then
-        ulx.kick(nil, ply, "Servidor privado para usuários registrados")
+        ply:Kick("Servidor privado para usuários registrados")
 
-        -- make sure it will be kicked
-        if IsValid(ply) then
-            ply:Kick("Servidor privado para usuários registrados")
-        end
+        local parse = {}
+        table.insert(parse, Color(255, 0, 0))
+        table.insert(parse, ply:GetName() .. " foi impedido de entrar por não estar registrado!")
+
+        net.Start("write_chat")
+        net.WriteString(util.TableToJSON(parse))
+        net.WriteBit(0)
+        net.Broadcast()
     end
 end)
