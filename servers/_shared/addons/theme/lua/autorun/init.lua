@@ -6,9 +6,11 @@ THEME.Font = {}
 if SERVER then
     AddCSLuaFile("theme/colors.lua")
     AddCSLuaFile("theme/fonts.lua")
+    AddCSLuaFile("theme/utils.lua")
 else
     include("theme/colors.lua")
     include("theme/fonts.lua")
+    include("theme/utils.lua")
 end
 
 local files, _ = file.Find("theme/components/*.lua", "LUA")
