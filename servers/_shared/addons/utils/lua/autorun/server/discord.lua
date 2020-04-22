@@ -68,9 +68,12 @@ hook.Add("PlayerAuthed", "KickNonRegistered", function(ply, steamId)
     if not DISCORD:IsRegistered(sid64) then
         ply:Kick("Servidor privado para usuários registrados")
 
+        local message = ply:GetName() .. " foi impedido de entrar por não estar registrado!"
+        print(message)
+
         local parse = {}
         table.insert(parse, Color(255, 0, 0))
-        table.insert(parse, ply:GetName() .. " foi impedido de entrar por não estar registrado!")
+        table.insert(parse, message)
 
         net.Start("write_chat")
         net.WriteString(util.TableToJSON(parse))
