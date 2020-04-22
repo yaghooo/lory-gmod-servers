@@ -66,6 +66,11 @@ end)
 hook.Add("PlayerAuthed", "KickNonRegistered", function(ply, steamId)
     local sid64 = IsValid(ply) and ply:SteamID64() or util.SteamIDTo64(steamId)
     if not DISCORD:IsRegistered(sid64) then
-        ply:Kick("Servidor privado para usuários registrados")
+        ulx.kick(nil, ply, "Servidor privado para usuários registrados")
+
+        -- make sure it will be kicked
+        if IsValid(ply) then
+            ply:Kick("Servidor privado para usuários registrados")
+        end
     end
 end)
