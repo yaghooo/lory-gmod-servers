@@ -61,3 +61,11 @@ hook.Add("PlayerSay", "DiscordRegister", function(ply, text)
         end)
     end
 end)
+
+-- REMOVE LATER
+hook.Add("PlayerAuthed", "KickNonRegistered", function(ply, steamId)
+    local sid64 = IsValid(ply) and ply:SteamID64() or util.SteamIDTo64(steamId)
+    if not DISCORD:IsRegistered(sid64) then
+        ply:Kick("Servidor privado para usuários registrados")
+    end
+end)
