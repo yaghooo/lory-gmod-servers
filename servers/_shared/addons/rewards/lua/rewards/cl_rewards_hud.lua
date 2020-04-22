@@ -9,12 +9,6 @@ hook.Add("HUDPaint", "DrawRewardsNotice", function()
         M:Translate(-Vector(ScrW() / 2, ScrH() / 2))
         cam.PushModelMatrix(M)
 
-        local function drawShadowText(text, font, x, y, col, align, d)
-            draw.DrawText(text, font, x + 1 * 2, y + 2, Color(0, 0, 0, col.a / 4), align)
-            draw.DrawText(text, font, x + 1, y + 1, Color(0, 0, 0, col.a / 2), align)
-            draw.DrawText(text, font, x, y, col, align)
-        end
-
         local y = 150
 
         if not image:IsError() then
@@ -24,8 +18,8 @@ hook.Add("HUDPaint", "DrawRewardsNotice", function()
             y = y + 80
         end
 
-        drawShadowText(REWARDS.PrizesToClaim .. " prêmios para resgatar!", THEME.Font.Coolvetica24, ScrW() - 140, y, THEME.Color.Primary, TEXT_ALIGN_CENTER)
-        drawShadowText("Pressione F4", THEME.Font.Coolvetica24, ScrW() - 140, y + 20, THEME.Color.Primary, TEXT_ALIGN_CENTER)
+        THEME:DrawShadowText(REWARDS.PrizesToClaim .. " prêmios para resgatar!", THEME.Font.Coolvetica24, ScrW() - 140, y, THEME.Color.Primary, TEXT_ALIGN_CENTER)
+        THEME:DrawShadowText("Pressione F4", THEME.Font.Coolvetica24, ScrW() - 140, y + 20, THEME.Color.Primary, TEXT_ALIGN_CENTER)
         cam.PopModelMatrix()
     end
 end)
