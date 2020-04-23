@@ -61,23 +61,3 @@ hook.Add("PlayerSay", "DiscordRegister", function(ply, text)
         end)
     end
 end)
-
--- REMOVE LATER
-hook.Add("PlayerAuthed", "KickNonRegistered", function(ply, steamId)
-    local sid64 = IsValid(ply) and ply:SteamID64() or util.SteamIDTo64(steamId)
-    if not DISCORD:IsRegistered(sid64) then
-        ply:Kick("Servidor privado para usuários registrados")
-
-        local message = ply:GetName() .. " foi impedido de entrar por não estar registrado!"
-        print(message)
-
-        local parse = {}
-        table.insert(parse, Color(255, 0, 0))
-        table.insert(parse, message)
-
-        net.Start("write_chat")
-        net.WriteString(util.TableToJSON(parse))
-        net.WriteBit(0)
-        net.Broadcast()
-    end
-end)
