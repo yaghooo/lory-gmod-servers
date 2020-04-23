@@ -39,3 +39,9 @@ surface.CreateFont(THEME.Font.Coolvetica50, {
     font = "coolvetica",
     size = 50
 })
+
+THEME.Font.Coolvetica60 = "Coolvetica-60"
+surface.CreateFont(THEME.Font.Coolvetica60, {
+    font = "coolvetica",
+    size = 60
+})
