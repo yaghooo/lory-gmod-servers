@@ -97,6 +97,12 @@ function GM:PlayerLoadout(ply)
     ply:StripWeapons()
     ply:StripAmmo()
     ply:Give("weapon_crowbar")
+
+    if ply.CustomKnife then
+        ply:Give(ply.CustomKnife)
+        ply:SelectWeapon(ply.CustomKnife)
+    end
+
     local teamcol = team.GetColor(ply:Team())
     --print(teamcol)
     local playercol = Vector(teamcol.r / 255, teamcol.g / 255, teamcol.b / 255)
