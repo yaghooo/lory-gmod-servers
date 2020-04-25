@@ -275,9 +275,9 @@ function GM:PlayerDeath(ply, Inflictor, attacker)
                     if AWarn then
                         AWarn:CreateWarningID(attacker:SteamID64(), nil, "RDM")
                     end
-                end
 
-                attacker:SetTKer(true)
+                    attacker:SetTKer(true)
+                end
             end
         end
     else
