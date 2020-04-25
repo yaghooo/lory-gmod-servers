@@ -1,16 +1,3 @@
-if SERVER then
-    AddCSLuaFile()
-    util.AddNetworkString("mers_base_holdtype")
-else
-    net.Receive("mers_base_holdtype", function(len)
-        local wep = net.ReadEntity()
-
-        if IsValid(wep) and wep:IsWeapon() and wep.SetWeaponHoldType then
-            wep:SetWeaponHoldType(net.ReadString())
-        end
-    end)
-end
-
 SWEP.Base = "weapon_base"
 SWEP.Weight = 5
 SWEP.AutoSwitchTo = false
@@ -38,19 +25,6 @@ function SWEP:Initialize()
     self:CalculateHoldType()
 end
 
-function SWEP:SetNetHoldType(name)
-    if self.SetWeaponHoldType then
-        self:SetWeaponHoldType(name)
-    end
-
-    if SERVER then
-        net.Start("mers_base_holdtype")
-        net.WriteEntity(self)
-        net.WriteString(name)
-        net.Broadcast()
-    end
-end
-
 function SWEP:CalculateHoldType()
     local holdtype = self.HoldType
 
@@ -59,10 +33,7 @@ function SWEP:CalculateHoldType()
         holdtype = self.HoldType or "smg"
     end
 
-    if self.OldHoldType ~= holdtype then
-        self.OldHoldType = holdtype
-        self:SetNetHoldType(holdtype)
-    end
+    self:SetHoldType(holdtype)
 end
 
 function SWEP:PrimaryAttack()

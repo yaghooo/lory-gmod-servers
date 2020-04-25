@@ -17,7 +17,7 @@ SWEP.PrintName = translate and translate.hands or "Hands"
 
 function SWEP:Initialize()
     self.PrintName = translate and translate.hands or "Hands"
-    self.BaseClass.Initialize(self)
+    self:SetHoldType(self.HoldType)
 end
 
 function SWEP:DoPrimaryAttackEffect()
