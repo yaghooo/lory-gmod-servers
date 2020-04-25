@@ -45,3 +45,11 @@ surface.CreateFont(THEME.Font.Coolvetica60, {
     font = "coolvetica",
     size = 60
 })
+
+THEME.Font.Roboto18 = "Roboto-18"
+surface.CreateFont(THEME.Font.Roboto18, {
+    font = "Roboto Regular",
+    size = 18,
+    antialias = true,
+    weight = 500
+})
