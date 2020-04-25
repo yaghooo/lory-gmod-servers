@@ -23,6 +23,7 @@ PowerRounds.NextPR = false -- false or table of the round, changes to table of r
 PowerRounds.CurrentPR = false -- false or table of the round, changes when round starts
 PowerRounds.ForcedPR = false -- true or false, changes whenever it is forced, sets back to false when the round starts, but will add a value of PowerRounds.CurrentPR.Forced = true
 local GamemodeTeamChange = function() end
+local CustomRoundEndFuncStart, CustomRoundEndFuncEnd
 
 local function SendRoundsLeft(RL, Ply)
     net.Start("PowerRoundsRoundsLeft")
@@ -121,6 +122,10 @@ local function RoundStart()
         end
     end
 
+    if PowerRounds.CurrentPR.CustomRoundEnd and isfunction(CustomRoundEndFuncStart) then
+        CustomRoundEndFuncStart()
+    end
+
     if isfunction(PowerRounds.CurrentPR.PlayersStart) then
         for _, j in ipairs(PowerRounds.Players(2)) do
             PowerRounds.CurrentPR.PlayersStart(j)
@@ -132,6 +137,10 @@ local function RoundEnd()
     UpdateRoundsLeft()
 
     if PowerRounds.CurrentPR then
+        if PowerRounds.CurrentPR.CustomRoundEnd and isfunction(CustomRoundEndFuncEnd) then
+            CustomRoundEndFuncEnd()
+        end
+
         local Winners = {}
         local Losers = {}
         local RunFunc = isfunction(PowerRounds.CurrentPR.PlayersEnd)
@@ -297,6 +306,14 @@ hook.Add("PowerRoundsPST", "PowerRoundsPostGamemodeLoadedSV", function()
             hook.Run("OnPlayerChangedTeam", Ply, OldTeam, NewTeam)
         end
 
+        local OldPlayerLeavePlay = GAMEMODE.PlayerLeavePlay
+
+        function GAMEMODE:PlayerLeavePlay(Ply)
+            if not PowerRounds.CurrentPR or not PowerRounds.CurrentPR.CustomRoundEnd then
+                OldPlayerLeavePlay(self, Ply)
+            end
+        end
+
         --Had to overwrite a function because of murder coders not using hooks...
         function PowerRounds.SetRole(Ply, Role)
             Ply:SetMurderer(Role == PR_ROLE_BAD)
@@ -310,6 +327,16 @@ hook.Add("PowerRoundsPST", "PowerRoundsPostGamemodeLoadedSV", function()
             else
                 GAMEMODE:EndTheRound(3, Murderer)
             end
+        end
+
+        function CustomRoundEndFuncStart()
+            GAMEMODE.PRTempRoundCheckForWin = GAMEMODE.RoundCheckForWin
+            GAMEMODE.RoundCheckForWin = function() end
+        end
+
+        function CustomRoundEndFuncEnd()
+            GAMEMODE.RoundCheckForWin = GAMEMODE.PRTempRoundCheckForWin
+            GAMEMODE.PRTempRoundCheckForWin = nil
         end
     end
 

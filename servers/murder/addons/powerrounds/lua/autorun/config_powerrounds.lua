@@ -80,7 +80,8 @@ end
 		Name = "Any Text",                                          --Any text, will be the power rounds name {Default: ""}
 		Gamemode = "Any",                                           --Which gamemode should this Power ROund be for {Default: "Any"} Can be one of these: "TTT", "Murder", "Any"
 		Description = "Any Text",                                   --Any text, will be the power rounds description {Default: ""}
-		ServerStartWait = 10,                                       --Time that the server should wait before running ServerStart function {Default: 0 | No waiting}
+		CustomRoundEnd = false,                                     --Will the round end in a custom way {Default: false} !!!If you set this to true, remember to have code that will end the round!!!
+        ServerStartWait = 10,                                       --Time that the server should wait before running ServerStart function {Default: 0 | No waiting}
 		WinTeamCondition = function(Ply) return Ply:Alive() end,    --Function that will run for every player playing when the round ends {Default: if player is alive} [Values: Ply = player] (Return: true = winner, false = not winner)
 		ServerStart = function() end,                               --Function that will run when round starts {Default: empty function} (Runs once)
 		ServerEnd = function(Winners, Losers) end,                  --Function that will run when round ends {Default: empty function} [Values: Winners = table of this rounds winners, Losers = table of this rounds losers]
@@ -157,17 +158,29 @@ PowerRounds.AddRound({
 })
 
 PowerRounds.AddRound({
-    Name = "Loucura de RPG",
+    Name = "Gratis para todos de RPG",
     Gamemode = "Murder",
-    Description = "Sem armas ou facas, mas todos recebem um RPG com muita munição! Regras normais do jogo se aplicam.",
-    PlayerDeath = function(Ply, Attacker)
-        if IsValid(Attacker) and not Attacker:IsMurderer() and not Ply:IsMurderer() and Attacker:HasWeapon("weapon_rpg") then
-            Attacker:DropWeapon(Attacker:GetWeapon("weapon_rpg"))
+    Description = "Sem armas ou facas, mas todos recebem um RPG com muita munição!",
+    CustomRoundEnd = true,
+    PlayerDeath = function() return true end,
+    PlayerCanPickupWeapon = function() return true end,
+    PlayerUpdate = function(Ply)
+        local alivePlayers = PowerRounds.Players(2, Ply)
+
+        if #alivePlayers < 2 then
+            if IsValid(alivePlayers[1]) then
+                local points = 250
+                PowerRounds.Chat("All", "<hsv>" .. alivePlayers[1]:Name() .. " venceu a rodada e levou " .. points .. " " .. PS.Config.PointsName .. "!</hsv>")
+                alivePlayers[1]:PS_GivePoints(points)
+                alivePlayers[1]:PS_Notify("Você ganhou ", points, " ", PS.Config.PointsName, " por vencer o power round!")
+            end
+
+            PowerRounds.EndRound(PR_WIN_GOOD, alivePlayers[1])
         end
     end,
-    PlayerCanPickupWeapon = function(Ply, Ent) return Ent:GetClass() == "weapon_rpg" and not Ply:GetTKer() end,
     PlayersStart = function(Ply)
-        Ply:StripWeapon("weapon_rp_hands")
+        Ply:SetMurderer(false)
+        Ply:CalculateSpeed()
 
         if Ply:HasWeapon(Ply:GetKnife()) then
             Ply:StripWeapon(Ply:GetKnife())
@@ -180,13 +193,15 @@ PowerRounds.AddRound({
         Ply:Give("weapon_rpg")
         Ply:SelectWeapon("weapon_rpg")
         Ply:SetAmmo(9999, 8) -- set RPG ammo to 9999
-    end
+    end,
+    AllowRDM = true
 })
 
 PowerRounds.AddRound({
     Name = "Gratis para todos",
     Gamemode = "Murder",
     Description = "Você pega uma arma e uma faca, mata todos que você vê! Último em pé vence!",
+    CustomRoundEnd = true,
     PlayerDeath = function() return true end,
     PlayerCanPickupWeapon = function() return true end,
     PlayerUpdate = function(Ply)
@@ -216,6 +231,7 @@ PowerRounds.AddRound({
     Name = "Gato e ratos",
     Gamemode = "Murder",
     Description = "Nenhum inocente pega armas, mas o assassino pega uma faca e uma arma, mas ele só tem 2 minutos para matar todo mundo antes dos inocentes vencerem!",
+    CustomRoundEnd = true,
     ServerStartWait = 10,
     PlayerCanPickupWeapon = function(Ply) return Ply:IsMurderer() end,
     PlayersStart = function(Ply)
@@ -257,6 +273,7 @@ PowerRounds.AddRound({
     Name = "Batata quente",
     Gamemode = "Murder",
     Description = "Quando o assassino esfaqueia alguém, ele se torna o novo assassino. A cada 30 segundos o assassino atual morre e uma nova pessoa se torna assassina",
+    CustomRoundEnd = true,
     ServerStartWait = 10,
     PlayerCanPickupWeapon = function(Ply, Wep) return Ply:IsMurderer() and Wep:GetClass() == Ply:GetKnife() end,
     PlayersStart = function(Ply)
@@ -367,6 +384,7 @@ PowerRounds.AddRound({
     Name = "Infecção zumbi",
     Gamemode = "Murder",
     Description = "Quando o assassino esfaqueia alguem, este se torna um assassino também. Todos os inocentes tem armas",
+    CustomRoundEnd = true,
     PlayersStart = function(Ply)
         if not Ply:IsMurderer() then
             Ply:Give("weapon_mu_magnum")
@@ -417,6 +435,73 @@ PowerRounds.AddRound({
 
         return not murderKillingMurder
     end
+})
+
+PowerRounds.AddRound({
+    Name = "Recompensa pela cabeça",
+    Gamemode = "Murder",
+    Description = "Você só pode matar a pessoa destinada ou quem está tentando te matar. O ultimo em pé vence.",
+    CustomRoundEnd = true,
+    PlayerCanPickupWeapon = function() return true end,
+    PlayerDeath = function(Ply, Attacker)
+        if IsValid(Attacker) and Attacker:IsPlayer() then
+            PowerRounds.CurrentPR.SetNewBounty(Attacker)
+        end
+    end,
+    PlayersStart = function(Ply)
+        Ply:SetMurderer(false)
+        Ply:CalculateSpeed()
+
+        if Ply:HasWeapon(Ply:GetKnife()) then
+            Ply:StripWeapon(Ply:GetKnife())
+        end
+
+        Ply:Give("weapon_mu_magnum")
+        PowerRounds.CurrentPR.SetNewBounty(Ply)
+    end,
+    SetNewBounty = function(Ply)
+        local bounty = table.Random(PowerRounds.Players(2, Ply))
+        Ply:SetNWEntity("Bounty", bounty)
+        local ct = ChatText()
+
+        ct:AddPart({
+            text = "Você deve matar o "
+        })
+
+        ct:AddPart({
+            text = bounty:GetBystanderName(),
+            color = bounty:GetPlayerColor():ToColor()
+        })
+
+        ct:Send(Ply)
+    end,
+    PlayersEnd = function(Ply)
+        Ply:SetNWEntity("Bounty", nil)
+    end,
+    PlayerUpdate = function(Ply)
+        local alivePlayers = PowerRounds.Players(2, Ply)
+
+        if #alivePlayers < 2 then
+            if IsValid(alivePlayers[1]) then
+                local points = 250
+                PowerRounds.Chat("All", "<hsv>" .. alivePlayers[1]:Name() .. " venceu a rodada e levou " .. points .. " " .. PS.Config.PointsName .. "!</hsv>")
+                alivePlayers[1]:PS_GivePoints(points)
+                alivePlayers[1]:PS_Notify("Você ganhou ", points, " ", PS.Config.PointsName, " por vencer o power round!")
+            end
+
+            PowerRounds.EndRound(PR_WIN_GOOD, alivePlayers[1])
+        end
+    end,
+    HUDPaint = function(h, w)
+        local entity = LocalPlayer():GetNWEntity("Bounty")
+
+        if IsValid(entity) then
+            local text = "Você deve matar:"
+            THEME:DrawShadowText(text, "PowerRoundsNextFont", PowerRounds.NextPos.W + 1, PowerRounds.NextPos.H + 34 + 1, color_white, PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
+            THEME:DrawShadowText(entity:GetBystanderName(), "PowerRoundsNextFont", 210, PowerRounds.NextPos.H + 34 + 1, entity:GetPlayerColor():ToColor(), PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
+        end
+    end,
+    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker) return Attacker:GetNWEntity("Bounty") == Ply or Ply:GetNWEntity("Bounty") == Attacker end
 })
 
 PowerRounds.DoneRounds = true -- Don't touch this!
