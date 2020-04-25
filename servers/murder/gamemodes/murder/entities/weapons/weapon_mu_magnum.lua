@@ -76,7 +76,9 @@ function SWEP:PrimaryAttack()
     local stats = {}
     stats.damage = self.Primary.Damage or 1
     stats.cone = self.Primary.Cone or 0.1
+    self.Owner:LagCompensation(true)
     self:DoPrimaryAttackEffect(stats)
+    self.Owner:LagCompensation(false)
 end
 
 function SWEP:DoPrimaryAttackEffect(stats)
@@ -92,9 +94,7 @@ function SWEP:DoPrimaryAttackEffect(stats)
 end
 
 function SWEP:Reload()
-    if self:IsIdle() and self:GetWeaponState() == "normal" and self:GetMaxClip1() > 0
-        and self:Clip1() < self:GetMaxClip1() and self.Primary.InfiniteAmmo then
-
+    if self:IsIdle() and self:GetWeaponState() == "normal" and self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self.Primary.InfiniteAmmo then
         local vm = self.Owner:GetViewModel()
         vm:SendViewModelMatchingSequence(vm:LookupSequence(self.ReloadSequence))
 
