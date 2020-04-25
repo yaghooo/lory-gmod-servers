@@ -7,7 +7,7 @@ function VOTEMAP:NominateMap(ply, map)
         ply.LastNomination = curtime
 
         if table.HasValue(self:GetAvailableMaps(), map) then
-            self.NominatedMaps[ply:EntIndex()] = map
+            self.NominatedMaps[ply:SteamID()] = map
             self:WriteToEveryone("<c=255,68,80>" .. ply:Nick() .. "</c> nomeou o mapa <c=255,68,80>" .. map .. "</c>.")
         end
     end

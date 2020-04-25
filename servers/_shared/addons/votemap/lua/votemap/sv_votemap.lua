@@ -86,7 +86,7 @@ hook.Add("PlayerSay", "VotemapCheckCommands", function(ply, text)
         VOTEMAP.LastRoundCheck = curtime
         VOTEMAP:WriteToEveryone("Faltam <c=255,68,80>" .. (VOTEMAP.CustomMaxRounds or VOTEMAP.MaxRounds:GetInt()) - VOTEMAP.RoundsPlayed .. "</c> rounds para a troca de mapa.")
     elseif text == "!rtv" and not VOTEMAP.Started then
-        local idx = ply:EntIndex()
+        local idx = ply:SteamID()
 
         if not VOTEMAP.RtvVotes[idx] then
             VOTEMAP.RtvVotes[idx] = true
@@ -105,7 +105,7 @@ end)
 net.Receive("MAPVOTE_MapVote", function(len, ply)
     if VOTEMAP.Started and not VOTEMAP.Finished then
         local chosen = net.ReadInt(16)
-        local idx = ply:EntIndex()
+        local idx = ply:SteamID()
         VOTEMAP.Votes[idx] = chosen
     end
 end)
