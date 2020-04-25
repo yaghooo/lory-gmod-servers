@@ -501,7 +501,8 @@ PowerRounds.AddRound({
             THEME:DrawShadowText(entity:GetBystanderName(), "PowerRoundsNextFont", 210, PowerRounds.NextPos.H + 34 + 1, entity:GetPlayerColor():ToColor(), PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
         end
     end,
-    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker) return Attacker:GetNWEntity("Bounty") == Ply or Ply:GetNWEntity("Bounty") == Attacker end
+    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker) return Attacker:GetNWEntity("Bounty") == Ply or Ply:GetNWEntity("Bounty") == Attacker end,
+    AllowRDM = true
 })
 
 PowerRounds.DoneRounds = true -- Don't touch this!
