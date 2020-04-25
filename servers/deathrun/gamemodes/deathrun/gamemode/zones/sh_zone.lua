@@ -41,7 +41,7 @@ end
 
 -- check if vector is within cuboid
 function VectorInCuboid(pos, min, max)
-    local min, max = VectorMinMax(min, max) -- get the min and max of the two corners
+    min, max = VectorMinMax(min, max) -- get the min and max of the two corners
 
     if (pos.x > min.x and pos.x < max.x) and (pos.y > min.y and pos.y < max.y) and (pos.z > min.z and pos.z < max.z) then
         return true
@@ -59,8 +59,7 @@ function PlayerInCuboid(ply, min, max)
 end
 
 function CuboidOverlap(min1, max1, min2, max2)
-    local min1, max1 = VectorMinMax(min1, max1)
-    local min2, max2 = VectorMinMax(min2, max2)
+    min1, max1 = VectorMinMax(min1, max1)
 
     if (((min1.x <= min2.x and min2.x <= max1.x) or (min2.x <= min1.x and min1.x <= max2.x)) and ((min1.y <= min2.y and min2.y <= max1.y) or (min2.y <= min1.y and min1.y <= max2.y)) and ((min1.z <= min2.z and min2.z <= max1.z) or (min2.z <= min1.z and min1.z <= max2.z))) then
         return true

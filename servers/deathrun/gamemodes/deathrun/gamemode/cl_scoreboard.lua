@@ -1,10 +1,5 @@
-local columns = {"Name", "blank", "Title", "Rank", "Ping"}
-local columnFunctions = {function(ply) return ply:Nick() end, function() return "" end, function(ply) return "" end, function(ply) return string.upper(ply:GetUserGroup()) end, function(ply) return ply:Ping() end} -- empty space to even the spacings out
-
--- remove the scoreboard on autorefresh
-if IsValid(DR.ScoreboardPanel) then
-    DR.ScoreboardPanel:Remove()
-end
+local columns = {"Name", "blank", "blank", "Rank", "Ping"}
+local columnFunctions = {function(ply) return ply:Nick() end, nil, nil, function(ply) return string.upper(ply:GetUserGroup()) end, function(ply) return ply:Ping() end} -- empty space to even the spacings out
 
 function DR:CreateScoreboard()
     local scoreboard = DR.ScoreboardPanel
@@ -36,7 +31,7 @@ function DR:CreateScoreboard()
     scoreboard = DR.ScoreboardPanel
 
     function scoreboard:Paint(w, h)
-        surface.SetDrawColor(DR.Colors.Clouds)
+        surface.SetDrawColor(color_white)
     end
 
     local scr = vgui.Create("DScrollPanel", scoreboard)
@@ -61,23 +56,25 @@ function DR:CreateScoreboard()
         surface.SetDrawColor(0, 0, 0, 100)
         surface.DrawRect(0, h - 3, w, 3)
         -- make the hostname scroll left and right
-        surface.SetFont("deathrun_derma_Large")
-        local cycle = 12
-        self.counter = self.counter + FrameTime() / cycle
-        local fw, _ = surface.GetTextSize(GetHostName())
+        surface.SetFont(THEME.Font.Coolvetica30)
+
+        local hostname = GetHostName()
+        local fw, _ = surface.GetTextSize(hostname)
         fw = fw + 64 -- 64 pixel gap
 
+        self.counter = self.counter + FrameTime() / 12
         if self.counter > 1 then
             self.counter = 0
         end
 
         if fw > self:GetWide() then
-            deathrunShadowTextSimple(GetHostName(), "deathrun_derma_Large", 4 + fw - self.counter * fw, h / 2 - 2, DR.Colors.Text.Clouds, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1)
-            deathrunShadowTextSimple(GetHostName(), "deathrun_derma_Large", 4 - self.counter * fw, h / 2 - 2, DR.Colors.Text.Clouds, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1)
+            THEME:DrawShadowText(hostname, THEME.Font.Coolvetica30, 4 + fw - self.counter * fw, h / 2 - 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            THEME:DrawShadowText(hostname, THEME.Font.Coolvetica30, 4 - self.counter * fw, h / 2 - 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         else
-            deathrunShadowTextSimple(GetHostName(), "deathrun_derma_Large", w / 2, h / 2 - 2, DR.Colors.Text.Clouds, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1)
+            THEME:DrawShadowText(hostname, THEME.Font.Coolvetica30, w / 2, h / 2 - 2, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
     end
+
     dlist:Add(header)
     dlist:Add(DR:NewScoreboardSpacer({tostring(#team.GetPlayers(TEAM_DEATH)) .. " players on Death Team"}, dlist:GetWide(), 32, team.GetColor(TEAM_DEATH)))
 
@@ -106,8 +103,6 @@ function DR:CreateScoreboard()
         dlist:Add(DR:NewScoreboardPlayer(ply, dlist:GetWide(), 28))
     end
 
-    local options = DR:NewScoreboardSpacer({""}, dlist:GetWide(), 24, color_white)
-    dlist:Add(options)
     dlist:SizeToChildren()
     DR.ScoreboardPanel = scoreboard
     DR.ScoreboardIsOpen = true
@@ -120,15 +115,13 @@ function DR:NewScoreboardSpacer(tbl_cols, w, h, customColor)
     panel.tbl_cols = tbl_cols
     panel.customColor = customColor
 
-    function panel:Paint(w, h)
+    function panel:Paint(w2, h2)
         surface.SetDrawColor(THEME.Color.Secondary)
-        surface.DrawRect(0, 0, w, h)
+        surface.DrawRect(0, 0, w2, h2)
         w = w - 8
     end
 
-    local columns = tbl_cols
-
-    for i = 1, #columns do
+    for i = 1, #tbl_cols do
         local k = i - 1
         local align = 0.5
 
@@ -136,16 +129,16 @@ function DR:NewScoreboardSpacer(tbl_cols, w, h, customColor)
             align = 0
         end
 
-        if i >= #columns then
+        if i >= #tbl_cols then
             align = 1
         end
 
         local label = vgui.Create("DLabel", panel)
-        label:SetText(columns[i])
+        label:SetText(tbl_cols[i])
         label:SetTextColor(customColor)
-        label:SetFont("deathrun_derma_Small")
+        label:SetFont(THEME.Font.Coolvetica20)
         label:SizeToContents()
-        label:SetPos(#columns > 1 and 4 + (k * ((panel:GetWide() - 8) / (#columns - 1)) - label:GetWide() * align) or (panel:GetWide() - 8) / 2 - label:GetWide() / 2, 0)
+        label:SetPos(#tbl_cols > 1 and 4 + (k * ((panel:GetWide() - 8) / (#tbl_cols - 1)) - label:GetWide() * align) or (panel:GetWide() - 8) / 2 - label:GetWide() / 2, 0)
         label:CenterVertical()
     end
 
@@ -162,13 +155,13 @@ function DR:NewScoreboardPlayer(ply, w, h)
     panel.bgcol = tcol
     panel.ply = ply
 
-    function panel:Paint(w, h)
+    function panel:Paint(w2, h2)
         surface.SetDrawColor(self.bgcol)
-        surface.DrawRect(0, 0, w, h)
+        surface.DrawRect(0, 0, w2, h2)
 
         if IsValid(self.ply) and not self.ply:Alive() then
             surface.SetDrawColor(Color(255, 255, 255, 70))
-            surface.DrawRect(0, 0, w, h)
+            surface.DrawRect(0, 0, w2, h2)
         end
     end
 
@@ -178,19 +171,19 @@ function DR:NewScoreboardPlayer(ply, w, h)
     av:SetPlayer(ply)
     av.ply = ply
 
-    function av:PaintOver(w, h)
+    function av:PaintOver(w2, h2)
         if IsValid(self.ply) and not self.ply:Alive() then
             surface.SetDrawColor(Color(255, 255, 255, 100))
-            surface.DrawRect(0, 0, w, h)
-            draw.SimpleText("✖", "deathrun_derma_Medium", w / 2, h / 2 - 1, DR.Colors.Alizarin, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            surface.DrawRect(0, 0, w2, h2)
+            draw.SimpleText("✖", THEME.Font.Coolvetica30, w2 / 2, h2 / 2 - 1, THEME.Color.Primary, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
 
         if self.ply:IsValid() and table.HasValue(LocalPlayer().mutelist or {}, self.ply:SteamID()) then
             surface.SetMaterial(muteicon)
             surface.SetDrawColor(Color(255, 255, 255, 100))
-            surface.DrawRect(0, 0, w, h)
+            surface.DrawRect(0, 0, w2, h2)
             surface.SetDrawColor(Color(255, 255, 255, 255))
-            surface.DrawTexturedRect(h / 2 - 8, w / 2 - 8, 16, 16)
+            surface.DrawTexturedRect(h2 / 2 - 8, w2 / 2 - 8, 16, 16)
         end
     end
 
@@ -219,7 +212,7 @@ function DR:NewScoreboardPlayer(ply, w, h)
 
     icon.Mat = path and Material(path) or false
 
-    function icon:Paint(w, h)
+    function icon:Paint(w2, h2)
         if self.Mat ~= false then
             surface.SetDrawColor(255, 255, 255)
             surface.SetMaterial(self.Mat)
@@ -227,10 +220,8 @@ function DR:NewScoreboardPlayer(ply, w, h)
         end
     end
 
-    function data:Paint(w, h)
+    function data:Paint(w2, h2)
     end
-
-    local plyscorecol = hook.Call("GetScoreboardNameColor", nil, ply) or Color(255, 255, 255)
 
     for i = 1, #columns do
         local k = i - 1
@@ -244,14 +235,16 @@ function DR:NewScoreboardPlayer(ply, w, h)
             align = 1
         end
 
-        local label = vgui.Create("DLabel", data)
-        label:SetText(columnFunctions[i](ply))
-        label:SetTextColor(plyscorecol)
-        label:SetFont("deathrun_derma_Small")
-        label:SetExpensiveShadow(1)
-        label:SizeToContents()
-        label:SetPos(k * ((data:GetWide() - 8) / (#columns - 1)) - label:GetWide() * align, 0)
-        label:CenterVertical()
+        if columns[i] ~= "blank" then
+            local label = vgui.Create("DLabel", data)
+            label:SetText(columnFunctions[i](ply))
+            label:SetFont(THEME.Font.Coolvetica20)
+            label:SetColor(color_white)
+            label:SetExpensiveShadow(1)
+            label:SizeToContents()
+            label:SetPos(k * ((data:GetWide() - 8) / (#columns - 1)) - label:GetWide() * align, 0)
+            label:CenterVertical()
+        end
     end
 
     local but = vgui.Create("DButton", panel)
@@ -305,127 +298,6 @@ function DR:NewScoreboardPlayer(ply, w, h)
                 net.Start("DeathrunForceSpectator")
                 net.WriteString(self.ply:SteamID())
                 net.SendToServer()
-            end
-        end
-
-        -- local punop = menu:AddOption( "Force Death for 1 round" )
-        -- punop.ply = menu.ply
-        -- punop:SetIcon("icon16/controller_delete.png")
-        -- function punop:DoClick()
-        -- 	if not IsValid( self.ply ) then return end
-        -- 	RunConsoleCommand("deathrun_punish",)
-        -- end
-        menu:AddSpacer()
-
-        -- ulx support
-        if ulx then
-            if ULib.ucl.query(LocalPlayer(), "ulx gag", true) then
-                local option = menu:AddOption("Gag player voice") -- gag
-                option.ply = menu.ply
-                option:SetIcon("icon16/sound.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx gag " .. [["]] .. self.ply:Nick() .. [["]])
-                end
-
-                local option = menu:AddOption("Ungag player voice") -- ugag
-                option.ply = menu.ply
-                option:SetIcon("icon16/sound.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx ungag " .. [["]] .. self.ply:Nick() .. [["]])
-                end
-            end
-
-            if ULib.ucl.query(LocalPlayer(), "ulx mute", true) then
-                local option = menu:AddOption("Mute player chat") -- gag
-                option.ply = menu.ply
-                option:SetIcon("icon16/style_delete.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx mute " .. [["]] .. self.ply:Nick() .. [["]])
-                end
-
-                local option = menu:AddOption("Unmute player chat") -- gag
-                option.ply = menu.ply
-                option:SetIcon("icon16/style_delete.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx unmute " .. [["]] .. self.ply:Nick() .. [["]])
-                end
-            end
-
-            if ULib.ucl.query(LocalPlayer(), "ulx slay", true) then
-                local option = menu:AddOption("Slay player") -- gag
-                option.ply = menu.ply
-                option:SetIcon("icon16/newspaper.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx slay " .. [["]] .. self.ply:Nick() .. [["]])
-                end
-            end
-
-            if ULib.ucl.query(LocalPlayer(), "ulx kick", true) then
-                local option = menu:AddOption("Kick from server") -- kick
-                option.ply = menu.ply
-                option:SetIcon("icon16/sport_football.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx kick " .. [["]] .. self.ply:Nick() .. [["]] .. " Kicked by server staff.")
-                end
-            end
-
-            if ULib.ucl.query(LocalPlayer(), "ulx ban", true) then
-                local option = menu:AddOption("Ban for 30 minutes") -- 30m ban
-                option.ply = menu.ply
-                option:SetIcon("icon16/clock.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx banid " .. self.ply:SteamID() .. " 30 Banned by server staff for half an hour.")
-                end
-
-                local option = menu:AddOption("Ban for 2 hours") -- 2hr ban
-                option.ply = menu.ply
-                option:SetIcon("icon16/clock.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx banid " .. self.ply:SteamID() .. " 120 Banned by server staff for 2 hours.")
-                end
-
-                local option = menu:AddOption("Ban for 24 hours") -- 1d ban
-                option.ply = menu.ply
-                option:SetIcon("icon16/clock.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx banid " .. self.ply:SteamID() .. " 1440 Banned by server staff for 1 day.")
-                end
-
-                local option = menu:AddOption("Ban for 1 week") -- 7d ban
-                option.ply = menu.ply
-                option:SetIcon("icon16/clock.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx banid " .. self.ply:SteamID() .. " 10080 Banned by server staff for 1 week.")
-                end
-
-                local option = menu:AddOption("Ban permanently") -- 7d ban
-                option.ply = menu.ply
-                option:SetIcon("icon16/clock_red.png")
-
-                function option:DoClick()
-                    if not IsValid(self.ply) then return end
-                    LocalPlayer():ConCommand("ulx banid " .. self.ply:SteamID() .. " 0 Banned by server staff forever.")
-                end
             end
         end
 

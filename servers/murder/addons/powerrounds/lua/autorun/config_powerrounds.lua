@@ -93,7 +93,6 @@ end
 		PlayerCanPickupWeapon = function(Ply, Ent) end,             --Function that will run when a person gets a gun {Default: empty function} [Values: Ply = player, Ent = weapon] (Return: true = will let picking up, false = will not)
 		PlayerShouldTakeDamage = function(Ply, Ent) end,            --Function that will run when a person gets hurt {Default: empty function} [Values: Ply = player, Ent = player that hurt] (Return: true = will take damage, false = will not)
 		ScalePlayerDamage = function(Ply, HitGroup, DMGInfo) end,   --Function that will run when a person gets hurt {Default: empty function} [Values: Ply = player, HitGroup = where the person was hit, DMGInfo = damage info] (Return: Edited DMGInfo)
-		CustomRoundEnd = false,                                     --Will the round end in a custom way {Default: false} !!!If you set this to true, remember to have code that will end the round!!!
 		RunCondition = function() return true end,                  --Function that will run when this PR is randomly chosen for the next round {Default: Always allow} (Return: true = Allows the round to be chosen, false = Disallows)
 
 		HUDPaint = function() end,                                  --{Client only, of course :D }Function that can be used for drawing stuff on screen {Default: empty function} (Runs in the HUDPaint hook while the round is going)
@@ -188,7 +187,6 @@ PowerRounds.AddRound({
     Name = "Gratis para todos",
     Gamemode = "Murder",
     Description = "Você pega uma arma e uma faca, mata todos que você vê! Último em pé vence!",
-    CustomRoundEnd = true,
     PlayerDeath = function() return true end,
     PlayerCanPickupWeapon = function() return true end,
     PlayerUpdate = function(Ply)
@@ -260,7 +258,6 @@ PowerRounds.AddRound({
     Gamemode = "Murder",
     Description = "Quando o assassino esfaqueia alguém, ele se torna o novo assassino. A cada 30 segundos o assassino atual morre e uma nova pessoa se torna assassina",
     ServerStartWait = 10,
-    CustomRoundEnd = true,
     PlayerCanPickupWeapon = function(Ply, Wep) return Ply:IsMurderer() and Wep:GetClass() == Ply:GetKnife() end,
     PlayersStart = function(Ply)
         if Ply:HasWeapon("weapon_mu_magnum") then

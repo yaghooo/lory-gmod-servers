@@ -144,15 +144,15 @@ if CLIENT then
                 end
 
                 local x, y = v.pos:ToScreen().x, v.pos:ToScreen().y
-                local claimtext = "Unclaimed"
+                local claimtext = "Sem dono"
 
                 for _, ply in ipairs(team.GetPlayers(TEAM_DEATH)) do
                     if ply:SteamID() == v.claimedPlayer then
-                        claimtext = "Claimed by " .. ply:Nick()
+                        claimtext = "Dono: " .. ply:Nick()
                     end
                 end
 
-                draw.SimpleText(claimtext, "deathrun_derma_Tiny", x, y, Color(v.claimed and 255 or 100, (not v.claimed) and 255 or 100, 100, alpha), TEXT_ALIGN_CENTER)
+                draw.SimpleText(claimtext, THEME.Font.Coolvetica30, x, y, Color(v.claimed and 255 or 100, (not v.claimed) and 255 or 100, 100, alpha), TEXT_ALIGN_CENTER)
             end
         end
     end)
