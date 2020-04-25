@@ -54,7 +54,8 @@ function VOTEMAP:StartMapVote()
 
         local votes = {}
         for k, v in pairs(VOTEMAP.Votes) do
-            votes[v] = (votes[v] or 0) + 1
+            local map = mappool[v]
+            votes[map] = (votes[map] or 0) + 1
         end
 
         local winner = table.GetWinningKey(votes)
@@ -75,7 +76,7 @@ hook.Add("OnEndRound", "CheckStartMapVote", function()
     VOTEMAP.RoundsPlayed = VOTEMAP.RoundsPlayed + 1
     local maxRounds = VOTEMAP.CustomMaxRounds or VOTEMAP.MaxRounds:GetInt()
 
-    if VOTEMAP.RoundsPlayed >= maxRounds then
+    if VOTEMAP.RoundsPlayed >= maxRounds and not VOTEMAP.Started then
         VOTEMAP:StartMapVote()
     end
 end)
