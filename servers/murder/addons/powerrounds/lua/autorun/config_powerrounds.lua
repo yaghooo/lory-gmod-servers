@@ -490,6 +490,13 @@ PowerRounds.AddRound({
             end
 
             PowerRounds.EndRound(PR_WIN_GOOD, alivePlayers[1])
+        else
+            for k, v in ipairs(alivePlayers) do
+                local bounty = v:GetNWEntity("Bounty")
+                if not IsValid(bounty) or not bounty:Alive() then
+                    PowerRounds.CurrentPR.SetNewBounty(v)
+                end
+            end
         end
     end,
     HUDPaint = function(h, w)
