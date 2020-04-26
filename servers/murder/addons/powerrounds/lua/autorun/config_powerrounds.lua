@@ -501,7 +501,7 @@ PowerRounds.AddRound({
         end
     end,
     HUDPaint = function(h, w)
-        if LocalPlayer():Alive() then
+        if not LocalPlayer():Alive() then
             local entity = LocalPlayer():GetNWEntity("Bounty")
 
             if IsValid(entity) then
