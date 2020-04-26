@@ -493,6 +493,7 @@ PowerRounds.AddRound({
         else
             for k, v in ipairs(alivePlayers) do
                 local bounty = v:GetNWEntity("Bounty")
+
                 if not IsValid(bounty) or not bounty:Alive() then
                     PowerRounds.CurrentPR.SetNewBounty(v)
                 end
@@ -500,12 +501,14 @@ PowerRounds.AddRound({
         end
     end,
     HUDPaint = function(h, w)
-        local entity = LocalPlayer():GetNWEntity("Bounty")
+        if LocalPlayer():Alive() then
+            local entity = LocalPlayer():GetNWEntity("Bounty")
 
-        if IsValid(entity) then
-            local text = "Você deve matar:"
-            THEME:DrawShadowText(text, "PowerRoundsNextFont", PowerRounds.NextPos.W + 1, PowerRounds.NextPos.H + 34 + 1, color_white, PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
-            THEME:DrawShadowText(entity:GetBystanderName(), "PowerRoundsNextFont", 210, PowerRounds.NextPos.H + 34 + 1, entity:GetPlayerColor():ToColor(), PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
+            if IsValid(entity) then
+                local text = "Você deve matar:"
+                THEME:DrawShadowText(text, "PowerRoundsNextFont", PowerRounds.NextPos.W + 1, PowerRounds.NextPos.H + 34 + 1, color_white, PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
+                THEME:DrawShadowText(entity:GetBystanderName(), "PowerRoundsNextFont", 210, PowerRounds.NextPos.H + 34 + 1, entity:GetPlayerColor():ToColor(), PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
+            end
         end
     end,
     SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker) return Attacker:GetNWEntity("Bounty") == Ply or Ply:GetNWEntity("Bounty") == Attacker end,
