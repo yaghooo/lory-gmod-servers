@@ -6,13 +6,21 @@ else
         local sender = net.ReadEntity()
         local flashtime = 0
 
+        local inverseLerp = function(pos, p1, p2)
+            local range = 0
+            range = p2 - p1
+            if range == 0 then return 1 end
+
+            return (pos - p1) / range
+        end
+
         hook.Add("HUDPaint", "FlashbangEffect", function()
             local client = LocalPlayer()
             local ply = client:Alive() and client or client:GetObserverTarget()
 
             if IsValid(ply) and ply ~= sender then
                 flashtime = math.Clamp((flashtime or 0) - FrameTime(), 0, 10)
-                local alpha = InverseLerp(flashtime, 0, 1)
+                local alpha = inverseLerp(flashtime, 0, 1)
                 alpha = math.Clamp(alpha, 0, 1)
 
                 if alpha > 0 then
@@ -125,7 +133,7 @@ function SWEP:PrimaryAttack()
         if IsValid(self) and SERVER then
             sound.Play("weapons/flashbang/flashbang_explode2.wav", self:GetPos(), 120, 100, 1)
             net.Start("StartFlashbangEffect")
-                net.WriteEntity(self:GetOwner())
+            net.WriteEntity(self:GetOwner())
             net.SendOmit(self:GetOwner())
             self:Remove()
         end
