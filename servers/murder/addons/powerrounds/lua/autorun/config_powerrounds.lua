@@ -511,7 +511,14 @@ PowerRounds.AddRound({
             end
         end
     end,
-    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker) return Attacker:GetNWEntity("Bounty") == Ply or Ply:GetNWEntity("Bounty") == Attacker end,
+    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker)
+        if IsValid(Attacker) and Attacker:IsPlayer() then
+            local attackerBounty = Attacker:GetNWEntity("Bounty")
+            local playerBounty = Ply:GetNWEntity("Bounty")
+            return attackerBounty == Ply or playerBounty == Attacker
+        end
+        return true
+    end,
     AllowRDM = true
 })
 
