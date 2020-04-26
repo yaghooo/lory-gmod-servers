@@ -38,7 +38,10 @@ function VOTEMAP:StartMapVote()
     while #mappool < mapQuantity do
         lastNominateKey, nomination = next(nominates, lastNominateKey)
         if nomination ~= nil then
-            table.insert(mappool, nomination)
+            if not table.HasValue(mappool, nomination) then
+                table.insert(mappool, nomination)
+                table.RemoveByValue(mappool, nomination)
+            end
         else
             local _, selectedMapKey = table.Random(maps)
             table.insert(mappool, table.remove(maps, selectedMapKey))
