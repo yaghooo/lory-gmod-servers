@@ -4,15 +4,6 @@ if SERVER then
 else
     net.Receive("StartFlashbangEffect", function()
         local sender = net.ReadEntity()
-        local flashtime = 0
-
-        local inverseLerp = function(pos, p1, p2)
-            local range = 0
-            range = p2 - p1
-            if range == 0 then return 1 end
-
-            return (pos - p1) / range
-        end
 
         hook.Add("HUDPaint", "FlashbangEffect", function()
             local client = LocalPlayer()
