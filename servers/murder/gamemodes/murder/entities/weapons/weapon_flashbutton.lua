@@ -19,14 +19,8 @@ else
             local ply = client:Alive() and client or client:GetObserverTarget()
 
             if IsValid(ply) and ply ~= sender then
-                flashtime = math.Clamp((flashtime or 0) - FrameTime(), 0, 10)
-                local alpha = inverseLerp(flashtime, 0, 1)
-                alpha = math.Clamp(alpha, 0, 1)
-
-                if alpha > 0 then
-                    surface.SetDrawColor(ColorAlpha(color_white, alpha * 255))
-                    surface.DrawRect(0, 0, ScrW(), ScrH())
-                end
+                surface.SetDrawColor(color_white)
+                surface.DrawRect(0, 0, ScrW(), ScrH())
             end
         end)
 
