@@ -52,7 +52,6 @@ function VOTEMAP:StartMapVote()
     net.WriteTable(mappool)
     net.WriteInt(self.VoteTime, 16)
     net.Broadcast()
-    self.MapPool = mappool
 
     timer.Simple(self.VoteTime + 1, function()
         VOTEMAP.Finished = true
@@ -64,6 +63,10 @@ function VOTEMAP:StartMapVote()
         end
 
         local winner = table.GetWinningKey(votes)
+        if not winner then
+            winner = table.Random(mappool)
+        end
+
         VOTEMAP:WriteToEveryone("O mapa vencedor foi <c=255,68,80>" .. winner .. "</c>. Trocando em 5 segundos...")
 
         timer.Simple(5, function()
