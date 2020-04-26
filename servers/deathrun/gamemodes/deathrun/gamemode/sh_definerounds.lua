@@ -239,7 +239,7 @@ if SERVER then
                     table.insert(mvps, v:Nick() .. " sobreviveu o round!")
                 end
 
-                if v.KillsThisRound > mostkills then
+                if v.KillsThisRound and v.KillsThisRound > mostkills then
                     mostkills = v.KillsThisRound
                     mostkillsmvp = v
                 end

@@ -186,7 +186,7 @@ function GM:EntityTakeDamage(target, dmginfo)
     local ply = target
     local attacker = dmginfo:GetAttacker()
 
-    if target:IsPlayer() and ROUND:GetCurrent() == ROUND_WAITING or ROUND:GetCurrent() == ROUND_PREP then
+    if target:IsPlayer() and ROUND:GetCurrent() == ROUND_WAITING or ROUND:GetCurrent() == ROUND_PREP and target.DeathrunChatPrint then
         target:DeathrunChatPrint("Você tomou " .. tostring(dmginfo:GetDamage()) .. " de dano.")
         dmginfo:SetDamage(0)
     end

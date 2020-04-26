@@ -17,7 +17,7 @@ function DR:RewardPlayer(ply, amt, reason)
 end
 
 hook.Add("DeathrunPlayerFinishMap", "PointshopRewards", function(ply, zname, z, place)
-    DR:RewardPlayer(ply, PointshopFinishReward:GetInt(), "terminar o mapa")
+    DR:RewardPlayer(ply, PS.PointshopFinishReward:GetInt(), "terminar o mapa")
 end)
 
 hook.Add("PlayerDeath", "PointshopRewards", function(ply, inflictor, attacker)
