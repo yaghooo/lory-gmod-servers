@@ -259,6 +259,7 @@ hook.Add(
             data.reason = "Conexão caiu"
         elseif string.find(data.reason, "Disconnect by user") then
             data.reason = "Desconectou-se"
+            return
         elseif string.find(data.reason, "Steam auth ticket has been canceled") then
             data.reason = "Caiu da Steam"
         elseif string.find(data.reason, "Karma too low") then
@@ -269,6 +270,7 @@ hook.Add(
             data.reason = "Kickado"
         else
             data.reason = ""
+            return
         end
         if data.reason ~= "" then
             data.reason = "(" .. data.reason .. ")"
