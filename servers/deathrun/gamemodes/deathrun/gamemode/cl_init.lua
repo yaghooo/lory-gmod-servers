@@ -16,7 +16,7 @@ hook.Add("CalcView", "DrawSelfView", function(ply, pos, ang, fov, nearz, farz)
     if DR.ThirdpersonOn:GetBool() == true and ply:Alive() and (ply:Team() ~= TEAM_SPECTATOR) then
         local view = {}
         local newpos = Vector(0, 0, 0)
-        local dist = 100 + ThirdpersonZ:GetFloat()
+        local dist = 100 + DR.ThirdpersonZ:GetFloat()
 
         local tr = util.TraceHull({
             start = pos,
