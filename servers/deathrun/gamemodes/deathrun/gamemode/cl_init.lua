@@ -20,7 +20,7 @@ hook.Add("CalcView", "DrawSelfView", function(ply, pos, ang, fov, nearz, farz)
 
         local tr = util.TraceHull({
             start = pos,
-            endpos = pos + ang:Forward() * -dist + Vector(0, 0, 9) + ang:Right() * ThirdpersonX:GetFloat() + ang:Up() * ThirdpersonY:GetFloat(),
+            endpos = pos + ang:Forward() * -dist + Vector(0, 0, 9) + ang:Right() * DR.ThirdpersonX:GetFloat() + ang:Up() * DR.ThirdpersonY:GetFloat(),
             mins = Vector(-5, -5, -5),
             maxs = Vector(5, 5, 5),
             filter = player.GetAll(),
@@ -30,9 +30,9 @@ hook.Add("CalcView", "DrawSelfView", function(ply, pos, ang, fov, nearz, farz)
         newpos = tr.HitPos
         view.origin = newpos
         local newang = ang
-        newang:RotateAroundAxis(ply:EyeAngles():Right(), ThirdpersonPitch:GetFloat())
-        newang:RotateAroundAxis(ply:EyeAngles():Up(), ThirdpersonYaw:GetFloat())
-        newang:RotateAroundAxis(ply:EyeAngles():Forward(), ThirdpersonRoll:GetFloat())
+        newang:RotateAroundAxis(ply:EyeAngles():Right(), DR.ThirdpersonPitch:GetFloat())
+        newang:RotateAroundAxis(ply:EyeAngles():Up(), DR.ThirdpersonYaw:GetFloat())
+        newang:RotateAroundAxis(ply:EyeAngles():Forward(), DR.ThirdpersonRoll:GetFloat())
         view.angles = newang
         view.fov = fov
         -- test for thirdperson scoped weapons
