@@ -3,8 +3,8 @@ VOTEMAP.RtvRatio = CreateConVar("votemap_rtv_ratio", 0.6, FCVAR_NONE, "Rtv ratio
 VOTEMAP.MaxMaps = CreateConVar("votemap_max_maps", 5, FCVAR_NONE, "Rtv ratio", 3, 10)
 VOTEMAP.RoundsPlayed = 0
 VOTEMAP.VoteTime = 20
+VOTEMAP.RtvVotes = 0
 VOTEMAP.Votes = {}
-VOTEMAP.RtvVotes = {}
 
 timer.Simple(1, function()
     VOTEMAP.Maps = ulx.votemaps
@@ -51,8 +51,8 @@ function VOTEMAP:StartMapVote()
 
     timer.Simple(self.VoteTime + 1, function()
         VOTEMAP.Finished = true
-
         local votes = {}
+
         for k, v in pairs(VOTEMAP.Votes) do
             local map = mappool[v]
             votes[map] = (votes[map] or 0) + 1
@@ -86,11 +86,10 @@ hook.Add("PlayerSay", "VotemapCheckCommands", function(ply, text)
         VOTEMAP.LastRoundCheck = curtime
         VOTEMAP:WriteToEveryone("Faltam <c=255,68,80>" .. (VOTEMAP.CustomMaxRounds or VOTEMAP.MaxRounds:GetInt()) - VOTEMAP.RoundsPlayed .. "</c> rounds para a troca de mapa.")
     elseif text == "!rtv" and not VOTEMAP.Started then
-        local idx = ply:SteamID()
-
-        if not VOTEMAP.RtvVotes[idx] then
-            VOTEMAP.RtvVotes[idx] = true
-            local rtvNeeded = math.max(0, math.floor(player.GetCount() * VOTEMAP.RtvRatio:GetFloat()) - #VOTEMAP.RtvVotes)
+        if not ply.DidRtv then
+            ply.DidRtv = true
+            VOTEMAP.RtvVotes = VOTEMAP.RtvVotes + 1
+            local rtvNeeded = math.max(0, math.floor(player.GetCount() * VOTEMAP.RtvRatio:GetFloat()) - VOTEMAP.RtvVotes)
             VOTEMAP:WriteToEveryone("<c=255,68,80>" .. ply:Nick() .. "</c> deu rtv, faltam <c=255,68,80>" .. rtvNeeded .. "</c> para iniciar a votação.")
 
             if rtvNeeded == 0 then
