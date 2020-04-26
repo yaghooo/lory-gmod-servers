@@ -501,22 +501,24 @@ PowerRounds.AddRound({
         end
     end,
     HUDPaint = function(h, w)
-        if LocalPlayer():Alive() then
-            local entity = LocalPlayer():GetNWEntity("Bounty")
+        local client = LocalPlayer()
+        local ply = client:Alive() and client or client:GetObserverTarget()
+        local entity = IsValid(ply) and ply:IsPlayer() and ply:GetNWEntity("Bounty")
 
-            if IsValid(entity) then
-                local text = "Você deve matar:"
-                THEME:DrawShadowText(text, "PowerRoundsNextFont", PowerRounds.NextPos.W + 1, PowerRounds.NextPos.H + 34 + 1, color_white, PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
-                THEME:DrawShadowText(entity:GetBystanderName(), "PowerRoundsNextFont", 210, PowerRounds.NextPos.H + 34 + 1, entity:GetPlayerColor():ToColor(), PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
-            end
+        if IsValid(entity) then
+            local text = "Você deve matar:"
+            THEME:DrawShadowText(text, "PowerRoundsNextFont", PowerRounds.NextPos.W + 1, PowerRounds.NextPos.H + 34 + 1, color_white, PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
+            THEME:DrawShadowText(entity:GetBystanderName(), "PowerRoundsNextFont", 210, PowerRounds.NextPos.H + 34 + 1, entity:GetPlayerColor():ToColor(), PowerRounds.NextPos.TextAllignW, PowerRounds.NextPos.TextAllignH)
         end
     end,
     SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker)
         if IsValid(Attacker) and Attacker:IsPlayer() then
             local attackerBounty = Attacker:GetNWEntity("Bounty")
             local playerBounty = Ply:GetNWEntity("Bounty")
+
             return attackerBounty == Ply or playerBounty == Attacker
         end
+
         return true
     end,
     AllowRDM = true
