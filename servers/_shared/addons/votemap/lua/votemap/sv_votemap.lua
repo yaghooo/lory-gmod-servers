@@ -34,9 +34,11 @@ function VOTEMAP:StartMapVote()
     local mapQuantity = math.min(#maps, self.MaxMaps:GetInt())
     local mappool = {}
 
+    local lastNominateKey, nomination = nil
     while #mappool < mapQuantity do
-        if #nominates ~= 0 then
-            table.insert(mappool, table.remove(nominates))
+        lastNominateKey, nomination = next(nominates, lastNominateKey)
+        if nomination ~= nil then
+            table.insert(mappool, nomination)
         else
             local _, selectedMapKey = table.Random(maps)
             table.insert(mappool, table.remove(maps, selectedMapKey))
