@@ -48,6 +48,68 @@ function SWEP:PrimaryAttack()
                 end)
 
                 timer.Simple(4, function()
+                    hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                        DrawMotionBlur(0.1, 1, 0.05)
+                    end)
+
+                    timer.Simple(0.3, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.9, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(0.5, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.8, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(0.7, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.7, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(0.9, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.6, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(1.1, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.5, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(1.3, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.4, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(1.5, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.3, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(1.7, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.2, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(1.9, function()
+                        hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
+                            DrawMotionBlur(0.1, 0.1, 0.05)
+                        end)
+                    end)
+
+                    timer.Simple(2.1, function()
+                        hook.Remove("RenderScreenspaceEffects", "DrawMotionBlur")
+                    end)
+
                     hook.Remove("HUDPaint", "FlashbangEffect")
                 end)
             end
