@@ -109,18 +109,22 @@ SWEP.Primary.ClipSize = 0
 
 function SWEP:Initialize()
     self.BaseClass.Initialize(self)
+    self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
 end
 
 function SWEP:PrimaryAttack()
     self.Owner:SetAnimation(PLAYER_ATTACK1)
+    self:SendWeaponAnim(ACT_SLAM_DETONATOR_DETONATE)
 
-    timer.Simple(1, function()
-        if IsValid(self) and SERVER then
-            sound.Play("weapons/flashbang/flashbang_explode2.wav", self:GetPos(), 120, 100, 1)
-            net.Start("StartFlashbangEffect")
-            net.WriteEntity(self:GetOwner())
-            net.SendOmit(self:GetOwner())
-            self:Remove()
-        end
-    end)
+    if SERVER then
+        timer.Simple(1, function()
+            if IsValid(self) then
+                sound.Play("weapons/flashbang/flashbang_explode2.wav", self:GetPos(), 120, 100, 1)
+                net.Start("StartFlashbangEffect")
+                net.WriteEntity(self:GetOwner())
+                net.SendOmit(self:GetOwner())
+                self:Remove()
+            end
+        end)
+    end
 end
