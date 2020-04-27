@@ -492,12 +492,14 @@ PowerRounds.AddRound({
             PowerRounds.EndRound(PR_WIN_GOOD, alivePlayers[1])
         else
             timer.Simple(0.5, function()
-                for k, v in ipairs(alivePlayers) do
-                    if IsValid(v) then
-                        local bounty = v:GetNWEntity("Bounty")
+                if PowerRounds.CurrentPR and PowerRounds.CurrentPR.SetNewBounty then
+                    for k, v in ipairs(alivePlayers) do
+                        if IsValid(v) then
+                            local bounty = v:GetNWEntity("Bounty")
 
-                        if not IsValid(bounty) or not bounty:Alive() then
-                            PowerRounds.CurrentPR.SetNewBounty(v)
+                            if not IsValid(bounty) or not bounty:Alive() then
+                                PowerRounds.CurrentPR.SetNewBounty(v)
+                            end
                         end
                     end
                 end

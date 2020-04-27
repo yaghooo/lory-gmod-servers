@@ -4,90 +4,46 @@ if SERVER then
 else
     net.Receive("StartFlashbangEffect", function()
         local sender = net.ReadEntity()
+        local client = LocalPlayer()
+        local shouldFlash = true
 
         hook.Add("HUDPaint", "FlashbangEffect", function()
-            local client = LocalPlayer()
             local ply = client:Alive() and client or client:GetObserverTarget()
 
             if IsValid(ply) and ply ~= sender then
-                surface.SetDrawColor(color_white)
-                surface.DrawRect(0, 0, ScrW(), ScrH())
+                if shouldFlash then
+                    surface.SetDrawColor(color_white)
+                    surface.DrawRect(0, 0, ScrW(), ScrH())
+                end
+
+                local M = Matrix()
+                M:Translate(Vector(ScrW() / 2, ScrH() / 2))
+                M:Rotate(Angle(0, 5 * math.sin(CurTime() * 0.5), 0))
+                M:Scale(Vector(1, 1, 1) * (0.9 + 0.2 * math.sin(CurTime() * 0.3)))
+                M:Translate(-Vector(ScrW() / 2, ScrH() / 2))
+                cam.PushModelMatrix(M)
             end
         end)
 
-        timer.Simple(4, function()
-            local addBlur = function(aalpha, dalpha, delay)
-                local client = LocalPlayer()
+        hook.Add("HUDPaint", "FlashbangCrazyEffect", function() end)
+
+        timer.Simple(3, function()
+            local start = SysTime()
+            shouldFlash = false
+
+            hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
                 local ply = client:Alive() and client or client:GetObserverTarget()
 
                 if IsValid(ply) and ply ~= sender then
-                    DrawMotionBlur(aalpha, dalpha, delay)
+                    local blur = math.Clamp(Lerp(SysTime() - start, 0, 3) / 3, 0.01, 1)
+                    DrawMotionBlur(blur, 1, 0.05)
                 end
-            end
-
-            hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                addBlur(0.1, 1, 0.05)
             end)
 
-            timer.Simple(0.3, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.9, 0.05)
-                end)
-            end)
-
-            timer.Simple(0.5, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.8, 0.05)
-                end)
-            end)
-
-            timer.Simple(0.7, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.7, 0.05)
-                end)
-            end)
-
-            timer.Simple(0.9, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.6, 0.05)
-                end)
-            end)
-
-            timer.Simple(1.1, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.5, 0.05)
-                end)
-            end)
-
-            timer.Simple(1.3, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.4, 0.05)
-                end)
-            end)
-
-            timer.Simple(1.5, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.3, 0.05)
-                end)
-            end)
-
-            timer.Simple(1.7, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.2, 0.05)
-                end)
-            end)
-
-            timer.Simple(1.9, function()
-                hook.Add("RenderScreenspaceEffects", "DrawMotionBlur", function()
-                    addBlur(0.1, 0.1, 0.05)
-                end)
-            end)
-
-            timer.Simple(2.1, function()
+            timer.Simple(3, function()
                 hook.Remove("RenderScreenspaceEffects", "DrawMotionBlur")
+                hook.Remove("HUDPaint", "FlashbangEffect")
             end)
-
-            hook.Remove("HUDPaint", "FlashbangEffect")
         end)
     end)
 end
@@ -109,15 +65,19 @@ SWEP.Primary.ClipSize = 0
 
 function SWEP:Initialize()
     self.BaseClass.Initialize(self)
+end
+
+function SWEP:Deploy()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
 end
 
 function SWEP:PrimaryAttack()
     self.Owner:SetAnimation(PLAYER_ATTACK1)
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DETONATE)
+    self:EmitSound("Weapon_SLAM.SatchelDetonate")
 
     if SERVER then
-        timer.Simple(1, function()
+        timer.Simple(0.5, function()
             if IsValid(self) then
                 sound.Play("weapons/flashbang/flashbang_explode2.wav", self:GetPos(), 120, 100, 1)
                 net.Start("StartFlashbangEffect")
