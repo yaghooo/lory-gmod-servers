@@ -110,14 +110,14 @@ ROUND:AddState(ROUND_PREP, function()
             end
         end
 
-        -- let's pick deaths at random, but ignore if they have been death the 2 previous rounds
+        -- let's pick deaths at random
         local deaths = {}
         local runners = table.Copy(player.GetAllPlaying())
 
-        local deathsNeeded = math.min(math.ceil(DR.DeathRatio:GetFloat() * #player.GetAllPlaying()), DR.DeathMax:GetInt())
+        local deathsNeeded = math.min(math.ceil(DR.DeathRatio:GetFloat() * #runners), DR.DeathMax:GetInt())
 
         while #deaths < deathsNeeded do
-            local _, rkey = table.Random(runners)
+            local rkey = math.random(#runners)
             table.insert(deaths, table.remove(runners, rkey))
         end
 
@@ -135,13 +135,6 @@ ROUND:AddState(ROUND_PREP, function()
             runner:StripAmmo()
             runner:SetTeam(TEAM_RUNNER)
             runner:Spawn()
-        end
-
-        -- make sure nobody is dead??????
-        for k, v in ipairs(player.GetAllPlaying()) do
-            if not v:Alive() then
-                v:Spawn()
-            end
         end
     end
 end, function() end, function()
