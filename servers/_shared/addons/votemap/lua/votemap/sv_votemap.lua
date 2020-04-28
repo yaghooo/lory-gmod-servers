@@ -40,11 +40,11 @@ function VOTEMAP:StartMapVote()
         if nomination ~= nil then
             if not table.HasValue(mappool, nomination) then
                 table.insert(mappool, nomination)
-                table.RemoveByValue(mappool, nomination)
+                table.RemoveByValue(maps, nomination)
             end
         else
-            local _, selectedMapKey = table.Random(maps)
-            table.insert(mappool, table.remove(maps, selectedMapKey))
+            local mapKey = maps[math.random(#maps)]
+            table.insert(mappool, table.remove(maps, mapKey))
         end
     end
 
