@@ -132,8 +132,14 @@ end
 function GM:PlayerPickupLoot(ply, ent)
     ply.LootCollected = ply.LootCollected + 1
 
-    if not ply:IsMurderer() and ply.LootCollected % 5 == 0 then
-        giveMagnum(ply)
+    if ply.LootCollected % 5 == 0 then
+        if ply:IsMurderer() then
+            local wonItem = table.Random({ "weapon_slam", "weapon_flashbutton" })
+            ply:Give(wonItem)
+            ply:SelectWeapon(wonItem)
+        else
+            giveMagnum(ply)
+        end
     end
 
     ply:EmitSound("ambient/levels/canals/windchime2.wav", 100, math.random(40, 160))
