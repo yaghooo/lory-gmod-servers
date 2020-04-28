@@ -9,6 +9,10 @@ function CATEGORY:OnEquip(ply, modifications, item)
         ply.ActiveTrails = {}
     end
 
+    if GhostMode and ply:IsGhost() then
+        return
+    end
+
     local trail = util.SpriteTrail(ply, 0, modifications.color, false, 15, 1, 4, 0.125, item.Material)
     ply.ActiveTrails[item.Name] = trail
 end
