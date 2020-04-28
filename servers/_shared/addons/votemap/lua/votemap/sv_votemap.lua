@@ -43,7 +43,7 @@ function VOTEMAP:StartMapVote()
                 table.RemoveByValue(maps, nomination)
             end
         else
-            local mapKey = maps[math.random(#maps)]
+            local mapKey = math.random(#maps)
             table.insert(mappool, table.remove(maps, mapKey))
         end
     end
