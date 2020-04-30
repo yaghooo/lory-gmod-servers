@@ -92,7 +92,7 @@ end
 concommand.Add("mu_print_players", function(admin, com, args)
     if not admin:IsAdmin() then return end
 
-    for _, ply in ipairs(player.getAll()) do
+    for _, ply in ipairs(player.GetAll()) do
         local c = ChatText()
         c:Add(ply:Nick())
         c:Add(" " .. ply:GetBystanderName(), ply:GetPlayerColor():ToColor())

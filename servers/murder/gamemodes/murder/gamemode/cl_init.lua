@@ -35,7 +35,7 @@ function GM:Think()
     if self.LastThink and self.LastThink > curTime - 0.2 then return end
     self.LastThink = curTime
 
-    for _, ply in ipairs(player.getAll()) do
+    for _, ply in ipairs(player.GetAll()) do
         if ply:Alive() and ply:GetNWBool("MurdererFog") then
             if not ply.FogEmitter then
                 ply.FogEmitter = ParticleEmitter(ply:GetPos())

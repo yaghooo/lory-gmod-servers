@@ -9,7 +9,7 @@ function GM:FlashlightThink()
     if battery > 0 then
         local decay = FrameTime() * 10 / battery
 
-        for _, ply in ipairs(player.getAll()) do
+        for _, ply in ipairs(player.GetAll()) do
             if ply:Alive() then
                 if ply:FlashlightIsOn() then
                     ply:SetFlashlightCharge(math.Clamp(ply:GetFlashlightCharge() - decay, 0, 1))

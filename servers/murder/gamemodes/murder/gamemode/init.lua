@@ -85,7 +85,7 @@ function GM:Think()
     self:LootThink()
     self:FlashlightThink()
 
-    for _, ply in ipairs(player.getAll()) do
+    for _, ply in ipairs(player.GetAll()) do
         if ply:IsCSpectating() and IsValid(ply:GetCSpectatee()) and (not ply.LastSpectatePosSet or ply.LastSpectatePosSet < CurTime()) then
             ply.LastSpectatePosSet = CurTime() + 0.25
             ply:SetPos(ply:GetCSpectatee():GetPos())

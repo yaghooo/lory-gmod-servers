@@ -1,4 +1,4 @@
-local AFKLimit = CreateConVar("antiafk_limit", 60 * 5, FCVAR_NONE, "Max time in seconds player can stay AFK before being kicked", 20)
+local AFKLimit = CreateConVar("antiafk_limit", 60 * 15, FCVAR_NONE, "Max time in seconds player can stay AFK before being kicked", 20)
 
 hook.Add("PlayerChangedTeam", "CheckAFKPlayer", function(ply)
     local identifier = "AFKCheck" .. ply:SteamID()
