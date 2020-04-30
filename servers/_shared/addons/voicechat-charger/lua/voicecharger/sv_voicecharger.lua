@@ -51,7 +51,7 @@ hook.Add("PlayerInitialSpawn", "SendVoiceMaxTime", function()
     timer.Simple(10, function()
         -- send current voice_max_time
         net.Start("voice_refresh_max_time")
-        net.WriteFloat(maxtime)
+        net.WriteFloat(VOICECHARGER.MaxTime:GetFloat())
         net.Broadcast()
     end)
 end)
