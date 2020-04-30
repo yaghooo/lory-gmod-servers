@@ -9,3 +9,6 @@ function GM:SetupTeams()
 end
 
 GM:SetupTeams()
+
+-- get rid of some default hooks
+hook.Remove("PlayerTick", "TickWidgets")

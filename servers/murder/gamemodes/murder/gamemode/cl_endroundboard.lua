@@ -93,7 +93,6 @@ function GM:DisplayEndRoundBoard(data)
     desc:SetTextColor(color_white)
     local lootList = vgui.Create("DPanelList", lootPnl)
     lootList:Dock(FILL)
-    table.sort(data.collectedLoot, function(a, b) return a.count > b.count end)
 
     for k, v in pairs(data.collectedLoot) do
         if v.playerName then
@@ -146,14 +145,6 @@ function GM:DisplayEndRoundBoard(data)
             end
 
             bname.DoClick = name.DoClick
-            local count = vgui.Create("DLabel", pnl)
-            pnl.CountPnl = count
-            count:Dock(FILL)
-            count:SetAutoStretchVertical(true)
-            count:SetText(tostring(v.count))
-            count:SetFont("MersRadialSmall")
-            count:SetTextColor(v.playerColor)
-            count.DoClick = count.DoClick
             lootList:AddItem(pnl)
         end
     end

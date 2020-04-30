@@ -69,10 +69,10 @@ function GM:InitPostEntity()
 end
 
 function GM:InitPostEntityAndMapCleanup()
-    for _, ent in pairs(ents.GetAll()) do
+    for _, ent in ipairs(ents.GetAll()) do
         local class = ent:GetClass()
 
-        if ent:IsWeapon() or class:match("^weapon_") or class:match("^item_") or class == "mu_loot" then
+        if ent:IsWeapon() or string.StartWith(class, "weapon_") or string.StartWith(class, "item_") or class == "mu_loot" then
             ent:Remove()
         end
     end
@@ -85,7 +85,7 @@ function GM:Think()
     self:LootThink()
     self:FlashlightThink()
 
-    for _, ply in pairs(player.GetAll()) do
+    for _, ply in ipairs(player.getAll()) do
         if ply:IsCSpectating() and IsValid(ply:GetCSpectatee()) and (not ply.LastSpectatePosSet or ply.LastSpectatePosSet < CurTime()) then
             ply.LastSpectatePosSet = CurTime() + 0.25
             ply:SetPos(ply:GetCSpectatee():GetPos())

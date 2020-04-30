@@ -18,15 +18,7 @@ function murderTimer.startTimer()
     murderTimer.counter = 0
 
     timer.Create("murderRoundTimer", murderTimer.maxTime, 1, function()
-        local murderer
-
-        -- Find the murderer
-        for _, user in pairs(team.GetPlayers(2)) do
-            if user:IsMurderer() then
-                murderer = user
-                break
-            end
-        end
+        local murderer = GAMEMODE:GetMurderer()
 
         local reason = murderer and 2 or 3
         -- Start real timer

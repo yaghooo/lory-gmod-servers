@@ -8,22 +8,20 @@ function CATEGORY:OnEquip(ply, modifications, item)
         ply.OldModel = ply:GetModel()
     end
 
-    timer.Simple(
-        1,
-        function()
-            ply:SetModel(item.Model)
-            ply:SetupHands()
+    timer.Simple(1, function()
+        ply:SetModel(item.Model)
+        ply:SetupHands()
 
-            if modifications.skin ~= nil then
-                ply:SetSkin(modifications.skin)
-            end
-            if modifications.group ~= nil then
-                for k, v in pairs(modifications.group) do
-                    ply:SetBodygroup(k, modifications.group[k])
-                end
+        if modifications.skin ~= nil then
+            ply:SetSkin(modifications.skin)
+        end
+
+        if modifications.group ~= nil then
+            for k, v in pairs(modifications.group) do
+                ply:SetBodygroup(k, modifications.group[k])
             end
         end
-    )
+    end)
 end
 
 function CATEGORY:OnHolster(ply)

@@ -131,11 +131,7 @@ function GM:PlayerSetModel(ply)
     local modelname = player_manager.TranslatePlayerModel(playerModel.model)
     ply.MurderModel = modelname
     ply.ModelSex = playerModel.sex
-
-    if not ply.HasPointshopModelEquiped then
-        util.PrecacheModel(modelname)
-        ply:SetModel(modelname)
-    end
+    ply:SetModel(modelname)
 end
 
 function GM:DoPlayerDeath(ply, attacker, dmginfo)

@@ -17,7 +17,6 @@ function GM:SetRound(round)
     self.RoundSettings.AdminPanelAllowed = self.AdminPanelAllowed:GetBool()
     self.RoundSettings.ShowSpectateInfo = self.ShowSpectateInfo:GetBool()
     self:NetworkRound()
-    collectgarbage()
 end
 
 function GM:NetworkRound(ply)
@@ -193,7 +192,6 @@ function GM:EndTheRound(reason, murderer)
     for _, ply in pairs(team.GetPlayers(2)) do
         net.WriteBool(true)
         net.WriteEntity(ply)
-        net.WriteUInt(ply.LootCollected, 32)
         net.WriteVector(ply:GetPlayerColor())
         net.WriteString(ply:GetBystanderName())
     end
@@ -253,10 +251,6 @@ function GM:StartNewRound()
     self:SetRound(1)
     self.RoundUnFreezePlayers = CurTime() + 10
 
-    for _, ply in pairs(players) do
-        ply:UnSpectate()
-    end
-
     game.CleanUpMap()
     self:InitPostEntityAndMapCleanup()
     self:ClearAllFootsteps()
@@ -284,6 +278,7 @@ function GM:StartNewRound()
     local noobs = {}
 
     for _, ply in pairs(players) do
+        ply:UnSpectate()
         ply:StripWeapons()
         ply:KillSilent()
         ply:Spawn()

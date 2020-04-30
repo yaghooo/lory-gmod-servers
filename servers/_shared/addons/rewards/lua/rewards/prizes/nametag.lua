@@ -12,7 +12,8 @@ function PRIZE:GetStatus(ply)
 end
 
 hook.Add("PS_ItemUpdated", "PlayerEquippedDoublePoints", function(ply, item_id, type)
-    if item_id == "doublepoints" and type == PS_ITEM_EQUIP then
+    if item_id == "doublepoints" and type == PS_ITEM_EQUIP and not ply.SentNameTag then
         REWARDS:SendPrizes(ply)
+        ply.SentNameTag = true
     end
 end)

@@ -22,6 +22,7 @@ net.Receive("voice_force_stop", function(length, client)
 end)
 
 local actual_voice_time = 0
+local voice_max_time = 5
 
 -- refresh to current user voice time
 net.Receive("voice_charger_time", function()
@@ -36,7 +37,7 @@ end)
 -- print battery
 hook.Add("HUDPaint", "VoiceChargerBattery", function()
     local cl = LocalPlayer()
-    if not voice_max_time or actual_voice_time >= voice_max_time or cl:GetUserGroup() ~= "user" or (PS and cl:PS_HasItemEquipped("removebattery")) then return end
+    if not voice_max_time or actual_voice_time >= voice_max_time or cl:GetUserGroup() ~= "user" then return end
     local heigth = actual_voice_time / voice_max_time * 210
     local backgroundColor = cl:GetPlayerColor():ToColor() or team.GetColor(cl:Team())
     backgroundColor.a = 160
