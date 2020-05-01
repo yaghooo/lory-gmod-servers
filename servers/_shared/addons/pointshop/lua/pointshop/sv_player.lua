@@ -32,7 +32,7 @@ function PS:GetPlayerItems(ply)
                 currentItem = {}
 
                 if v.equipped ~= nil then
-                    currentItem.Equipped = v.equipped
+                    currentItem.Equipped = tobool(v.equipped)
                 end
 
                 if v.modifiers ~= nil then
