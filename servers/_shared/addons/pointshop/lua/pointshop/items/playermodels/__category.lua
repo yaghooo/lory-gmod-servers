@@ -12,13 +12,15 @@ function CATEGORY:OnEquip(ply, modifications, item)
         ply:SetModel(item.Model)
         ply:SetupHands()
 
-        if modifications.skin ~= nil then
-            ply:SetSkin(modifications.skin)
-        end
+        if modifications then
+            if modifications.skin ~= nil then
+                ply:SetSkin(modifications.skin)
+            end
 
-        if modifications.group ~= nil then
-            for k, v in pairs(modifications.group) do
-                ply:SetBodygroup(k, modifications.group[k])
+            if modifications.group ~= nil then
+                for k, v in pairs(modifications.group) do
+                    ply:SetBodygroup(k, modifications.group[k])
+                end
             end
         end
     end)
