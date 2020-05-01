@@ -381,12 +381,6 @@ function Player:PS_ModifyItem(item_id, modifications)
 end
 
 function Player:PS_CanEquipItem(ITEM)
-    if (ITEM.ShouldBeAlive or CATEGORY.ShouldBeAlive) and not self:Alive() then
-        self:PS_Notify("Você precisa estar vivo para usar isso!")
-
-        return false
-    end
-
     if ITEM.AdminOnly and not self:IsAdmin() then
         self:PS_Notify("Este item é só para administradores!")
 
@@ -400,6 +394,12 @@ function Player:PS_CanEquipItem(ITEM)
     end
 
     local CATEGORY = PS:FindCategoryByName(ITEM.Category)
+
+    if (ITEM.ShouldBeAlive or CATEGORY.ShouldBeAlive) and not self:Alive() then
+        self:PS_Notify("Você precisa estar vivo para usar isso!")
+
+        return false
+    end
 
     if CATEGORY.AllowedUserGroups and #CATEGORY.AllowedUserGroups > 0 and not table.HasValue(CATEGORY.AllowedUserGroups, self:GetUserGroup()) then
         self:PS_Notify("Você precisa ser vip para usar isso!")
