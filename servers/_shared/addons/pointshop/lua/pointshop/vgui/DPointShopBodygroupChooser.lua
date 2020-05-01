@@ -73,7 +73,7 @@ function BODYGROUP:SetData(item, modifications)
             model.Entity:SetSkin(self.Skin)
         end
 
-        chooser:SetValue(modifications.skin)
+        chooser:SetValue(modifications.skin or 0)
     end
 
     for k = 0, model.Entity:GetNumBodyGroups() do
@@ -87,8 +87,8 @@ function BODYGROUP:SetData(item, modifications)
                 model.Entity:SetBodygroup(k, self.BodyGroup[k])
             end
 
-            model.Entity:SetBodygroup(k, modifications.group ~= nil and modifications.group[k] or 0)
-            chooser:SetValue(modifications.group ~= nil and modifications.group[k] or 0)
+            model.Entity:SetBodygroup(k, modifications and modifications.group ~= nil and modifications.group[k] or 0)
+            chooser:SetValue(modifications and modifications.group ~= nil and modifications.group[k] or 0)
         end
     end
 end

@@ -278,6 +278,7 @@ function GM:StartNewRound()
     local noobs = {}
 
     for _, ply in pairs(players) do
+        ply.Spectating = false
         ply:UnSpectate()
         ply:StripWeapons()
         ply:KillSilent()

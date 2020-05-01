@@ -231,7 +231,6 @@ PowerRounds.AddRound({
     Name = "Gato e ratos",
     Gamemode = "Murder",
     Description = "Nenhum inocente pega armas, mas o assassino pega uma faca e uma arma, mas ele só tem 2 minutos para matar todo mundo antes dos inocentes vencerem!",
-    CustomRoundEnd = true,
     ServerStartWait = 10,
     PlayerCanPickupWeapon = function(Ply) return Ply:IsMurderer() end,
     PlayersStart = function(Ply)

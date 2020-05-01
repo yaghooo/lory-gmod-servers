@@ -13,7 +13,7 @@ function CATEGORY:OnEquip(ply, modifications, item)
         return
     end
 
-    local trail = util.SpriteTrail(ply, 0, modifications.color, false, 15, 1, 4, 0.125, item.Material)
+    local trail = util.SpriteTrail(ply, 0, modifications and modifications.color, false, 15, 1, 4, 0.125, item.Material)
     ply.ActiveTrails[item.Name] = trail
 end
 

@@ -30,7 +30,6 @@ end
 -- Initialization
 function PS:Initialize()
     if SERVER then
-        self:LoadDataProvider()
         self:LoadSounds()
     end
 

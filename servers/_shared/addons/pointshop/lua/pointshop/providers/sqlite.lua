@@ -1,66 +1,100 @@
-local function QueryWithInsertOrIgnore(ply, query, ...)
-    local insertOrIgnoreStatement = [[INSERT OR IGNORE INTO `pointshop_data` VALUES ('%s', '0', '[]');]] .. query
-    query = string.format(insertOrIgnoreStatement, ply:SteamID64(), ...)
-    local result = sql.Query(query)
+local provider = {}
+
+local function executeQuery(query, ...)
+    local replacedQuery = string.format(query, ...)
+    local result = sql.Query(replacedQuery)
 
     if result == false then
-        print("Error in query: " .. query)
-        print("Error: " .. sql.LastError())
+        error("Error in query: " .. query .. " ~ Error: " .. sql.LastError())
     end
+
+    return result
 end
 
-sql.Query("CREATE TABLE IF NOT EXISTS `pointshop_data` ( `sid64` STRING, `points` REAL, `items` STRING, PRIMARY KEY(sid64) )")
+-- POINTS
+local POINTS_TABLE_NAME = "pointshop_points"
+executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
+    `sid64` STRING PRIMARY KEY,
+    `points` INTEGER
+)]], POINTS_TABLE_NAME)
 
-function PROVIDER:GetData(ply)
-    local query = [[SELECT * FROM `pointshop_data` WHERE sid64 = '%s']]
-    local data = sql.Query(string.format(query, ply:SteamID64()))
+function provider:GetPoints(sid64)
+    local query = [[SELECT points FROM `%s` WHERE sid64 = '%s' LIMIT 1]]
+    local result = executeQuery(query, POINTS_TABLE_NAME, sid64)
 
-    if data and #data > 0 then
-        local row = data[1]
-        local points = row.points or 0
-        local items = util.JSONToTable(row.items or "{}")
-        return {
-            Points = points,
-            Items = items
-        }
-    else
-        return {
-            Points = 0,
-            Items = {}
-        }
-    end
+    return result and result[1] and tonumber(result[1]["points"]) or 0
 end
 
-function PROVIDER:SetPoints(ply, points)
-    local query = [[UPDATE `pointshop_data` SET points = '%s' WHERE sid64 = '%s']]
-    QueryWithInsertOrIgnore(ply, query, points, ply:SteamID64())
+function provider:SetPoints(sid64, points)
+    local query = [[
+        INSERT OR IGNORE INTO `%s` VALUES ('%s', 0);
+        UPDATE `%s` SET points = %s WHERE sid64 = '%s'
+    ]]
+    executeQuery(query, POINTS_TABLE_NAME, sid64, POINTS_TABLE_NAME, points, sid64)
 end
 
-function PROVIDER:GivePoints(ply, points)
-    local query = [[UPDATE `pointshop_data` SET points = points + '%s' WHERE sid64 = '%s']]
-    QueryWithInsertOrIgnore(ply, query, points, ply:SteamID64())
+function provider:GivePoints(sid64, points)
+    local query = [[
+        INSERT OR IGNORE INTO `%s` VALUES ('%s', 0);
+        UPDATE `%s` SET points = points + %s WHERE sid64 = '%s'
+    ]]
+    executeQuery(query, POINTS_TABLE_NAME, sid64, POINTS_TABLE_NAME, points, sid64)
 end
 
-function PROVIDER:TakePoints(ply, points)
-    local query = [[UPDATE `pointshop_data` SET points = points - '%s' WHERE sid64 = '%s']]
-    QueryWithInsertOrIgnore(ply, query, points, ply:SteamID64())
+function provider:TakePoints(sid64, points)
+    local query = [[
+        INSERT OR IGNORE INTO `%s` VALUES ('%s', 0);
+        UPDATE `%s` SET points = points - %s WHERE sid64 = '%s'
+    ]]
+    executeQuery(query, POINTS_TABLE_NAME, sid64, POINTS_TABLE_NAME, points, sid64)
 end
 
-function PROVIDER:SaveItem(ply, item_id, data)
-    self:GiveItem(ply, item_id, data)
+-- ITEMS
+local ITEMS_TABLE_NAME = "pointshop_items"
+executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `sid64` STRING,
+    `item_id` STRING,
+    `modifiers` STRING,
+    `equipped` BOOLEAN
+)]], ITEMS_TABLE_NAME)
+
+function provider:GetItems(sid64)
+    local query = [[SELECT * FROM `%s` WHERE sid64 = '%s']]
+    local result = executeQuery(query, ITEMS_TABLE_NAME, sid64)
+
+    return result or {}
 end
 
-function PROVIDER:GiveItem(ply, item_id)
-    local query = [[UPDATE `pointshop_data` SET items = %s WHERE sid64 = '%s']]
-    QueryWithInsertOrIgnore(ply, query, sql.SQLStr(util.TableToJSON(ply.PS_Items)), ply:SteamID64())
+function provider:GiveItem(sid64, item_id)
+    local query = [[INSERT INTO `%s`(sid64, item_id) VALUES('%s', %s)]]
+    executeQuery(query, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
 end
 
-function PROVIDER:TakeItem(ply, item_id)
-    local query = [[UPDATE `pointshop_data` SET items = %s WHERE sid64 = '%s']]
-    QueryWithInsertOrIgnore(ply, query, sql.SQLStr(util.TableToJSON(ply.PS_Items)), ply:SteamID64())
+function provider:SetItemModifiers(sid64, item_id, modifiers)
+    local query = [[UPDATE `%s` SET modifiers = %s WHERE sid64 = '%s' AND item_id = %s]]
+    executeQuery(query, ITEMS_TABLE_NAME, sql.SQLStr(modifiers), sid64, sql.SQLStr(item_id))
 end
 
-function PROVIDER:SetData(ply, points, items)
-    local query = [[UPDATE `pointshop_data` SET points = '%s', items = %s WHERE sid64 = '%s']]
-    QueryWithInsertOrIgnore(ply, query, points, sql.SQLStr(util.TableToJSON(items)), ply:SteamID64())
+function provider:SetItemEquipped(sid64, item_id, equipped)
+    local query = [[UPDATE `%s` SET equipped = %s WHERE sid64 = '%s' AND item_id = %s]]
+    executeQuery(query, ITEMS_TABLE_NAME, equipped, sid64, sql.SQLStr(item_id))
 end
+
+function provider:TakeItem(sid64, item_id)
+    local query = [[
+        DELETE FROM `%s` WHERE id = (
+            SELECT id FROM %s WHERE sid64 = '%s' AND item_id = %s LIMIT 1
+        )
+    ]]
+    executeQuery(query, ITEMS_TABLE_NAME, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
+end
+
+function provider:GetItemsStats()
+    local query = [[
+        SELECT item_id, COUNT(*) as total, COUNT(case when equipped = 1 then 1 else NULL end) as equipped FROM `%s` GROUP BY item_id
+    ]]
+    return executeQuery(query, ITEMS_TABLE_NAME)
+end
+
+PS.DataProvider = provider

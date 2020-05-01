@@ -104,7 +104,6 @@ net.Receive("PS_GivePoints", function(length, ply)
     if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_GivePoints(points)
         other:PS_Notify(ply:Nick(), " deu a você ", points, " ", PS.Config.PointsName, ".")
-        ply:Log("Gave %s points to %s with steamid %s", points, other:Nick(), other:SteamID())
     end
 end)
 
@@ -116,7 +115,6 @@ net.Receive("PS_TakePoints", function(length, ply)
     if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_TakePoints(points)
         other:PS_Notify(ply:Nick(), " pegou ", points, " ", PS.Config.PointsName, " de você.")
-        ply:Log("Take %s points from %s with steamid %s", points, other:Nick(), other:SteamID())
     end
 end)
 
@@ -128,7 +126,6 @@ net.Receive("PS_SetPoints", function(length, ply)
     if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_SetPoints(points)
         other:PS_Notify(ply:Nick(), " setou seu saldo de ", PS.Config.PointsName, " para ", points, ".")
-        ply:Log("Set points for %s with steamid %s to %s", other:Nick(), other:SteamID(), points)
     end
 end)
 
@@ -140,7 +137,6 @@ net.Receive("PS_GiveItem", function(length, ply)
 
     if allowed and other and item_id and PS.Items[item_id] and IsValid(other) and other:IsPlayer() and not other:PS_HasItem(item_id) then
         other:PS_GiveItem(item_id)
-        ply:Log("Gave item %s to %s with steamid %s", PS.Items[item_id].Name, other:Nick(), other:SteamID())
     end
 end)
 
@@ -162,7 +158,47 @@ net.Receive("PS_TakeItem", function(length, ply)
         end
 
         other:PS_TakeItem(item_id)
-        ply:Log("Take item %s from %s with steamid %s", ITEM.Name, other:Nick(), other:SteamID())
+    end
+end)
+
+-- admin requests
+net.Receive("PS_PlayersData", function(length, ply)
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
+
+    if allowed then
+        local data = {}
+
+        for k, v in pairs(player.GetAll()) do
+            if ply ~= v then
+                table.insert(data, {
+                    ply = v,
+                    points = v.PS_Points,
+                    items = v.PS_Items
+                })
+            end
+        end
+
+        net.Start("PS_PlayersData")
+        net.WriteTable(data)
+        net.Send(ply)
+    end
+end)
+
+net.Receive("PS_ItemsData", function(length, ply)
+    local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
+
+    if allowed then
+        local itemsData = PS.DataProvider:GetItemsStats()
+
+        for k, v in ipairs(itemsData) do
+            itemsData[k].itemName = PS.Items[v.item_id].Name
+            itemsData[k].category = PS.Items[v.item_id].Category
+            itemsData[k].item_id = nil
+        end
+
+        net.Start("PS_ItemsData")
+        net.WriteTable(itemsData)
+        net.Send(ply)
     end
 end)
 
@@ -230,79 +266,27 @@ if PS.Config.PointsOverTime then
             end
         end
     end)
-end
 
--- ugly networked strings
-util.AddNetworkString("PS_Items")
-util.AddNetworkString("PS_Points")
-util.AddNetworkString("PS_BuyItem")
-util.AddNetworkString("PS_SellItem")
-util.AddNetworkString("PS_EquipItem")
-util.AddNetworkString("PS_HolsterItem")
-util.AddNetworkString("PS_ModifyItem")
-util.AddNetworkString("PS_SendPoints")
-util.AddNetworkString("PS_SendItem")
-util.AddNetworkString("PS_GivePoints")
-util.AddNetworkString("PS_TakePoints")
-util.AddNetworkString("PS_SetPoints")
-util.AddNetworkString("PS_GiveItem")
-util.AddNetworkString("PS_TakeItem")
-util.AddNetworkString("PS_AddClientsideModel")
-util.AddNetworkString("PS_RemoveClientsideModel")
-util.AddNetworkString("PS_SendClientsideModels")
-util.AddNetworkString("PS_SendNotification")
-util.AddNetworkString("PS_ToggleMenu")
-util.AddNetworkString("PS_OpenCase")
-
--- data providers
-function PS:LoadDataProvider()
-    local path = "pointshop/providers/" .. self.Config.DataProvider .. ".lua"
-
-    if not file.Exists(path, "LUA") then
-        error("Pointshop data provider not found. " .. path)
-    end
-
-    PROVIDER = {}
-    PROVIDER.__index = {}
-    PROVIDER.ID = self.Config.DataProvider
-    include(path)
-    self.DataProvider = PROVIDER
-    PROVIDER = nil
-end
-
-function PS:GetPlayerData(ply, callback)
-    local data = self.DataProvider:GetData(ply)
-
-    return {
-        Points = PS:ValidatePoints(tonumber(data.Points)),
-        Items = data.Items
-    }
-end
-
-function PS:SetPlayerData(ply, points, items)
-    self.DataProvider:SetData(ply, points, items)
-end
-
-function PS:SetPlayerPoints(ply, points)
-    self.DataProvider:SetPoints(ply, points)
-end
-
-function PS:GivePlayerPoints(ply, points)
-    self.DataProvider:GivePoints(ply, points, items)
-end
-
-function PS:TakePlayerPoints(ply, points)
-    self.DataProvider:TakePoints(ply, points)
-end
-
-function PS:SavePlayerItem(ply, item_id, data)
-    self.DataProvider:SaveItem(ply, item_id, data)
-end
-
-function PS:GivePlayerItem(ply, item_id, data)
-    self.DataProvider:GiveItem(ply, item_id, data)
-end
-
-function PS:TakePlayerItem(ply, item_id)
-    self.DataProvider:TakeItem(ply, item_id)
+    -- ugly networked strings
+    util.AddNetworkString("PS_Items")
+    util.AddNetworkString("PS_Points")
+    util.AddNetworkString("PS_PlayersData")
+    util.AddNetworkString("PS_ItemsData")
+    util.AddNetworkString("PS_BuyItem")
+    util.AddNetworkString("PS_SellItem")
+    util.AddNetworkString("PS_EquipItem")
+    util.AddNetworkString("PS_HolsterItem")
+    util.AddNetworkString("PS_ModifyItem")
+    util.AddNetworkString("PS_SendPoints")
+    util.AddNetworkString("PS_SendItem")
+    util.AddNetworkString("PS_GivePoints")
+    util.AddNetworkString("PS_TakePoints")
+    util.AddNetworkString("PS_SetPoints")
+    util.AddNetworkString("PS_GiveItem")
+    util.AddNetworkString("PS_TakeItem")
+    util.AddNetworkString("PS_AddClientsideModel")
+    util.AddNetworkString("PS_RemoveClientsideModel")
+    util.AddNetworkString("PS_SendClientsideModels")
+    util.AddNetworkString("PS_SendNotification")
+    util.AddNetworkString("PS_OpenCase")
 end

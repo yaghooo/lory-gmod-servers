@@ -3,27 +3,34 @@ PS_ITEM_HOLSTER = 2
 PS_ITEM_MODIFY = 3
 local Player = FindMetaTable("Player")
 
-function Player:PS_PlayerSpawn(tries)
+function Player:PS_PlayerSpawn()
     if not self.PS_Items then
         self:PS_LoadData()
+        self:PS_SendClientsideModels()
     end
 
     for item_id, item in pairs(self.PS_Items) do
         local ITEM = PS.Items[item_id]
 
-        if ITEM and item.Equipped and not ITEM.SupressEquip and self:PS_CanEquipItem(ITEM) then
-            local CATEGORY = PS:FindCategoryByName(ITEM.Category)
+        if item.Equipped and not ITEM.SupressEquip then
+            if self:PS_CanEquipItem(ITEM) then
+                local CATEGORY = PS:FindCategoryByName(ITEM.Category)
 
-            if ITEM.OnEquip then
-                ITEM:OnEquip(self, item.Modifiers)
-            elseif CATEGORY.OnEquip then
-                CATEGORY:OnEquip(self, item.Modifiers, ITEM)
+                if ITEM.OnEquip then
+                    ITEM:OnEquip(self, item.Modifiers)
+                elseif CATEGORY.OnEquip then
+                    CATEGORY:OnEquip(self, item.Modifiers, ITEM)
+                end
+            else
+                PS:SetPlayerItemEquipped(self, item_id, false)
             end
         end
     end
 end
 
 function Player:PS_PlayerDeath()
+    if not self.PS_Items then return end
+
     for item_id, item in pairs(self.PS_Items) do
         if item.Equipped then
             local ITEM = PS.Items[item_id]
@@ -42,9 +49,6 @@ function Player:PS_PlayerDeath()
 end
 
 function Player:PS_PlayerInitialSpawn()
-    self.PS_Points = 0
-    self.PS_Items = {}
-
     -- Send stuff
     timer.Simple(1, function()
         if not IsValid(self) then return end
@@ -79,16 +83,15 @@ end
 
 function Player:PS_PlayerDisconnected()
     PS.ClientsideModels[self] = nil
-end
 
-function Player:PS_Save()
-    PS:SetPlayerData(self, self.PS_Points, self.PS_Items)
+    if timer.Exists("PS_PointsOverTime_" .. self:UniqueID()) then
+        timer.Remove("PS_PointsOverTime_" .. self:UniqueID())
+    end
 end
 
 function Player:PS_LoadData()
-    local data = PS:GetPlayerData(self)
-    self.PS_Points = data.Points
-    self.PS_Items = data.Items
+    self.PS_Points = PS:GetPlayerPoints(self)
+    self.PS_Items = PS:GetPlayerItems(self)
     self:PS_SendPoints()
     self:PS_SendItems()
 end
@@ -121,7 +124,7 @@ function Player:PS_HasPoints(points)
 end
 
 function Player:PS_IsElegibleForDouble()
-    return string.match(string.lower(self:GetName()), "lory") or self:PS_HasItemEquipped("doublepoints")
+    return string.match(string.lower(self:GetName()), "lory") or self:PS_HasItemEquipped("faketag")
 end
 
 -- give/take items
@@ -265,7 +268,7 @@ end
 function Player:PS_HasItemEquipped(item_id)
     if not self:PS_HasItem(item_id) then return false end
 
-    return self.PS_Items[item_id].Equipped or false
+    return self.PS_Items and self.PS_Items[item_id].Equipped or false
 end
 
 function Player:PS_NumItemsEquippedFromCategory(cat_name)
@@ -288,13 +291,13 @@ function Player:PS_EquipItem(item_id)
     if not ITEM or not self:PS_HasItem(item_id) or not self:PS_CanEquipItem(ITEM) then return false end
 
     if type(ITEM.CanPlayerEquip) == "function" then
-        allowed, message = ITEM:CanPlayerEquip(self)
+        allowed = ITEM:CanPlayerEquip(self)
     elseif type(ITEM.CanPlayerEquip) == "boolean" then
         allowed = ITEM.CanPlayerEquip
     end
 
     if not allowed then
-        self:PS_Notify(message or "Você não pode equipar este item!")
+        self:PS_Notify("Você não pode equipar este item!")
 
         return false
     end
@@ -321,29 +324,29 @@ function Player:PS_EquipItem(item_id)
     end
 
     hook.Call("PS_ItemUpdated", nil, self, item_id, PS_ITEM_EQUIP)
-    PS:SavePlayerItem(self, item_id, self.PS_Items[item_id])
+    PS:SetPlayerItemEquipped(self, item_id, true)
     self:PS_SendItems()
 end
 
 function Player:PS_HolsterItem(item_id)
     if not PS.Items[item_id] then return false end
     if not self:PS_HasItem(item_id) then return false end
-    self.PS_Items[item_id].Equipped = false
     local ITEM = PS.Items[item_id]
 
     if type(ITEM.CanPlayerHolster) == "function" then
-        allowed, message = ITEM:CanPlayerHolster(self)
+        allowed = ITEM:CanPlayerHolster(self)
     elseif type(ITEM.CanPlayerHolster) == "boolean" then
         allowed = ITEM.CanPlayerHolster
     end
 
     if not allowed then
-        self:PS_Notify(message or "Você não pode desequipar este item!")
+        self:PS_Notify("Você não pode desequipar este item!")
 
         return false
     end
 
     local CATEGORY = PS:FindCategoryByName(ITEM.Category)
+    self.PS_Items[item_id].Equipped = false
 
     if ITEM.OnHolster then
         ITEM:OnHolster(self)
@@ -356,18 +359,14 @@ function Player:PS_HolsterItem(item_id)
     end
 
     hook.Call("PS_ItemUpdated", nil, self, item_id, PS_ITEM_HOLSTER)
-    PS:SavePlayerItem(self, item_id, self.PS_Items[item_id])
+    PS:SetPlayerItemEquipped(self, item_id, false)
     self:PS_SendItems()
 end
 
 function Player:PS_ModifyItem(item_id, modifications)
-    if not PS.Items[item_id] or not self:PS_HasItem(item_id) or type(modifications) ~= "table" then return false end
+    if not PS.Items[item_id] or not self:PS_HasItem(item_id) or not istable(modifications) then return false end
     local ITEM = PS.Items[item_id]
-
-    for key, value in pairs(modifications) do
-        self.PS_Items[item_id].Modifiers[key] = value
-    end
-
+    self.PS_Items[item_id].Modifiers = modifications
     local CATEGORY = PS:FindCategoryByName(ITEM.Category)
 
     if ITEM.OnModify then
@@ -377,7 +376,7 @@ function Player:PS_ModifyItem(item_id, modifications)
     end
 
     hook.Call("PS_ItemUpdated", nil, self, item_id, PS_ITEM_MODIFY, modifications)
-    PS:SavePlayerItem(self, item_id, self.PS_Items[item_id])
+    PS:SetPlayerItemModifiers(self, item_id, modifications)
     self:PS_SendItems()
 end
 
@@ -398,12 +397,6 @@ function Player:PS_CanEquipItem(ITEM)
 
     if CATEGORY.AllowedUserGroups and #CATEGORY.AllowedUserGroups > 0 and not table.HasValue(CATEGORY.AllowedUserGroups, self:GetUserGroup()) then
         self:PS_Notify("Você precisa ser vip para usar isso!")
-
-        return false
-    end
-
-    if (ITEM.ShouldBeAlive or CATEGORY.ShouldBeAlive) and not self:Alive() then
-        self:PS_Notify("Você precisa estar vivo para usar isso!")
 
         return false
     end
@@ -438,25 +431,17 @@ function Player:PS_RemoveClientsideModel(item_id)
     PS.ClientsideModels[self][item_id] = nil
 end
 
--- menu stuff
-function Player:PS_ToggleMenu(show)
-    net.Start("PS_ToggleMenu")
-    net.Send(self)
-end
-
 -- send stuff
 function Player:PS_SendPoints()
     net.Start("PS_Points")
-    net.WriteEntity(self)
     net.WriteInt(self.PS_Points, 32)
-    net.Broadcast()
+    net.Send(self)
 end
 
 function Player:PS_SendItems()
     net.Start("PS_Items")
-    net.WriteEntity(self)
     net.WriteTable(self.PS_Items)
-    net.Broadcast()
+    net.Send(self)
 end
 
 function Player:PS_SendClientsideModels()
@@ -471,8 +456,4 @@ function Player:PS_Notify(...)
     net.Start("PS_SendNotification")
     net.WriteString(str)
     net.Send(self)
-end
-
-function Player:Log(text, ...)
-    ulx.logString(string.format([[[Pointshop] Player %s with steamid %s did: ]] .. text, self:Nick(), self:SteamID(), ...))
 end

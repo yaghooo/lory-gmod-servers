@@ -3,7 +3,9 @@ include("pointshop/sh_config.lua")
 
 if SERVER then
     include("pointshop/sv_init.lua")
+    include("pointshop/sv_player.lua")
     include("pointshop/sv_player_extension.lua")
+    include("pointshop/providers/sqlite.lua")
 
     AddCSLuaFile("pointshop/cl_init.lua")
     AddCSLuaFile("pointshop/cl_player_extension.lua")

@@ -35,6 +35,10 @@ function PS:ShowColorChooser(item, modifications)
     chooser:SetColor(modifications.color)
 
     chooser.OnChoose = function(color)
+        if not modifications then
+            modifications = {}
+        end
+
         modifications.color = color
         self:SendModifications(item.ID, modifications)
     end
@@ -45,6 +49,10 @@ function PS:ShowBodygroupChooser(item, modifications)
     chooser:SetData(item, modifications)
 
     chooser.OnChoose = function(group, skin)
+        if not modifications then
+            modifications = {}
+        end
+
         modifications.group = group
         modifications.skin = skin
         self:SendModifications(item.ID, modifications)
@@ -91,20 +99,28 @@ net.Receive("PS_OpenCase", function()
     unbox:SetData(items, hasItem)
 end)
 
-net.Receive("PS_ToggleMenu", function(length)
-    PS:ToggleMenu()
-end)
-
 net.Receive("PS_Items", function(length)
-    local ply = net.ReadEntity()
     local items = net.ReadTable()
-    ply.PS_Items = items
+    LocalPlayer().PS_Items = items
 end)
 
 net.Receive("PS_Points", function(length)
-    local ply = net.ReadEntity()
     local points = net.ReadInt(32)
-    ply.PS_Points = PS:ValidatePoints(points)
+    LocalPlayer().PS_Points = PS:ValidatePoints(points)
+end)
+
+net.Receive("PS_PlayersData", function(length)
+    local data = net.ReadTable()
+
+    for k, v in ipairs(data) do
+        v.ply.PS_Points = v.points
+        v.ply.PS_Items = v.items
+    end
+end)
+
+net.Receive("PS_ItemsData", function(length)
+    local data = net.ReadTable()
+    PS.ItemsData = data
 end)
 
 net.Receive("PS_AddClientsideModel", function(length)

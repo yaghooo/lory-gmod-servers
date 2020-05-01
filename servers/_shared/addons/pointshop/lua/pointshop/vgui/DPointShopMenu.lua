@@ -4,6 +4,7 @@ MENU.Shop = "Loja"
 MENU.Inventory = "Inventário"
 MENU.Admin = "Admin"
 MENU.Players = "Jogadores"
+MENU.ItemsStatistics = "Estatisticas dos items"
 MENU.Skins = "Skins"
 MENU.Settings = "Configurações"
 MENU.OwnedItems = true
@@ -12,6 +13,9 @@ MENU.UnownedItems = false
 MENU.AdminCategories = {
     {
         Name = MENU.Players
+    },
+    {
+        Name = MENU.ItemsStatistics
     }
 }
 
@@ -307,7 +311,7 @@ function MENU:RenderPlayers()
     itemsHeader.Header.Paint = headerPaint
     itemsHeader.Header:SetTextColor(color_white)
 
-    for _, ply in pairs(player.GetAll()) do
+    for _, ply in ipairs(player.GetAll()) do
         local line = players:AddLine(ply:GetName(), ply:PS_GetPoints(), table.Count(ply:PS_GetItems()))
         line.Player = ply
 
@@ -393,6 +397,51 @@ function MENU:RenderPlayers()
     end
 end
 
+function MENU:RenderItemsStatistics()
+    local itemsData = vgui.Create("DListView", self.ItemsContainer)
+    itemsData:SetSize(self.ItemsContainer:GetWide() - 4 * 2, self.ItemsContainer:GetTall() - 4 * 2)
+    itemsData:SetMultiSelect(false)
+    itemsData.Paint = function(ss, w, h) end
+
+    local headerPaint = function(s, w, h)
+        draw.RoundedBox(0, 1, 1, w - 2, h - 2, THEME.Color.Primary)
+        draw.RoundedBox(0, 2, 2, w - 4, h - 4, ColorAlpha(color_white, 10))
+    end
+
+    local itemNameHeader = itemsData:AddColumn("Item")
+    itemNameHeader.Header.Paint = headerPaint
+    itemNameHeader.Header:SetTextColor(color_white)
+    local categoryNameHeader = itemsData:AddColumn("Categoria")
+    categoryNameHeader.Header.Paint = headerPaint
+    categoryNameHeader.Header:SetTextColor(color_white)
+    local totalHeader = itemsData:AddColumn("Quantidade de compras")
+    totalHeader.Header.Paint = headerPaint
+    totalHeader.Header:SetTextColor(color_white)
+    local equippedHeader = itemsData:AddColumn("Quantidade equipada")
+    equippedHeader.Header.Paint = headerPaint
+    equippedHeader.Header:SetTextColor(color_white)
+
+    local addItemsData = function()
+        for _, itemData in ipairs(PS.ItemsData) do
+            local line = itemsData:AddLine(itemData.itemName, itemData.category, itemData.total, itemData.equipped)
+
+            for _, column in pairs(line.Columns) do
+                column:SetColor(color_white)
+            end
+        end
+    end
+
+    local thinked = false
+    function itemsData:Think()
+        if PS.ItemsData and not thinked then
+            thinked = true
+            addItemsData()
+        end
+    end
+
+    itemsData.Menu = self
+end
+
 function MENU:RenderItemsContainer()
     -- Remove before render again, to avoid memory leaks
     if self.ItemsContainer then
@@ -419,7 +468,13 @@ function MENU:SetCategory(category)
         local currentCategoryName = self.CurrentCategory and self.AdminCategories[self.CurrentCategory].Name
 
         if currentCategoryName == self.Players then
+            net.Start("PS_PlayersData")
+            net.SendToServer()
             self:RenderPlayers()
+        elseif currentCategoryName == self.ItemsStatistics then
+            net.Start("PS_ItemsData")
+            net.SendToServer()
+            self:RenderItemsStatistics()
         end
     else
         self:RenderItems()
@@ -443,15 +498,10 @@ end
 
 function MENU:UserHasItemOnCategory(category)
     local userItems = LocalPlayer():PS_GetItems()
-
-    if not category then
-        return false
-    end
+    if not category then return false end
 
     for k, item in pairs(userItems) do
-        if PS.Items[k] and PS.Items[k].Category == category.Name then
-            return true
-        end
+        if PS.Items[k] and PS.Items[k].Category == category.Name then return true end
     end
 
     return false

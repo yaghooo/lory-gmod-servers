@@ -6,15 +6,11 @@ function Player:PS_GetItems()
 end
 
 function Player:PS_HasItem(item_id)
-    if not self.PS_Items then return false end
-
-    return self.PS_Items[item_id] and true or false
+    return self.PS_Items and self.PS_Items[item_id] ~= nil
 end
 
 function Player:PS_HasItemEquipped(item_id)
-    if not self:PS_HasItem(item_id) then return false end
-
-    return self.PS_Items[item_id].Equipped or false
+    return self:PS_HasItem(item_id) and self.PS_Items[item_id].Equipped
 end
 
 function Player:PS_BuyItem(item_id)

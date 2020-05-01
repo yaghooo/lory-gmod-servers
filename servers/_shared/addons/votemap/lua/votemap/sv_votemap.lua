@@ -80,7 +80,15 @@ function VOTEMAP:ChangeMap(map)
     RunConsoleCommand("changelevel", map)
 end
 
-hook.Add("OnEndRound", "CheckStartMapVote", function()
+local hookName
+
+if TTT or TTT2 then
+    hookName = "TTTEndRound"
+else
+    hookName = "OnEndRound"
+end
+
+hook.Add(hookName, "CheckStartMapVote", function()
     VOTEMAP.RoundsPlayed = VOTEMAP.RoundsPlayed + 1
     local maxRounds = VOTEMAP.CustomMaxRounds or VOTEMAP.MaxRounds:GetInt()
 
