@@ -33,5 +33,7 @@ function ENT:Think()
 end
 
 function ENT:OnRemove()
-    self.Emitter:Finish()
+    if IsValid(self) and IsValid(self.Emitter) then
+        self.Emitter:Finish()
+    end
 end

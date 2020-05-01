@@ -5,13 +5,15 @@ hook.Add("PlayerChangedTeam", "CheckAFKPlayer", function(ply)
 
     if ply.Spectating then
         timer.Create(identifier, AFKLimit:GetInt() - 10, 1, function()
-            ply:ChatPrint("Você será kickado em 10 segundos se continuar de espectador")
+            if IsValid(ply) and ply.Spectating then
+                ply:ChatPrint("Você será kickado em 10 segundos se continuar de espectador")
 
-            timer.Create(identifier, 10, 1, function()
-                if ply.Spectating and player.GetCount() > 10 then
-                    ply:Kick("Ficou muito tempo como um espectador.")
-                end
-            end)
+                timer.Create(identifier, 10, 1, function()
+                    if ply.Spectating and player.GetCount() > 10 then
+                        ply:Kick("Ficou muito tempo como um espectador.")
+                    end
+                end)
+            end
         end)
     else
         timer.Remove(identifier)
