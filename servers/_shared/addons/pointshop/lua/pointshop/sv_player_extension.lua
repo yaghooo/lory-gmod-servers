@@ -381,6 +381,12 @@ function Player:PS_ModifyItem(item_id, modifications)
 end
 
 function Player:PS_CanEquipItem(ITEM)
+    if (ITEM.ShouldBeAlive or CATEGORY.ShouldBeAlive) and not self:Alive() then
+        self:PS_Notify("Você precisa estar vivo para usar isso!")
+
+        return false
+    end
+
     if ITEM.AdminOnly and not self:IsAdmin() then
         self:PS_Notify("Este item é só para administradores!")
 
