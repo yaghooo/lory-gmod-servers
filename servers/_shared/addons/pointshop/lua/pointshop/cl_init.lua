@@ -31,28 +31,28 @@ end
 
 -- modification stuff
 function PS:ShowColorChooser(item, modifications)
+    if not modifications then
+        modifications = {}
+    end
+
     local chooser = vgui.Create("DPointShopColorChooser")
     chooser:SetColor(modifications.color)
 
     chooser.OnChoose = function(color)
-        if not modifications then
-            modifications = {}
-        end
-
         modifications.color = color
         self:SendModifications(item.ID, modifications)
     end
 end
 
 function PS:ShowBodygroupChooser(item, modifications)
+    if not modifications then
+        modifications = {}
+    end
+
     local chooser = vgui.Create("DPointShopBodygroupChooser")
     chooser:SetData(item, modifications)
 
     chooser.OnChoose = function(group, skin)
-        if not modifications then
-            modifications = {}
-        end
-
         modifications.group = group
         modifications.skin = skin
         self:SendModifications(item.ID, modifications)
