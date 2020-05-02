@@ -72,7 +72,7 @@ function GM:InitPostEntityAndMapCleanup()
     for _, ent in ipairs(ents.GetAll()) do
         local class = ent:GetClass()
 
-        if ent:IsWeapon() or string.StartWith(class, "weapon_") or string.StartWith(class, "item_") or class == "mu_loot" then
+        if ent:IsWeapon() or class:match("^weapon_") or class:match("^item_") or class == "mu_loot" then
             ent:Remove()
         end
     end

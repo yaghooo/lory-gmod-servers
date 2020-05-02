@@ -3,7 +3,7 @@ CreateConVar("db_respawntimer", 0, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE, FCV
 CreateConVar("db_lockopen", 0, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE, FCVAR_NOTIFY}, "Whether or not doors should be opened and unlocked after being shot open.")
 
 cvars.AddChangeCallback("db_doorhealth", function()
-    for _, v in pairs(ents.GetAll()) do
+    for _, v in ipairs(ents.GetAll()) do
         if v:GetClass() == "prop_door_rotating" then
             local health = GetConVar("db_doorhealth"):GetInt()
             v:SetHealth(health)
@@ -15,7 +15,7 @@ end)
 
 hook.Add("InitPostEntity", "ITSALLIIIVVEEE", function()
     timer.Simple(5, function()
-        for _, v in pairs(ents.GetAll()) do
+        for _, v in ipairs(ents.GetAll()) do
             if v:GetClass() == "prop_door_rotating" then
                 local health = GetConVar("db_doorhealth"):GetInt()
                 v:SetHealth(health)
@@ -41,18 +41,22 @@ end)
 hook.Add("Think", "RemoveSadDoors", function()
     if nextThink and CurTime() < nextThink then return end
 
-    for _, ply in pairs(player.GetAll()) do
+    for _, ply in ipairs(player.GetAll()) do
         if not ply.Attacking then continue end
         local tr = ply:GetEyeTrace()
         local ent = tr.Entity
 
         if (IsValid(ent) and ent:GetClass() == "func_door_rotating" and (not ent.phys_door or not IsValid(ent.phys_door))) and ply:GetPos():Distance(ent:GetPos()) <= 90 then
             timer.Simple(0.1, function()
-                ent:EmitSound("physics/wood/wood_crate_break" .. math.random(1, 5) .. ".wav")
+                if IsValid(ent) then
+                    ent:EmitSound("physics/wood/wood_crate_break" .. math.random(1, 5) .. ".wav")
 
-                timer.Simple(0.1, function()
-                    ent:Remove()
-                end)
+                    timer.Simple(0.1, function()
+                        if IsValid(ent) then
+                            ent:Remove()
+                        end
+                    end)
+                end
             end)
         end
     end
@@ -60,7 +64,7 @@ hook.Add("Think", "RemoveSadDoors", function()
     nextThink = CurTime() + 1
 end)
 
-knockedDoors = knockedDoors or {}
+local knockedDoors = knockedDoors or {}
 
 hook.Add("EntityTakeDamage", "BigBadWolfIsJealous", function(prop, dmginfo)
     if (prop:GetClass() == "prop_door_rotating" and IsValid(prop)) then
