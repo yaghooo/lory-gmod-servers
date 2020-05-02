@@ -76,9 +76,16 @@ function SWEP:PrimaryAttack()
     local stats = {}
     stats.damage = self.Primary.Damage or 1
     stats.cone = self.Primary.Cone or 0.1
-    self.Owner:LagCompensation(true)
+
+    if IsValid(self.Owner) and self.Owner:IsPlayer() then
+        self.Owner:LagCompensation(true)
+    end
+
     self:DoPrimaryAttackEffect(stats)
-    self.Owner:LagCompensation(false)
+
+    if IsValid(self.Owner) and self.Owner:IsPlayer() then
+        self.Owner:LagCompensation(false)
+    end
 end
 
 function SWEP:DoPrimaryAttackEffect(stats)
