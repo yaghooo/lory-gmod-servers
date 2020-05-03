@@ -189,11 +189,24 @@ net.Receive("PS_ItemsData", function(length, ply)
 
     if allowed then
         local itemsData = PS.DataProvider:GetItemsStats()
+        local keyed = {}
 
         for k, v in ipairs(itemsData) do
+            keyed[v.item_id] = true
             itemsData[k].itemName = PS.Items[v.item_id].Name
             itemsData[k].category = PS.Items[v.item_id].Category
             itemsData[k].item_id = nil
+        end
+
+        for item_id, item in pairs(PS.Items) do
+            if not keyed[item_id] then
+                table.insert(itemsData, {
+                    itemName = item.Name,
+                    category = item.Category,
+                    total = 0,
+                    equipped = 0
+                })
+            end
         end
 
         net.Start("PS_ItemsData")
@@ -266,27 +279,27 @@ if PS.Config.PointsOverTime then
             end
         end
     end)
-
-    -- ugly networked strings
-    util.AddNetworkString("PS_Items")
-    util.AddNetworkString("PS_Points")
-    util.AddNetworkString("PS_PlayersData")
-    util.AddNetworkString("PS_ItemsData")
-    util.AddNetworkString("PS_BuyItem")
-    util.AddNetworkString("PS_SellItem")
-    util.AddNetworkString("PS_EquipItem")
-    util.AddNetworkString("PS_HolsterItem")
-    util.AddNetworkString("PS_ModifyItem")
-    util.AddNetworkString("PS_SendPoints")
-    util.AddNetworkString("PS_SendItem")
-    util.AddNetworkString("PS_GivePoints")
-    util.AddNetworkString("PS_TakePoints")
-    util.AddNetworkString("PS_SetPoints")
-    util.AddNetworkString("PS_GiveItem")
-    util.AddNetworkString("PS_TakeItem")
-    util.AddNetworkString("PS_AddClientsideModel")
-    util.AddNetworkString("PS_RemoveClientsideModel")
-    util.AddNetworkString("PS_SendClientsideModels")
-    util.AddNetworkString("PS_SendNotification")
-    util.AddNetworkString("PS_OpenCase")
 end
+
+-- ugly networked strings
+util.AddNetworkString("PS_Items")
+util.AddNetworkString("PS_Points")
+util.AddNetworkString("PS_PlayersData")
+util.AddNetworkString("PS_ItemsData")
+util.AddNetworkString("PS_BuyItem")
+util.AddNetworkString("PS_SellItem")
+util.AddNetworkString("PS_EquipItem")
+util.AddNetworkString("PS_HolsterItem")
+util.AddNetworkString("PS_ModifyItem")
+util.AddNetworkString("PS_SendPoints")
+util.AddNetworkString("PS_SendItem")
+util.AddNetworkString("PS_GivePoints")
+util.AddNetworkString("PS_TakePoints")
+util.AddNetworkString("PS_SetPoints")
+util.AddNetworkString("PS_GiveItem")
+util.AddNetworkString("PS_TakeItem")
+util.AddNetworkString("PS_AddClientsideModel")
+util.AddNetworkString("PS_RemoveClientsideModel")
+util.AddNetworkString("PS_SendClientsideModels")
+util.AddNetworkString("PS_SendNotification")
+util.AddNetworkString("PS_OpenCase")
