@@ -74,15 +74,19 @@ local function ReplaceAmmo()
 end
 
 local hl2_weapon_replace = {
-	["weapon_smg1"] = "weapon_zm_mac10",
-	["weapon_shotgun"] = "weapon_zm_shotgun",
-	["weapon_ar2"] = "weapon_ttt_m16",
-	["weapon_357"] = "weapon_zm_rifle",
-	["weapon_crossbow"] = "weapon_zm_pistol",
-	["weapon_rpg"] = "weapon_zm_sledge",
-	["weapon_slam"] = "item_ammo_pistol_ttt",
-	["weapon_frag"] = "weapon_zm_revolver",
-	["weapon_crowbar"] = "weapon_zm_molotov"
+	["weapon_zm_mac10"] = "ttt_random_weapon",
+	["weapon_zm_shotgun"] = "ttt_random_weapon",
+	["weapon_zm_revolver"] = "ttt_random_weapon",
+	["weapon_ttt_m16"] = "ttt_random_weapon",
+	["weapon_ak47"] = "ttt_random_weapon",
+	["weapon_m4a1"] = "ttt_random_weapon",
+	["weapon_ttt_sipistol"] = "ttt_random_weapon",
+	["weapon_zm_rifle"] = "ttt_random_weapon",
+	["weapon_ttt_glock"] = "ttt_random_weapon",
+	["weapon_slam"] = "ttt_random_weapon",
+	["weapon_frag"] = "ttt_random_weapon",
+	["weapon_crowbar"] = "ttt_random_weapon",
+	["weapon_scout"] = "ttt_random_weapon"
 }
 
 local function ReplaceWeaponSingle(ent, cls)
