@@ -3,6 +3,9 @@ name: Deploy murder
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'servers/_shared/**'
+      - 'servers/murder/**'
 
 jobs:
   build:
@@ -10,28 +13,22 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v1.1.0
+      with:
+        version: '12.x'
 
-    - name: Build addons
+    - name: Build murder
       run: |
-        mkdir addons
-        cp -R ./servers/_shared/addons/* addons
-        cp -R ./servers/murder/addons/* addons
+        npm install --prefix tool
+        node tool/index murder
+
     - name: Upload addons artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Murder addons
-        path: addons
-        
-    - name: Build gamemode
-      run: |
-        mkdir gamemode
-        cp -R ./servers/murder/gamemodes/murder/* gamemode
-    - name: Upload gamemode artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: Murder gamemode
-        path: gamemode
-
+        name: Murder
+        path: build
    
   deploy-addons:
     runs-on: ubuntu-18.04
@@ -43,8 +40,8 @@ jobs:
     - name: Download addons
       uses: actions/download-artifact@v1.0.0
       with:
-        name: Murder addons
-        path: addons
+        name: Murder
+        path: murder
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
@@ -52,28 +49,5 @@ jobs:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: addons
+        local-dir: murder
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
-        
-        
-  deploy-gamemode:
-    runs-on: ubuntu-18.04
-    needs: [build]
-
-    steps:
-    - uses: actions/checkout@v2
-    
-    - name: Download gamemode
-      uses: actions/download-artifact@v1.0.0
-      with:
-        name: Murder gamemode
-        path: gamemode
-
-    - name: Upload gamemode
-      uses: SamKirkland/FTP-Deploy-Action@3.0.0
-      with:
-        ftp-server: ${{ secrets.FTP_SERVER }}
-        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
-        ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: gamemode
-        git-ftp-args: --insecure --remote-root ./garrysmod/gamemodes/murder
