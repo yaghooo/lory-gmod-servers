@@ -1,11 +1,11 @@
-name: Deploy deathrun
+name: Deploy ttt
 
 on:
   push:
     branches: [ master ]
     paths:
       - 'servers/_shared/**'
-      - 'servers/deathrun/**'
+      - 'servers/ttt/**'
 
 jobs:
   build:
@@ -19,16 +19,16 @@ jobs:
       with:
         version: '12.x'
 
-    - name: Build deathrun
+    - name: Build ttt
       run: |
-        cd tool
-        npm install
-        node index deathrun
+      cd tool
+      npm install
+      node index ttt
 
     - name: Upload addons artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Deathrun
+        name: TTT
         path: build
    
   deploy:
@@ -41,14 +41,14 @@ jobs:
     - name: Download addons
       uses: actions/download-artifact@v1.0.0
       with:
-        name: Deathrun
-        path: deathrun
+        name: TTT
+        path: ttt
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
-        ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
+        ftp-username: ${{ secrets.ttt_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: deathrun
+        local-dir: ttt
         git-ftp-args: --insecure --remote-root ./garrysmod/addons

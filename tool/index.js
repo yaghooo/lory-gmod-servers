@@ -1,5 +1,4 @@
 const path = require('path')
-const makeDir = require('make-dir')
 const del = require('del')
 var copy = require('recursive-copy')
 
@@ -24,14 +23,8 @@ var copy = require('recursive-copy')
       ...(isDev && scheme.developing[server].filters || []),
     ]
 
-    const serverPath = 'build/' + server
-    await makeDir(serverPath)
-
-    for (const relativePath of paths) {
-      console.log(relativePath)
-      console.log(filters);
-      
-      await copy(relativePath, path.join('..', serverPath), { filter: filters })
+    for (const relativePath of paths) {      
+      await copy(relativePath, path.join('../build/', server), { filter: filters })
     }
   }
 
