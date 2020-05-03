@@ -1,14 +1,14 @@
 local CATEGORY_NAME = "Lory"
 
 local addons = ulx.command(CATEGORY_NAME, "ulx addons", function(ply)
-    openUrl(ply, "https://steamcommunity.com/sharedfiles/filedetails/?id=1581506103")
+    openUrl(ply, "https://steamcommunity.com/sharedfiles/filedetails/?id=2061346523")
 end, {"!addons", "!addon"})
 
 addons:defaultAccess(ULib.ACCESS_ALL)
 addons:help("Ver addons do servidor.")
 
 local rules = ulx.command(CATEGORY_NAME, "ulx rules", function(ply)
-    openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/2257934448607145092/")
+    openUrl(ply, "https://steamcommunity.com/groups/lorybr/discussions/0/2259062250946146757/")
 end, {"!rules", "!regras"})
 
 rules:defaultAccess(ULib.ACCESS_ALL)
