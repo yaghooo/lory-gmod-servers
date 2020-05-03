@@ -2,7 +2,7 @@ name: Deploy murder
 
 on:
   push:
-    branches: [ master ]
+    branches: [ lock ]
 
 jobs:
   build:

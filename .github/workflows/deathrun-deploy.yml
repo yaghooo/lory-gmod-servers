@@ -2,7 +2,7 @@ name: Deploy deathrun
 
 on:
   push:
-    branches: [ master ]
+    branches: [ lock ]
 
 jobs:
   build:
