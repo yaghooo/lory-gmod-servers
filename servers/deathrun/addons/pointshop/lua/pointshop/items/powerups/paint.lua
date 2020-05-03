@@ -6,15 +6,12 @@ ITEM.NoPreview = true
 function ITEM:OnEquip(ply, modifications)
     ply.OldColor = ply:GetPlayerColor()
 
-    timer.Simple(
-        1,
-        function()
-            if modifications.color ~= nil then
-                newcolor = modifications.color
-                ply:SetPlayerColor(Vector(newcolor.r / 255, newcolor.g / 255, newcolor.b / 255))
-            end
+    timer.Simple(1, function()
+        if modifications and modifications.color ~= nil then
+            newcolor = modifications.color
+            ply:SetPlayerColor(Vector(newcolor.r / 255, newcolor.g / 255, newcolor.b / 255))
         end
-    )
+    end)
 end
 
 function ITEM:OnHolster(ply)
