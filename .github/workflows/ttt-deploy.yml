@@ -27,6 +27,9 @@ jobs:
         node index ttt
         ls ../build
 
+    - name: REMOVE
+      run: ls
+
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
