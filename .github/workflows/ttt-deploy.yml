@@ -25,7 +25,7 @@ jobs:
         cd tool
         npm install
         node index ttt
-        ls ..
+        ls ../build
 
     - name: Upload addons artifact
       uses: actions/upload-artifact@v1.0.0
