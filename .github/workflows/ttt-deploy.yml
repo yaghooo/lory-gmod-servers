@@ -28,7 +28,7 @@ jobs:
         ls ../build
 
     - name: REMOVE
-      run: ls
+      run: ls build/ttt
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
