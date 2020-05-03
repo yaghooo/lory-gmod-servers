@@ -21,9 +21,9 @@ jobs:
 
     - name: Build murder
       run: |
-      cd tool
-      npm install
-      node index murder
+        cd tool
+        npm install
+        node index murder
 
     - name: Upload addons artifact
       uses: actions/upload-artifact@v1.0.0
