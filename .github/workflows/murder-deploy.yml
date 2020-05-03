@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Murder
-        path: build/murder
+        path: build/murder/
    
   deploy:
     runs-on: ubuntu-18.04

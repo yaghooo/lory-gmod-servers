@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Deathrun
-        path: build/deathrun
+        path: build/deathrun/
    
   deploy:
     runs-on: ubuntu-18.04
