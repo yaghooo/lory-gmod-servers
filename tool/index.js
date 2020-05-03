@@ -26,7 +26,7 @@ var copy = require('recursive-copy')
     for (const relativePath of paths) {      
       await copy(relativePath, path.join('../build/', server), { filter: filters })
     }
-  }
 
-  console.log('Build succeed')
+    console.log(`Build for ${server} succeed`)
+  }
 })()

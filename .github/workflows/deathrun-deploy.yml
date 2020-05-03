@@ -24,6 +24,7 @@ jobs:
         cd tool
         npm install
         node index deathrun
+        ls
 
     - name: Upload addons artifact
       uses: actions/upload-artifact@v1.0.0
