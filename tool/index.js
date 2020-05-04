@@ -18,7 +18,7 @@ var copy = require('recursive-copy')
     ].map(p => path.join('../servers', p).replace(/\\/g, '/'))
 
     const filters = [
-      "*",
+      "**/*",
       ...(scheme.production[server].filters || []),
       ...(isDev && scheme.developing[server].filters || []),
     ]
