@@ -44,7 +44,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: TTT
-        path: ttt
+        path: addons
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
@@ -52,5 +52,5 @@ jobs:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.TTT_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ttt
+        local-dir: addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
