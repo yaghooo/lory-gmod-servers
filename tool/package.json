@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "del": "^5.1.0",
-    "make-dir": "^3.1.0",
     "recursive-copy": "^2.0.10"
   }
 }

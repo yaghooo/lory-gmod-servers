@@ -1,12 +1,12 @@
-name: Deploy murder
+name: Deploy ttt
 
 on:
   push:
     branches: [ master ]
     paths:
       - 'servers/_shared/**'
-      - 'servers/murder/**'
-      - '.github/workflows/murder-deploy.yml'
+      - 'servers/ttt/**'
+      - '.github/workflows/ttt-deploy.yml'
       - '.git-ftp-include'
 
 jobs:
@@ -21,18 +21,18 @@ jobs:
       with:
         version: '12.x'
 
-    - name: Build murder
+    - name: Build ttt
       run: |
         cd tool
         npm install
-        node index murder
+        node index ttt
         ls ../build
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Murder
-        path: build/murder/
+        name: TTT
+        path: build/ttt/
    
   deploy:
     runs-on: ubuntu-18.04
@@ -44,14 +44,14 @@ jobs:
     - name: Download addons
       uses: actions/download-artifact@v2
       with:
-        name: Murder
+        name: TTT
         path: addons
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
-        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
+        ftp-username: ${{ secrets.TTT_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
         local-dir: addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons

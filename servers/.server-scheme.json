@@ -35,12 +35,12 @@
                 "_shared"
             ],
             "filters": [
-                "!voicechat-meter",
-                "!voicechat-charger",
-                "!records",
-                "!rewards",
-                "!csgo-custom-knives",
-                "!pointshop"
+                "!voicechat-meter/**",
+                "!voicechat-charger/**",
+                "!records/**",
+                "!rewards/**",
+                "!csgo-custom-knives/**",
+                "!pointshop/**"
             ]
         }
     }
