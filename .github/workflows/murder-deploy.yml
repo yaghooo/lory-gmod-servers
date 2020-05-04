@@ -7,6 +7,7 @@ on:
       - 'servers/_shared/**'
       - 'servers/murder/**'
       - '.github/workflows/murder-deploy.yml'
+      - '.git-ftp-include'
 
 jobs:
   build:
@@ -44,7 +45,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: Murder
-        path: murder
+        path: addons
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
@@ -52,5 +53,5 @@ jobs:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: murder
+        local-dir: addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
