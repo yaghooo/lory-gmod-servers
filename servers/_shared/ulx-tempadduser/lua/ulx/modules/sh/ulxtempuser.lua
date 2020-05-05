@@ -171,6 +171,7 @@ function ulx.tempadduserid64(calling_ply, target_id, group_name, exp_time, retur
 
     if not target_id then
         print("Invalid SteamID64")
+        return
     end
 
     local target_ply = player.GetBySteamID64(target_id)
@@ -230,6 +231,7 @@ tempadduserid64:help("Add a user by SteamID64 to specified group for a specified
 
 function ulx.tempadduserdiscord(calling_ply, discord_id, group_name, exp_time, return_group_name)
     local target_id = DISCORD:GetSid64ById(discord_id)
+    print("Temp add user with discord '" .. discord_id .. "' and id '" .. target_id .. "'")
     ulx.tempadduserid64(calling_ply, target_id, group_name, exp_time, return_group_name)
 end
 
