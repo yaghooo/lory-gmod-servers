@@ -229,39 +229,3 @@ ULib.cmds.restrictToCompletes
 
 tempadduserid64:defaultAccess(ULib.ACCESS_SUPERADMIN)
 tempadduserid64:help("Add a user by SteamID64 to specified group for a specified time.")
-
-function ulx.tempadduserdiscord(calling_ply, discord_id, group_name, exp_time, return_group_name)
-    local target_id = DISCORD:GetSid64ById(discord_id)
-    print("Temp add user with discord '" .. discord_id .. "' and id '" .. target_id .. "'")
-    ulx.tempadduserid64(calling_ply, target_id, group_name, exp_time, return_group_name)
-end
-
-local tempadduserdiscord = ulx.command(CATEGORY_NAME, "ulx tempadduserdiscord", ulx.tempadduserdiscord)
-
-tempadduserdiscord:addParam{
-    type = ULib.cmds.NumArg
-}
-
-tempadduserdiscord:addParam{
-    type = ULib.cmds.StringArg,
-    completes = ulx.tempuser_group_names,
-    hint = "Group to place user in temporarily",
-    error = "invalid group '%s' specified",
-ULib.cmds.restrictToCompletes
-}
-
-tempadduserdiscord:addParam{
-    type = ULib.cmds.NumArg,
-    hint = "Time (Minutes)"
-}
-
-tempadduserdiscord:addParam{
-    type = ULib.cmds.StringArg,
-    completes = ulx.tempuser_group_names,
-    hint = "Group to place user in after time expires",
-    error = "invalid group '%s' specified",
-ULib.cmds.restrictToCompletes
-}
-
-tempadduserdiscord:defaultAccess(ULib.ACCESS_SUPERADMIN)
-tempadduserdiscord:help("Add a user by Discord id to specified group for a specified time.")
