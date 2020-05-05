@@ -7,6 +7,7 @@ on:
       - 'servers/_shared/**'
       - 'servers/ttt/**'
       - '.github/workflows/ttt-deploy.yml'
+      - '.git-ftp-include'
 
 jobs:
   build:

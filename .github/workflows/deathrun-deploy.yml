@@ -7,6 +7,7 @@ on:
       - 'servers/_shared/**'
       - 'servers/deathrun/**'
       - '.github/workflows/deathrun-deploy.yml'
+      - '.git-ftp-include'
 
 jobs:
   build:
@@ -44,7 +45,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: Deathrun
-        path: deathrun
+        path: addons
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
@@ -52,5 +53,5 @@ jobs:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: deathrun
+        local-dir: addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
