@@ -17,10 +17,10 @@ discordrank:addParam{
     completes = ulx.tempuser_group_names,
     hint = "Group to place user",
     error = "invalid group '%s' specified",
-    ULib.cmds.restrictToCompletes
+ULib.cmds.restrictToCompletes
 }
 
-discordrank:defaultAccess(ULib.ACCESS_ALL)
+discordrank:defaultAccess(ULib.ACCESS_SUPERADMIN)
 discordrank:help("Adiciona rank pelo id do discord.")
 
 local discordpoints = ulx.command(CATEGORY_NAME, "ulx discordpoints", function(ply, discordId, quantity)
@@ -38,5 +38,29 @@ discordpoints:addParam{
     type = ULib.cmds.NumArg
 }
 
-discordpoints:defaultAccess(ULib.ACCESS_ALL)
+discordpoints:defaultAccess(ULib.ACCESS_SUPERADMIN)
 discordpoints:help("Adiciona pontos pelo id do discord. Necessário pointshop.")
+
+local discordban = ulx.command(CATEGORY_NAME, "ulx discordban", function(ply, discordId, hours, reason)
+    local sid64 = DISCORD:GetSid64ById(discordId)
+    print("Banned user with discord '" .. discordId .. "' and id '" .. sid64 .. "' for " .. hours .. " hours")
+    ulx.banid(nil, util.SteamIDFrom64(sid64), hours * 60, reason)
+end)
+
+discordban:addParam{
+    type = ULib.cmds.StringArg,
+    hint = "Discord id"
+}
+
+discordban:addParam{
+    type = ULib.cmds.NumArg,
+    hint = "Hours"
+}
+
+discordban:addParam{
+    type = ULib.cmds.StringArg,
+    hint = "Reason"
+}
+
+discordban:defaultAccess(ULib.ACCESS_SUPERADMIN)
+discordban:help("Adiciona pontos pelo id do discord. Necessário pointshop.")
