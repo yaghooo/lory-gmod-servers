@@ -194,7 +194,7 @@ function ulx.tempadduserid64(calling_ply, target_id, group_name, exp_time, retur
             end)
         end
     else
-        ULib.ucl.addUser(util.SteamIDFrom64(target_id), userInfo.allow, userInfo.deny, group_name)
+        ULib.ucl.addUser(util.SteamIDFrom64(target_id), nil, nil, group_name)
         ulx.fancyLogAdmin(calling_ply, "#A added " .. target_id .. " to group #s for " .. exp_time .. " minutes.", group_name)
         ulx.CreateExpirationByID(target_id, exp_time, return_group_name)
     end
