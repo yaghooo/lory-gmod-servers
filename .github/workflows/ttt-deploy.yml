@@ -46,6 +46,9 @@ jobs:
       with:
         name: TTT
         path: addons
+    
+    - name: Reset changes
+      run: git reset --hard
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
