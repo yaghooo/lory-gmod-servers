@@ -5,6 +5,8 @@ local Player = FindMetaTable("Player")
 
 -- public functions
 function Player:PS_PlayerSpawn()
+    if not self.PS_Items then return end
+
     for item_id, item in pairs(self.PS_Items) do
         local ITEM = PS.Items[item_id]
 
