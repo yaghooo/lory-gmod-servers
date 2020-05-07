@@ -192,10 +192,12 @@ net.Receive("PS_ItemsData", function(length, ply)
         local keyed = {}
 
         for k, v in ipairs(itemsData) do
-            keyed[v.item_id] = true
-            itemsData[k].itemName = PS.Items[v.item_id].Name
-            itemsData[k].category = PS.Items[v.item_id].Category
-            itemsData[k].item_id = nil
+            if PS.Items[v.item_id] then
+                keyed[v.item_id] = true
+                itemsData[k].itemName = PS.Items[v.item_id].Name
+                itemsData[k].category = PS.Items[v.item_id].Category
+                itemsData[k].item_id = nil
+            end
         end
 
         for item_id, item in pairs(PS.Items) do
