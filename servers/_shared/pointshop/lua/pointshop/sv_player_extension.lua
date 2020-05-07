@@ -3,20 +3,8 @@ PS_ITEM_HOLSTER = 2
 PS_ITEM_MODIFY = 3
 local Player = FindMetaTable("Player")
 
--- private function
-local function fetchItemsIfNeeded(ply)
-    if IsValid(ply) and not ply.ItemsFetched then
-        ply.ItemsFetched = true
-
-        ply:PS_LoadData()
-        ply:PS_SendClientsideModels()
-    end
-end
-
 -- public functions
 function Player:PS_PlayerSpawn()
-    fetchItemsIfNeeded(self)
-
     for item_id, item in pairs(self.PS_Items) do
         local ITEM = PS.Items[item_id]
 
@@ -59,7 +47,10 @@ end
 function Player:PS_PlayerInitialSpawn()
     -- Send stuff
     timer.Simple(1, function()
-        fetchItemsIfNeeded(self)
+        if IsValid(self) then
+            self:PS_LoadData()
+            self:PS_SendClientsideModels()
+        end
     end)
 
     if PS.Config.NotifyOnJoin then
