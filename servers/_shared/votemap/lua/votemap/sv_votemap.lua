@@ -78,6 +78,7 @@ end
 
 function VOTEMAP:ChangeMap(map)
     VOTEMAP:WriteToEveryone("Trocando para o próximo mapa...")
+    file.Write("vote.txt", map)
     RunConsoleCommand("changelevel", map)
 end
 
