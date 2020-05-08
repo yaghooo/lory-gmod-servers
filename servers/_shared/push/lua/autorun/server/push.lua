@@ -24,6 +24,10 @@ end
 
 hook.Add("KeyPress", "Pushing", function(ply, key)
     if key == IN_USE and not pushs[ply:UserID()] then
+        if GhostMode and ply:IsGhost() then
+            return
+        end
+
         local playerHasPush = PS and ply:PS_HasItemEquipped("push")
         local playerHasAntiPush = PS and ply:PS_HasItemEquipped("antipush")
 

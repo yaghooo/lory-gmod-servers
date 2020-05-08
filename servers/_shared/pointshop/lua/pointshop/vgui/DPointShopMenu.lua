@@ -423,7 +423,7 @@ function MENU:RenderItemsStatistics()
 
     local addItemsData = function()
         for _, itemData in ipairs(PS.ItemsData) do
-            local line = itemsData:AddLine(itemData.itemName, itemData.category, itemData.total, itemData.equipped)
+            local line = itemsData:AddLine(itemData.itemName, itemData.category, tonumber(itemData.total), tonumber(itemData.equipped))
 
             for _, column in pairs(line.Columns) do
                 column:SetColor(color_white)

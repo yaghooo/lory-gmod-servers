@@ -19,6 +19,7 @@ function VOTEMAP:GetAvailableMaps()
 end
 
 function VOTEMAP:WriteToEveryone(msg)
+    print("[VOTEMAP] " .. msg)
     timer.Simple(0, function()
         for k, ply2 in ipairs(player.GetAll()) do
             ply2:ChatPrint("[<c=255,68,80>VOTEMAP</c>] " .. msg)
@@ -77,6 +78,7 @@ end
 
 function VOTEMAP:ChangeMap(map)
     VOTEMAP:WriteToEveryone("Trocando para o próximo mapa...")
+    file.Write("vote.txt", map)
     RunConsoleCommand("changelevel", map)
 end
 

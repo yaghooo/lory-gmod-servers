@@ -79,7 +79,7 @@ function PS:LoadItems()
 
             local files, _ = file.Find("pointshop/items/" .. category .. "/*.lua", "LUA")
 
-            for _, name in pairs(files) do
+            for _, name in SortedPairsByValue(files) do
                 if name ~= "__category.lua" then
                     if SERVER then
                         AddCSLuaFile("pointshop/items/" .. category .. "/" .. name)

@@ -2,6 +2,8 @@ if SERVER then
     local TEAM_GHOST = 5
     local GHOST_COMMAND = "ghost"
 
+    game.ConsoleCommand("mp_show_voice_icons 0")
+
     hook.Add("PlayerSay", "PlayerRequestGhostCheck", function(ply, text)
         text = string.lower(text)
 
