@@ -10,6 +10,10 @@ end
 ITEM.OnHolster = ITEM.OnEquip
 
 function ITEM:Modify(modifications)
+    if not modifications then
+        modifications = {}
+    end
+
     Derma_StringRequest("Texto", "Qual texto você quer que seu chapeu fale?", "", function(text)
         modifications.text = string.sub(text, 1, MaxTextLength)
         PS:ShowColorChooser(self, modifications)
