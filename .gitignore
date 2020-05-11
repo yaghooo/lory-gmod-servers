@@ -1,2 +1,4 @@
 /build
-/tool/node_modules
+/tool/target/
+/tool/Cargo.lock
+/tool/**/*.rs.bk
