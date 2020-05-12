@@ -5,7 +5,7 @@ end
 
 function GM:LoadSpawns()
     for listName, spawnList in pairs(TeamSpawns) do
-        local json = file.ReadDataAndContent("murder/" .. game.GetMap() .. "/spawns/" .. listName .. ".txt")
+        local json = file.ReadDataAndContent("murder/" .. game.GetMap() .. "/" .. listName .. ".txt")
 
         if json then
             local tbl = util.JSONToTable(json)
@@ -26,14 +26,10 @@ function GM:SaveSpawns()
         file.CreateDir("murder/" .. mapName)
     end
 
-    if not file.Exists("murder/" .. mapName .. "/spawns/", "DATA") then
-        file.CreateDir("murder/" .. mapName .. "/spawns")
-    end
-
     -- JSON
     for listName, spawnList in pairs(TeamSpawns) do
         local json = util.TableToJSON(spawnList)
-        file.Write("murder/" .. mapName .. "/spawns/" .. listName .. ".txt", json)
+        file.Write("murder/" .. mapName .. "/" .. listName .. ".txt", json)
     end
 end
 
