@@ -19,7 +19,8 @@ jobs:
     - name: Build ttt
       run: |
         cd bin
-        sudo lory build ttt
+        chmod -x ./lory
+        ./lory build ttt
         ls ../build
 
     - name: Upload artifact
