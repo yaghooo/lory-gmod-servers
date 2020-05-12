@@ -20,7 +20,7 @@ jobs:
       run: |
         cd bin
         sudo chmod 777 ./lory
-        ./lory build ttt
+        sudo ./lory build ttt
         ls ../build
 
     - name: Upload artifact
