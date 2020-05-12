@@ -16,15 +16,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Enter tool dir
-      run: |
-        cd tool
-
     - name: Build ttt
-      uses: actions-rs/cargo@v1.0.1
-      with:
-        command: run
-        args: build ttt
+      run: |
+        cd bin
+        sudo chmod 777 lory
+        sudo ./lory build ttt
+        ls ../build
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
