@@ -4,6 +4,8 @@ use std::path;
 mod helper;
 
 fn main() {
+    println!("Loading command");
+
     let args: Vec<String> = env::args().collect();
     let action = &args.get(1);
 
