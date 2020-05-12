@@ -19,7 +19,7 @@ jobs:
     - name: Build ttt
       run: |
         cd bin
-        chmod -x ./lory
+        sudo chmod 777 ./lory
         ./lory build ttt
         ls ../build
 
