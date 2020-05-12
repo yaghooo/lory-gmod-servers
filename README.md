@@ -12,7 +12,7 @@ Our file structure consists in that way:
 📦 /servers
 |__📁_debug // Addons used only on development environment, useful to monitor CPU/Mem
 |__📁_shared // Shared addons, all servers can use these addons
-|__📁{{server}} // Some server and specific addons for him
+|__📁{{server}} // Some server and specific addons for it
 |__📃.server-scheme.toml // Server configurations, define which addons a server should have
 ```
 
