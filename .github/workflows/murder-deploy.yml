@@ -19,8 +19,8 @@ jobs:
     - name: Build murder
       run: |
         cd bin
-        sudo chmod 777 lory
-        sudo ./lory build ttt
+        chmod 777 lory
+        ./lory build murder
         ls ../build
 
     - name: Upload artifact

@@ -19,8 +19,8 @@ jobs:
     - name: Build deathrun
       run: |
         cd bin
-        sudo chmod 777 lory
-        sudo ./lory build ttt
+        chmod 777 lory
+        ./lory build deathrun
         ls ../build
 
     - name: Upload artifact
