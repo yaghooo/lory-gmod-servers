@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
         path: build/murder/
    
   deploy:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     needs: [build]
 
     steps:
