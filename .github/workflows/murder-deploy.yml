@@ -11,16 +11,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v1.1.0
+      with:
+        version: '12.x'
 
     - name: Build murder
       run: |
-        cd bin
-        chmod 777 lory
-        ./lory build murder
+        cd tool
+        npm install
+        node index murder
         ls ../build
 
     - name: Upload artifact
@@ -30,7 +35,7 @@ jobs:
         path: build/murder/
    
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: [build]
 
     steps:

@@ -11,21 +11,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v1.1.0
-      with:
-        version: '12.x'
 
     - name: Build ttt
       run: |
-        cd tool
-        npm install
-        node index ttt
+        cd bin
+        chmod 777 lory
+        ./lory build ttt
         ls ../build
 
     - name: Upload artifact
@@ -35,7 +30,7 @@ jobs:
         path: build/ttt/
    
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [build]
 
     steps:
