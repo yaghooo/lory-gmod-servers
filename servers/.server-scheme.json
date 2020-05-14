@@ -1,0 +1,47 @@
+{
+    "developing": {
+        "murder": {
+            "paths": [
+                "_debug"
+            ]
+        },
+        "deathrun": {
+            "paths": [
+                "_debug"
+            ]
+        },
+        "ttt": {
+            "paths": [
+                "_debug"
+            ]
+        }
+    },
+    "production": {
+        "murder": {
+            "paths": [
+                "murder",
+                "_shared"
+            ]
+        },
+        "deathrun": {
+            "paths": [
+                "deathrun",
+                "_shared"
+            ]
+        },
+        "ttt": {
+            "paths": [
+                "ttt",
+                "_shared"
+            ],
+            "filters": [
+                "!voicechat-meter/**",
+                "!voicechat-charger/**",
+                "!records/**",
+                "!rewards/**",
+                "!csgo-custom-knives/**",
+                "!pointshop/**"
+            ]
+        }
+    }
+}
