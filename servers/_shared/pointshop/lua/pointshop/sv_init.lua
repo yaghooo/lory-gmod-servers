@@ -1,8 +1,8 @@
 function PS:LoadSounds()
-    local sounds = {"case_tick", "case_opened"}
+    local sounds = {"case_tick", "case_opened1", "case_opened2"}
 
     for _, v in pairs(sounds) do
-        resource.AddFile("sound/pointshop/" .. v .. ".wav")
+        resource.AddFile("sound/pointshop/" .. v .. ".mp3")
     end
 end
 
@@ -188,32 +188,33 @@ net.Receive("PS_ItemsData", function(length, ply)
     local allowed = PS.Config.AdminCanAccessAdminTab and ply:IsAdmin() or ply:IsSuperAdmin()
 
     if allowed then
-        local itemsData = PS.DataProvider:GetItemsStats()
-        local keyed = {}
+        PS.DataProvider:GetItemsStats(function(itemsData)
+            local keyed = {}
 
-        for k, v in ipairs(itemsData) do
-            if PS.Items[v.item_id] then
-                keyed[v.item_id] = true
-                itemsData[k].itemName = PS.Items[v.item_id].Name
-                itemsData[k].category = PS.Items[v.item_id].Category
-                itemsData[k].item_id = nil
+            for k, v in ipairs(itemsData) do
+                if PS.Items[v.item_id] then
+                    keyed[v.item_id] = true
+                    itemsData[k].itemName = PS.Items[v.item_id].Name
+                    itemsData[k].category = PS.Items[v.item_id].Category
+                    itemsData[k].item_id = nil
+                end
             end
-        end
 
-        for item_id, item in pairs(PS.Items) do
-            if not keyed[item_id] then
-                table.insert(itemsData, {
-                    itemName = item.Name,
-                    category = item.Category,
-                    total = 0,
-                    equipped = 0
-                })
+            for item_id, item in pairs(PS.Items) do
+                if not keyed[item_id] then
+                    table.insert(itemsData, {
+                        itemName = item.Name,
+                        category = item.Category,
+                        total = 0,
+                        equipped = 0
+                    })
+                end
             end
-        end
 
-        net.Start("PS_ItemsData")
-        net.WriteTable(itemsData)
-        net.Send(ply)
+            net.Start("PS_ItemsData")
+            net.WriteTable(itemsData)
+            net.Send(ply)
+        end)
     end
 end)
 

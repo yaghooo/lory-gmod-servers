@@ -8,7 +8,6 @@ end
 function BODYGROUP:SetData(item, modifications)
     self:SetSize(540, 525)
     self:MakePopup()
-
     local model = vgui.Create("DModelPanel", self)
     model:SetSize(self:GetWide() - 250, self:GetTall())
     model:SetFOV(30)
@@ -58,8 +57,8 @@ function BODYGROUP:SetData(item, modifications)
         chooser:SetDecimals(0)
         chooser:SetMax(max)
         chooser.BodyGroup = self
-
         bodyGroupsContainer:AddItem(chooser)
+
         return chooser
     end
 

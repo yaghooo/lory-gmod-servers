@@ -2,36 +2,56 @@ MENU = {}
 -- Constants
 MENU.Shop = "Loja"
 MENU.Inventory = "Inventário"
-MENU.Admin = "Admin"
+MENU.Miscellaneous = "Variados"
 MENU.Players = "Jogadores"
 MENU.ItemsStatistics = "Estatisticas dos items"
 MENU.Skins = "Skins"
 MENU.Settings = "Configurações"
+MENU.Marketplace = "Mercado"
 MENU.OwnedItems = true
 MENU.UnownedItems = false
 
-MENU.AdminCategories = {
-    {
-        Name = MENU.Players
+local function canAccessAdminTab()
+    return (PS.Config.AdminCanAccessAdminTab and LocalPlayer():IsAdmin()) or LocalPlayer():IsSuperAdmin()
+end
+
+MENU.MiscCategories = {
+    [MENU.Players] = {
+        CanAccess = canAccessAdminTab
     },
-    {
-        Name = MENU.ItemsStatistics
+    [MENU.ItemsStatistics] = {
+        CanAccess = canAccessAdminTab
+    },
+    [MENU.Marketplace] = {
+        CanAccess = function()
+            return PS.Config.IsMarketplaceEnabled
+        end
     }
 }
 
 function MENU:Init()
+    PS:RemoveHoverItem()
     -- Initial values
     self.CurrentTab = self.Shop
     self.TabHeight = 46
     self.ItemSize = 120
     self.ActionsHeight = 32
-    self:SetSize(ScrW() - 200, ScrH() - 100)
+    local screenHeight = ScrH()
+    local screenWidth = ScrW()
+
+    if screenHeight > 800 and screenWidth > 1000 then
+        screenHeight = screenHeight - 100
+        screenWidth = screenWidth - 200
+    end
+
+    self:SetSize(screenWidth, screenHeight)
     self:RenderPoints()
     self:RenderTitle()
     self:RenderCategories()
     self:RenderTabs()
     self.ContentWidth = self:GetWide() - self.CategoriesPanel:GetWide() - self.OutLineSize * 3 - 4 * 2
     self.ItemsContentWidth = (self.ContentWidth - self.ItemSize * 2 - self.ContentWidth % self.ItemSize) + 4 * 3
+    self:RenderActionsContainer()
     self:RenderPreview()
     self:RenderActions()
     local oldPaint = MENU.Paint
@@ -62,6 +82,35 @@ function MENU:RenderTitle()
     title:SetFont(THEME.Font.Coolvetica28)
     title:SetSize(title:GetTextSize(), 28)
     title:SetTextColor(THEME.Color.Primary)
+end
+
+function MENU:RenderTabs()
+    local tabs = {self.Shop, self.Inventory, self.Miscellaneous}
+    local categoriesSize = self.CategoriesPanel:GetWide()
+    local btnSize = (self:GetWide() - categoriesSize - self.OutLineSize * 3) / #tabs
+
+    for i, v in pairs(tabs) do
+        local btn = vgui.Create(THEME.Component.Button1, self)
+        btn:SetPos(categoriesSize + self.OutLineSize + (btnSize + 1) * (i - 1), self.HeaderSize + self.OutLineSize)
+        btn:SetSize(btnSize + 2, self.TabHeight)
+        btn:SetText(v)
+        btn:SetFont(THEME.Font.Coolvetica24)
+        btn.Menu = self
+
+        function btn:Think()
+            if self:GetText() == self.Menu.CurrentTab then
+                self:SetBackgroundColor(THEME.Color.Primary)
+            else
+                self:SetBackgroundColor(THEME.Color.LightSecondary)
+            end
+        end
+
+        function btn:DoClick()
+            if self.Menu.CurrentTab ~= self:GetText() then
+                self.Menu:SetTab(self:GetText())
+            end
+        end
+    end
 end
 
 function MENU:RenderCategories()
@@ -127,45 +176,10 @@ function MENU:RenderCategories()
             surface.SetFont(THEME.Font.Coolvetica18)
             surface.SetTextPos(padding, h / 2 - 18 / 2)
             surface.SetTextColor(color_white)
-            surface.DrawText(v.Name)
+            surface.DrawText(v.Name or k)
         end
 
         i = i + 1
-    end
-end
-
-function MENU:RenderTabs()
-    local tabs = {self.Shop, self.Inventory}
-    local canAccessAdminTab = (PS.Config.AdminCanAccessAdminTab and LocalPlayer():IsAdmin()) or LocalPlayer():IsSuperAdmin()
-
-    if canAccessAdminTab then
-        table.insert(tabs, self.Admin)
-    end
-
-    local categoriesSize = self.CategoriesPanel:GetWide()
-    local btnSize = (self:GetWide() - categoriesSize - self.OutLineSize * 2) / #tabs
-
-    for i, v in pairs(tabs) do
-        local btn = vgui.Create(THEME.Component.Button1, self)
-        btn:SetPos(categoriesSize + self.OutLineSize + btnSize * (i - 1), self.HeaderSize + self.OutLineSize)
-        btn:SetSize(btnSize, self.TabHeight)
-        btn:SetText(v)
-        btn:SetFont(THEME.Font.Coolvetica24)
-        btn.Menu = self
-
-        function btn:Think()
-            if self:GetText() == self.Menu.CurrentTab then
-                self:SetBackgroundColor(THEME.Color.Primary)
-            else
-                self:SetBackgroundColor(THEME.Color.LightSecondary)
-            end
-        end
-
-        function btn:DoClick()
-            if self.Menu.CurrentTab ~= self:GetText() then
-                self.Menu:SetTab(self:GetText())
-            end
-        end
     end
 end
 
@@ -200,6 +214,17 @@ function MENU:RenderItems()
             model.Menu = self
             model.State = getState(item)
 
+            function model:DoClick()
+                if self.Menu.CurrentItem ~= item then
+                    self.Menu.CurrentItem = item
+                    PS:SetHoverItem(item.ID)
+                else
+                    self.Menu.CurrentItem = nil
+                    PS:RemoveHoverItem()
+                end
+                self.Menu:RenderActions()
+            end
+
             function model:Think()
                 local state = getState(item)
 
@@ -232,9 +257,8 @@ function MENU:RenderPreview()
         self.Preview:Remove()
     end
 
-    self.Preview = vgui.Create("DPointShopPreview", self)
-    self.Preview:SetSize(self.ContentWidth - self.ItemsContentWidth - 4, self:GetTall() - self.HeaderSize - self.OutLineSize * 3 - self.ContainerPadding * 3 - self.ActionsHeight - 4 * 3)
-    self.Preview:SetPos(self:GetWide() - (self.ContentWidth - self.ItemsContentWidth) - 4 * 2, self.HeaderSize + self.OutLineSize + self.TabHeight + 4)
+    self.Preview = vgui.Create("DPointShopPreview", self.ActionsContainer)
+    self.Preview:Dock(FILL)
     local oldPaint = self.Preview.Paint
 
     self.Preview.Paint = function(s, pw, ph)
@@ -275,15 +299,87 @@ function MENU:RenderPreview()
 end
 
 function MENU:RenderActions()
-    if PS.Config.CanPlayersGivePoints then
-        local giveButton = vgui.Create(THEME.Component.Button1, self)
-        giveButton:SetText("Transferir " .. PS.Config.PointsName .. "s")
-        giveButton:SetSize(self.Preview:GetWide(), 32)
-        local previewX, previewY = self.Preview:GetPos()
-        giveButton:SetPos(previewX, previewY + self.Preview:GetTall() + 4 * 3)
+    -- Remove before render again, to avoid memory leaks
+    if self.ActionButtons then
+        for k, v in ipairs(self.ActionButtons) do
+            v:Remove()
+        end
+    end
 
-        giveButton.DoClick = function()
+    self.ActionButtons = {}
+
+    local createButton = function(text, callback, enabled)
+        local button = vgui.Create(THEME.Component.Button1, self.ActionsContainer)
+        button:SetText(text)
+        button:SetSize(self.ActionsContainer:GetWide(), 32)
+        button.DoClick = callback
+        button:Dock(BOTTOM)
+        button:DockMargin(0, 8, 0, 0)
+
+        if enabled == false then
+            button:SetDisabled(true)
+        end
+
+        table.insert(self.ActionButtons, button)
+    end
+
+    if PS.Config.CanPlayersGivePoints then
+        createButton("Transferir " .. PS.Config.PointsName .. "s", function()
             vgui.Create("DPointShopGivePoints")
+        end)
+    end
+
+    if self.CurrentItem then
+        local client = LocalPlayer()
+        local isInventory = self.CurrentTab == self.Inventory
+
+        if isInventory then
+            createButton("Vender " .. self.CurrentItem.Name, function()
+                Derma_Query("Tem certeza que quer vender " .. self.CurrentItem.Name .. "?", "Vender item", "Sim", function()
+                    client:PS_SellItem(self.CurrentItem.ID)
+                end, "Não", function() end)
+            end)
+
+            if PS.Config.CanPlayersGiveItems then
+                createButton("Enviar de presente", function()
+                    local giveItemPanel = vgui.Create("DPointShopGiveItem")
+                    giveItemPanel:SetItem(self.CurrentItem)
+                end)
+            end
+
+            if PS.Config.IsMarketplaceEnabled then
+                createButton("Anunciar no mercado", function()
+                    vgui.Create("DPointShopCreateMarketplace")
+                end)
+            end
+        else
+            createButton("Comprar " .. self.CurrentItem.Name, function()
+                Derma_Query("Tem certeza que quer comprar " .. self.CurrentItem.Name .. "?", "Comprar item", "Sim", function()
+                    client:PS_BuyItem(self.CurrentItem.ID)
+                end, "Não", function() end)
+            end, client:PS_HasPoints(PS.Config.CalculateBuyPrice(client, self.CurrentItem)))
+        end
+
+        if isInventory and self.CurrentItem.CanPlayerEquip then
+            if not self.CurrentItem.EquipLabel and client:PS_HasItemEquipped(self.CurrentItem.ID) then
+                createButton("Desequipar", function()
+                    client:PS_HolsterItem(self.CurrentItem.ID)
+                end)
+            else
+                createButton(self.CurrentItem.EquipLabel or "Equipar", function()
+                    client:PS_EquipItem(self.CurrentItem.ID)
+                end)
+            end
+
+            if client:PS_HasItemEquipped(self.CurrentItem.ID) and (self.CurrentItem.Modify or PS.Categories[self.CurrentCategory].Modify) then
+                createButton("Modificar", function()
+                    if self.CurrentItem.Modify then
+                        self.CurrentItem:Modify(client.PS_Items[self.CurrentItem.ID].Modifiers)
+                    elseif PS.Categories[self.CurrentCategory].Modify then
+                        PS.Categories[self.CurrentCategory]:Modify(client.PS_Items[self.CurrentItem.ID].Modifiers, PS.Categories[self.CurrentCategory])
+                    end
+                end)
+            end
         end
     end
 end
@@ -432,6 +528,7 @@ function MENU:RenderItemsStatistics()
     end
 
     local thinked = false
+
     function itemsData:Think()
         if PS.ItemsData and not thinked then
             thinked = true
@@ -454,27 +551,43 @@ function MENU:RenderItemsContainer()
     self.ItemsContainer:SetPos(self.CategoriesPanel:GetWide() + self.OutLineSize * 2 + 4, headerTabSize)
 end
 
+function MENU:RenderActionsContainer()
+    -- Remove before render again, to avoid memory leaks
+    if self.ActionsContainer then
+        self.ActionsContainer:Remove()
+    end
+
+    self.ActionsContainer = vgui.Create("EditablePanel", self)
+    self.ActionsContainer:SetSize(self.ContentWidth - self.ItemsContentWidth - 4, self:GetTall() - self.HeaderSize - self.OutLineSize * 3 - self.ContainerPadding * 3)
+    self.ActionsContainer:SetPos(self:GetWide() - (self.ContentWidth - self.ItemsContentWidth) - 4 * 2, self.HeaderSize + self.OutLineSize + self.TabHeight + 4)
+end
+
 function MENU:SetTab(tab)
+    self.CurrentItem = nil
+    PS:RemoveHoverItem()
     self.CurrentTab = tab
     self:SetCategory()
     self:RenderCategories()
+    self:RenderActions()
 end
 
 function MENU:SetCategory(category)
     self.CurrentCategory = category
     self:RenderItemsContainer()
 
-    if self.CurrentTab == self.Admin then
-        local currentCategoryName = self.CurrentCategory and self.AdminCategories[self.CurrentCategory].Name
+    if self.CurrentTab == self.Miscellaneous then
+        local currentCategoryName = self.CurrentCategory and self.MiscCategories[self.CurrentCategory]
 
-        if currentCategoryName == self.Players then
-            net.Start("PS_PlayersData")
-            net.SendToServer()
-            self:RenderPlayers()
-        elseif currentCategoryName == self.ItemsStatistics then
-            net.Start("PS_ItemsData")
-            net.SendToServer()
-            self:RenderItemsStatistics()
+        if currentCategoryName then
+            if currentCategoryName == self.Players then
+                net.Start("PS_PlayersData")
+                net.SendToServer()
+                self:RenderPlayers()
+            elseif currentCategoryName == self.ItemsStatistics then
+                net.Start("PS_ItemsData")
+                net.SendToServer()
+                self:RenderItemsStatistics()
+            end
         end
     else
         self:RenderItems()
@@ -482,7 +595,18 @@ function MENU:SetCategory(category)
 end
 
 function MENU:GetCategories()
-    if self.CurrentTab == self.Admin then return pairs(self.AdminCategories) end
+    if self.CurrentTab == self.Miscellaneous then
+        local availableCategories = {}
+
+        for k, v in pairs(self.MiscCategories) do
+            if not v.CanAccess or v.CanAccess() then
+                availableCategories[k] = v
+            end
+        end
+
+        return pairs(availableCategories)
+    end
+
     local categories = table.Copy(PS.Categories)
 
     if self.CurrentTab == self.Inventory then

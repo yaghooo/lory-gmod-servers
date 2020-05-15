@@ -3,17 +3,13 @@ local PANEL = {}
 function PANEL:Init()
 end
 
-function PANEL:SetData(wonItem, hasItem, readonly)
-    self:SetSize(500, readonly and 540 or 600)
+function PANEL:SetData(wonItem, hasItem)
+    self:SetSize(500, 600)
     self:MakePopup()
-
-    if not readonly then
-        local text = vgui.Create("DLabel", self)
-        text:SetSize(280, 32)
-        text:SetPos(self.ContainerPadding, 8)
-        text:SetText("Você ganhou uma " .. wonItem.Name .. "!")
-    end
-
+    local text = vgui.Create("DLabel", self)
+    text:SetSize(280, 32)
+    text:SetPos(self.ContainerPadding, 8)
+    text:SetText("Você ganhou uma " .. wonItem.Name .. "!")
     local category = PS:FindCategoryByName(wonItem.Category)
     local itemContainer = vgui.Create("DPanel", self)
     itemContainer:SetPos(self.ContainerPadding, self.HeaderSize)
@@ -61,26 +57,23 @@ function PANEL:SetData(wonItem, hasItem, readonly)
     end
 
     local min, max = itemModel.Entity:GetRenderBounds()
-    itemModel:SetCamPos(min:Distance(max) * Vector(0, 0, 0) + Vector(0, 25, 0))
+    itemModel:SetCamPos(min:Distance(max) * Vector() + Vector(0, 25, 0))
     itemModel:SetLookAt((max + min) / 2 + Vector(0, -25, 0))
+    local sell = vgui.Create(THEME.Component.Button1, self)
+    sell:SetSize(self:GetWide() - self.ContainerPadding * 2, 40)
+    sell:SetPos(self.ContainerPadding, self:GetTall() - sell:GetTall() - self.ContainerPadding)
+    sell:SetBackgroundColor(THEME.Color.Success)
+    sell:SetDisabled(hasItem)
 
-    if not readonly then
-        local sell = vgui.Create(THEME.Component.Button1, self)
-        sell:SetSize(self:GetWide() - self.ContainerPadding * 2, 40)
-        sell:SetPos(self.ContainerPadding, self:GetTall() - sell:GetTall() - self.ContainerPadding)
-        sell:SetBackgroundColor(THEME.Color.Success)
-        sell:SetDisabled(hasItem)
+    if hasItem then
+        sell:SetText("Você já possui! Vendido automaticamente.")
+    else
+        sell:SetText("Vender: " .. PS.Config.CalculateSellPrice(LocalPlayer(), wonItem) .. " " .. PS.Config.PointsName)
+    end
 
-        if hasItem then
-            sell:SetText("Você já possui! Vendido automaticamente.")
-        else
-            sell:SetText("Vender: " .. PS.Config.CalculateSellPrice(LocalPlayer(), wonItem) .. " " .. PS.Config.PointsName)
-        end
-
-        sell.DoClick = function()
-            LocalPlayer():PS_SellItem(wonItem.ID)
-            self:Close()
-        end
+    sell.DoClick = function()
+        LocalPlayer():PS_SellItem(wonItem.ID)
+        self:Close()
     end
 end
 

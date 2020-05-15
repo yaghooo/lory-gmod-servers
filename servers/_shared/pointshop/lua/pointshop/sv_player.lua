@@ -1,5 +1,7 @@
-function PS:GetPlayerPoints(ply)
-    return self.DataProvider:GetPoints(ply:SteamID64())
+function PS:GetPlayerPoints(ply, callback)
+    self.DataProvider:GetPoints(ply:SteamID64(), function(points)
+        callback(points)
+    end)
 end
 
 function PS:SetPlayerPoints(ply, points)
@@ -14,37 +16,38 @@ function PS:TakePlayerPoints(ply, points)
     self.DataProvider:TakePoints(ply:SteamID64(), points)
 end
 
-function PS:GetPlayerItems(ply)
-    local plainItems = self.DataProvider:GetItems(ply:SteamID64())
-    local inventory = {}
+function PS:GetPlayerItems(ply, callback)
+    self.DataProvider:GetItems(ply:SteamID64(), function(plainItems)
+        local inventory = {}
 
-    for k, v in ipairs(plainItems) do
-        local ITEM = self.Items[v.item_id]
+        for k, v in ipairs(plainItems) do
+            local ITEM = self.Items[v.item_id]
 
-        if ITEM then
-            local currentItem
-            local canHaveMultiple = self:FindCategoryByName(ITEM.Category).CanHaveMultiples
+            if ITEM then
+                local currentItem
+                local canHaveMultiple = self:FindCategoryByName(ITEM.Category).CanHaveMultiples
 
-            if canHaveMultiple then
-                currentItem = inventory[v.item_id] or {}
-                table.insert(currentItem, {})
-            else
-                currentItem = {}
+                if canHaveMultiple then
+                    currentItem = inventory[v.item_id] or {}
+                    table.insert(currentItem, {})
+                else
+                    currentItem = {}
 
-                if v.equipped ~= nil then
-                    currentItem.Equipped = tobool(v.equipped)
+                    if v.equipped ~= nil then
+                        currentItem.Equipped = tobool(v.equipped)
+                    end
+
+                    if v.modifiers ~= nil then
+                        currentItem.Modifiers = util.JSONToTable(v.modifiers)
+                    end
                 end
 
-                if v.modifiers ~= nil then
-                    currentItem.Modifiers = util.JSONToTable(v.modifiers)
-                end
+                inventory[v.item_id] = currentItem
             end
-
-            inventory[v.item_id] = currentItem
         end
-    end
 
-    return inventory
+        callback(inventory)
+    end)
 end
 
 function PS:GivePlayerItem(ply, item_id)

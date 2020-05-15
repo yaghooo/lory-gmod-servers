@@ -18,11 +18,11 @@ executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
     `points` INTEGER
 )]], POINTS_TABLE_NAME)
 
-function provider:GetPoints(sid64)
+function provider:GetPoints(sid64, callback)
     local query = [[SELECT points FROM `%s` WHERE sid64 = '%s' LIMIT 1]]
     local result = executeQuery(query, POINTS_TABLE_NAME, sid64)
 
-    return result and result[1] and tonumber(result[1]["points"]) or 0
+    callback(result and result[1] and tonumber(result[1]["points"]) or 0)
 end
 
 function provider:SetPoints(sid64, points)
@@ -59,11 +59,11 @@ executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
     `equipped` BOOLEAN
 )]], ITEMS_TABLE_NAME)
 
-function provider:GetItems(sid64)
+function provider:GetItems(sid64, callback)
     local query = [[SELECT * FROM `%s` WHERE sid64 = '%s']]
     local result = executeQuery(query, ITEMS_TABLE_NAME, sid64)
 
-    return result or {}
+    callback(result or {})
 end
 
 function provider:GiveItem(sid64, item_id)
@@ -90,11 +90,11 @@ function provider:TakeItem(sid64, item_id)
     executeQuery(query, ITEMS_TABLE_NAME, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
 end
 
-function provider:GetItemsStats()
+function provider:GetItemsStats(callback)
     local query = [[
         SELECT item_id, COUNT(*) as total, COUNT(case when equipped = 1 then 1 else NULL end) as equipped FROM `%s` GROUP BY item_id
     ]]
-    return executeQuery(query, ITEMS_TABLE_NAME)
+    callback(executeQuery(query, ITEMS_TABLE_NAME))
 end
 
 PS.DataProvider = provider

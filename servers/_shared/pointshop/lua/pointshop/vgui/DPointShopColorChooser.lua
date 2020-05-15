@@ -2,11 +2,9 @@ local COLOR = {}
 
 function COLOR:Init()
     self:SetSize(400, 400)
-
     self.colorChooser = vgui.Create("DColorMixer", self)
     self.colorChooser:SetSize(self:GetWide() - self.ContainerPadding * 2, self:GetTall() - self.HeaderSize - self.ContainerPadding)
     self.colorChooser:SetPos(self.ContainerPadding, self.HeaderSize)
-
     self:MakePopup()
 end
 
