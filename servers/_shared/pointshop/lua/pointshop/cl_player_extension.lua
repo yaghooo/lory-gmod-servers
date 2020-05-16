@@ -13,6 +13,10 @@ function Player:PS_HasItemEquipped(item_id)
     return self:PS_HasItem(item_id) and self.PS_Items[item_id].Equipped
 end
 
+function Player:PS_HasItemAnnounced(item_id)
+    return self:PS_HasItem(item_id) and self.PS_Items[item_id].Announced
+end
+
 function Player:PS_BuyItem(item_id)
     local item = PS.Items[item_id]
     local category = PS:FindCategoryByName(item.Category)

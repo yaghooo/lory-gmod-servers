@@ -95,6 +95,20 @@ net.Receive("PS_SendItem", function(length, ply)
     ply.PS_LastGavePoints = CurTime()
 end)
 
+net.Receive("PS_CreateMarketplace", function(lenght, ply)
+    local id = net.ReadString()
+    local price = net.ReadInt(32)
+
+    for k, v in pairs(ply.PS_Items) do
+        if v.ID == id then
+            v.Announced = true
+            PS.DataProvider:SetAnnounce(id, os.time(), price)
+            ply:PS_SendItems()
+            return
+        end
+    end
+end)
+
 -- admin points
 net.Receive("PS_GivePoints", function(length, ply)
     local other = net.ReadEntity()
@@ -190,6 +204,7 @@ net.Receive("PS_ItemsData", function(length, ply)
     if allowed then
         PS.DataProvider:GetItemsStats(function(itemsData)
             local keyed = {}
+            itemsData = itemsData or {}
 
             for k, v in ipairs(itemsData) do
                 if PS.Items[v.item_id] then
@@ -287,6 +302,7 @@ end
 -- ugly networked strings
 util.AddNetworkString("PS_Items")
 util.AddNetworkString("PS_Points")
+util.AddNetworkString("PS_CreateMarketplace")
 util.AddNetworkString("PS_PlayersData")
 util.AddNetworkString("PS_ItemsData")
 util.AddNetworkString("PS_BuyItem")

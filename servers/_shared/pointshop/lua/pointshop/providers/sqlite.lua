@@ -56,7 +56,9 @@ executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
     `sid64` STRING,
     `item_id` STRING,
     `modifiers` STRING,
-    `equipped` BOOLEAN
+    `equipped` BOOLEAN,
+    `annouce_date` INTEGER,
+    `marketplace_price` INTEGER
 )]], ITEMS_TABLE_NAME)
 
 function provider:GetItems(sid64, callback)
@@ -84,10 +86,15 @@ end
 function provider:TakeItem(sid64, item_id)
     local query = [[
         DELETE FROM `%s` WHERE id = (
-            SELECT id FROM %s WHERE sid64 = '%s' AND item_id = %s LIMIT 1
+            SELECT id FROM `%s` WHERE sid64 = '%s' AND item_id = %s LIMIT 1
         )
     ]]
     executeQuery(query, ITEMS_TABLE_NAME, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
+end
+
+function provider:SetAnnounce(id, date, price)
+    local query = [[UPDATE `%s` SET annouce_date = '%s', marketplace_price = '%s' WHERE id = '%s']]
+    executeQuery(query, ITEMS_TABLE_NAME, date, price, id)
 end
 
 function provider:GetItemsStats(callback)

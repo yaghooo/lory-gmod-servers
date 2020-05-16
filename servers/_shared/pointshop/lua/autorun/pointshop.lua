@@ -35,7 +35,7 @@ else
     include("pointshop/vgui/DPointShopGivePoints.lua")
     include("pointshop/vgui/DPointShopGiveItem.lua")
     include("pointshop/vgui/DPointShopBodygroupChooser.lua")
-    AddCSLuaFile("pointshop/vgui/DPointShopCreateMarketplace.lua")
+    include("pointshop/vgui/DPointShopCreateMarketplace.lua")
 end
 
 if PS then

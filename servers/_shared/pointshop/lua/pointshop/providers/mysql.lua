@@ -82,6 +82,11 @@ function provider:TakeItem(sid64, item_id)
     executeQuery(nil, query, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
 end
 
+function provider:SetAnnounce(id, date, price)
+    local query = [[UPDATE `%s` SET annouce_date = '%s', marketplace_price = '%s' WHERE id = '%s']]
+    executeQuery(nil, query, ITEMS_TABLE_NAME, date, price, id)
+end
+
 function provider:GetItemsStats(callback)
     local query = [[
         SELECT item_id, COUNT(*) as total, COUNT(case when equipped = 1 then 1 else NULL end) as equipped FROM `%s` GROUP BY item_id

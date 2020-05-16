@@ -23,9 +23,7 @@ MENU.MiscCategories = {
         CanAccess = canAccessAdminTab
     },
     [MENU.Marketplace] = {
-        CanAccess = function()
-            return PS.Config.IsMarketplaceEnabled
-        end
+        CanAccess = function() return PS.Config.IsMarketplaceEnabled end
     }
 }
 
@@ -197,7 +195,7 @@ function MENU:RenderItems()
         local isInventory = self.CurrentTab == self.Inventory
 
         local getState = function(item)
-            if isInventory == client:PS_HasItem(item.ID) and not category.CanHaveMultiples then
+            if isInventory == client:PS_HasItem(item.ID) and not category.CanHaveMultiples and not client:PS_HasItemAnnounced(item.ID) then
                 return true
             elseif isInventory then
                 local currentItems = client:PS_GetItems()
@@ -222,7 +220,6 @@ function MENU:RenderItems()
                     self.Menu.CurrentItem = nil
                     PS:RemoveHoverItem()
                 end
-                self.Menu:RenderActions()
             end
 
             function model:Think()
@@ -238,7 +235,7 @@ function MENU:RenderItems()
         end
 
         for k, item in SortedPairsByMemberValue(PS.Items, PS.Config.SortItemsBy) do
-            if item.Category == category.Name and (category.CanHaveMultiples or isInventory == client:PS_HasItem(k)) then
+            if item.Category == category.Name and (category.CanHaveMultiples or isInventory == client:PS_HasItem(k)) and not client:PS_HasItemAnnounced(item.ID) then
                 if isInventory and category.CanHaveMultiples and client:PS_HasItem(k) then
                     for i = 1, #userItems[k] do
                         addItem(item)
@@ -299,13 +296,7 @@ function MENU:RenderPreview()
 end
 
 function MENU:RenderActions()
-    -- Remove before render again, to avoid memory leaks
-    if self.ActionButtons then
-        for k, v in ipairs(self.ActionButtons) do
-            v:Remove()
-        end
-    end
-
+    local client = LocalPlayer()
     self.ActionButtons = {}
 
     local createButton = function(text, callback, enabled)
@@ -323,62 +314,86 @@ function MENU:RenderActions()
         table.insert(self.ActionButtons, button)
     end
 
-    if PS.Config.CanPlayersGivePoints then
-        createButton("Transferir " .. PS.Config.PointsName .. "s", function()
-            vgui.Create("DPointShopGivePoints")
-        end)
-    end
+    local lastItemState = nil
 
-    if self.CurrentItem then
-        local client = LocalPlayer()
+    function self:Think()
         local isInventory = self.CurrentTab == self.Inventory
+        local newItemState = not self.CurrentItem or isInventory and client.PS_Items[self.CurrentItem.ID] or self.CurrentItem.ID
 
-        if isInventory then
-            createButton("Vender " .. self.CurrentItem.Name, function()
-                Derma_Query("Tem certeza que quer vender " .. self.CurrentItem.Name .. "?", "Vender item", "Sim", function()
-                    client:PS_SellItem(self.CurrentItem.ID)
-                end, "Não", function() end)
-            end)
+        if lastItemState ~= newItemState then
+            lastItemState = newItemState
 
-            if PS.Config.CanPlayersGiveItems then
-                createButton("Enviar de presente", function()
-                    local giveItemPanel = vgui.Create("DPointShopGiveItem")
-                    giveItemPanel:SetItem(self.CurrentItem)
+            -- Remove before render again, to avoid memory leaks
+            if self.ActionButtons then
+                for k, v in ipairs(self.ActionButtons) do
+                    v:Remove()
+                end
+            end
+
+            self.ActionButtons = {}
+
+            if PS.Config.CanPlayersGivePoints then
+                createButton("Transferir " .. PS.Config.PointsName .. "s", function()
+                    vgui.Create("DPointShopGivePoints")
                 end)
             end
 
-            if PS.Config.IsMarketplaceEnabled then
-                createButton("Anunciar no mercado", function()
-                    vgui.Create("DPointShopCreateMarketplace")
-                end)
-            end
-        else
-            createButton("Comprar " .. self.CurrentItem.Name, function()
-                Derma_Query("Tem certeza que quer comprar " .. self.CurrentItem.Name .. "?", "Comprar item", "Sim", function()
-                    client:PS_BuyItem(self.CurrentItem.ID)
-                end, "Não", function() end)
-            end, client:PS_HasPoints(PS.Config.CalculateBuyPrice(client, self.CurrentItem)))
-        end
+            if self.CurrentItem then
+                if isInventory then
+                    local price = PS.Config.CalculateSellPrice(client, self.CurrentItem)
 
-        if isInventory and self.CurrentItem.CanPlayerEquip then
-            if not self.CurrentItem.EquipLabel and client:PS_HasItemEquipped(self.CurrentItem.ID) then
-                createButton("Desequipar", function()
-                    client:PS_HolsterItem(self.CurrentItem.ID)
-                end)
-            else
-                createButton(self.CurrentItem.EquipLabel or "Equipar", function()
-                    client:PS_EquipItem(self.CurrentItem.ID)
-                end)
-            end
+                    createButton("Vender " .. self.CurrentItem.Name .. " (" .. price .. ")", function()
+                        Derma_Query("Tem certeza que quer vender " .. self.CurrentItem.Name .. "?", "Vender item", "Sim", function()
+                            client:PS_SellItem(self.CurrentItem.ID)
+                            self.CurrentItem = nil
+                        end, "Não", function() end)
+                    end)
 
-            if client:PS_HasItemEquipped(self.CurrentItem.ID) and (self.CurrentItem.Modify or PS.Categories[self.CurrentCategory].Modify) then
-                createButton("Modificar", function()
-                    if self.CurrentItem.Modify then
-                        self.CurrentItem:Modify(client.PS_Items[self.CurrentItem.ID].Modifiers)
-                    elseif PS.Categories[self.CurrentCategory].Modify then
-                        PS.Categories[self.CurrentCategory]:Modify(client.PS_Items[self.CurrentItem.ID].Modifiers, PS.Categories[self.CurrentCategory])
+                    if PS.Config.CanPlayersGiveItems then
+                        createButton("Enviar de presente", function()
+                            local giveItemPanel = vgui.Create("DPointShopGiveItem")
+                            giveItemPanel:SetItem(self.CurrentItem)
+                        end, not client:PS_HasItemEquipped(self.CurrentItem.ID))
                     end
-                end)
+
+                    if PS.Config.IsMarketplaceEnabled then
+                        createButton("Anunciar no mercado", function()
+                            local createMarketplace = vgui.Create("DPointShopCreateMarketplace")
+                            createMarketplace:SetItemId(client.PS_Items[self.CurrentItem.ID].ID)
+                        end, not client:PS_HasItemEquipped(self.CurrentItem.ID))
+                    end
+                else
+                    local price = PS.Config.CalculateBuyPrice(client, self.CurrentItem)
+
+                    createButton("Comprar " .. self.CurrentItem.Name .. " (" .. price .. ")", function()
+                        Derma_Query("Tem certeza que quer comprar " .. self.CurrentItem.Name .. "?", "Comprar item", "Sim", function()
+                            client:PS_BuyItem(self.CurrentItem.ID)
+                            self.CurrentItem = nil
+                        end, "Não", function() end)
+                    end, client:PS_HasPoints(price))
+                end
+
+                if isInventory and self.CurrentItem.CanPlayerEquip then
+                    if self.CurrentItem.Modify or PS.Categories[self.CurrentCategory].Modify then
+                        createButton("Modificar", function()
+                            if self.CurrentItem.Modify then
+                                self.CurrentItem:Modify(client.PS_Items[self.CurrentItem.ID].Modifiers)
+                            elseif PS.Categories[self.CurrentCategory].Modify then
+                                PS.Categories[self.CurrentCategory]:Modify(client.PS_Items[self.CurrentItem.ID].Modifiers, self.CurrentItem)
+                            end
+                        end)
+                    end
+
+                    if not self.CurrentItem.EquipLabel and client:PS_HasItemEquipped(self.CurrentItem.ID) then
+                        createButton("Desequipar", function()
+                            client:PS_HolsterItem(self.CurrentItem.ID)
+                        end)
+                    else
+                        createButton(self.CurrentItem.EquipLabel or "Equipar", function()
+                            client:PS_EquipItem(self.CurrentItem.ID)
+                        end)
+                    end
+                end
             end
         end
     end
@@ -568,7 +583,6 @@ function MENU:SetTab(tab)
     self.CurrentTab = tab
     self:SetCategory()
     self:RenderCategories()
-    self:RenderActions()
 end
 
 function MENU:SetCategory(category)
@@ -576,18 +590,14 @@ function MENU:SetCategory(category)
     self:RenderItemsContainer()
 
     if self.CurrentTab == self.Miscellaneous then
-        local currentCategoryName = self.CurrentCategory and self.MiscCategories[self.CurrentCategory]
-
-        if currentCategoryName then
-            if currentCategoryName == self.Players then
-                net.Start("PS_PlayersData")
-                net.SendToServer()
-                self:RenderPlayers()
-            elseif currentCategoryName == self.ItemsStatistics then
-                net.Start("PS_ItemsData")
-                net.SendToServer()
-                self:RenderItemsStatistics()
-            end
+        if self.CurrentCategory == self.Players then
+            net.Start("PS_PlayersData")
+            net.SendToServer()
+            self:RenderPlayers()
+        elseif self.CurrentCategory == self.ItemsStatistics then
+            net.Start("PS_ItemsData")
+            net.SendToServer()
+            self:RenderItemsStatistics()
         end
     else
         self:RenderItems()
@@ -625,7 +635,7 @@ function MENU:UserHasItemOnCategory(category)
     if not category then return false end
 
     for k, item in pairs(userItems) do
-        if PS.Items[k] and PS.Items[k].Category == category.Name then return true end
+        if PS.Items[k] and PS.Items[k].Category == category.Name and not item.Announced then return true end
     end
 
     return false

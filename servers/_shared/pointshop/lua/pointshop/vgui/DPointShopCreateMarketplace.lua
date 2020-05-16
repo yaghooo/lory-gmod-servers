@@ -1,7 +1,7 @@
 local PANEL = {}
 
 function PANEL:Init()
-    self:SetSize(400, 200)
+    self:SetSize(400, 130)
     self:MakePopup()
     self:SetDrawOnTop(true)
     self:RenderPointsInput()
@@ -12,7 +12,7 @@ function PANEL:RenderPointsInput()
     local pointsLabel = vgui.Create("DLabel", self)
     pointsLabel:SetText(PS.Config.PointsName .. ":")
     pointsLabel:Dock(TOP)
-    pointsLabel:DockMargin(self.ContainerPadding, 10, self.ContainerPadding, 4)
+    pointsLabel:DockMargin(self.ContainerPadding, 30, self.ContainerPadding, 4)
     pointsLabel:SizeToContents()
     self.PointsInput = vgui.Create("DNumberWang", self)
     self.PointsInput:SetTextColor(color_black)
@@ -23,7 +23,6 @@ function PANEL:RenderPointsInput()
 
     self.PointsInput.OnValueChanged = function(s, value)
         self.SelectedValue = tonumber(value)
-        self:Update()
     end
 end
 
@@ -34,12 +33,15 @@ function PANEL:RenderSubmitButton()
     submitContainer:Dock(BOTTOM)
     self.SubmitButton = vgui.Create("DButton", submitContainer)
     self.SubmitButton:SetText("")
-    self.SubmitButton:SetDisabled(true)
     self.SubmitButton:Dock(RIGHT)
     self.SubmitButton:SetSize(100, self.SubmitButton:GetTall())
 
     self.SubmitButton.DoClick = function()
-        print(":O")
+        net.Start("PS_CreateMarketplace")
+        net.WriteString(self.ItemId)
+        net.WriteInt(self.SelectedValue, 32)
+        net.SendToServer()
+        self:Close()
     end
 
     function self.SubmitButton:Paint(w, h)
@@ -49,6 +51,10 @@ function PANEL:RenderSubmitButton()
         draw.RoundedBox(0, 2, 2, w - 4, h - 4, ColorAlpha(THEME.Color.Success, opc))
         draw.SimpleText("Enviar", THEME.Font.Coolvetica20, w / 2, h / 2, ColorAlpha(color_white, opc), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
+end
+
+function PANEL:SetItemId(id)
+    self.ItemId = id
 end
 
 vgui.Register("DPointShopCreateMarketplace", PANEL, THEME.Component.Page)

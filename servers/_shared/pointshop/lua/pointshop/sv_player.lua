@@ -29,9 +29,13 @@ function PS:GetPlayerItems(ply, callback)
 
                 if canHaveMultiple then
                     currentItem = inventory[v.item_id] or {}
-                    table.insert(currentItem, {})
+                    table.insert(currentItem, {
+                        ID = v.id
+                    })
                 else
-                    currentItem = {}
+                    currentItem = {
+                        ID = v.id
+                    }
 
                     if v.equipped ~= nil then
                         currentItem.Equipped = tobool(v.equipped)
