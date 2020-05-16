@@ -48,7 +48,7 @@ jobs:
         path: addons
 
     - name: Upload addons
-      uses: SamKirkland/FTP-Deploy-Action@3.0.0
+      uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
