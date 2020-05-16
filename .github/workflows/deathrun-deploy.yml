@@ -57,7 +57,7 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
-        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
+        ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
         local-dir: addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
