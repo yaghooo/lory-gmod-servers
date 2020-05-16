@@ -50,7 +50,7 @@ function DOWNLOADER:AddWorkshopResources()
 
             if shouldAdd then
                 resource.AddWorkshop(addon.wsid)
-                print("[DOWNLOADER] ADDING RESOURCE FOR:  " .. addon.title)
+                print("[DOWNLOADER] ADDING RESOURCE FOR '" .. addon.title .. "' WITH WSID '" .. addon.wsid .. "'")
             end
         end
     end
