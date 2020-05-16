@@ -89,10 +89,15 @@ function Player:PS_PlayerDisconnected()
 end
 
 function Player:PS_LoadData()
-    self.PS_Points = PS:GetPlayerPoints(self)
-    self.PS_Items = PS:GetPlayerItems(self)
-    self:PS_SendPoints()
-    self:PS_SendItems()
+    PS:GetPlayerPoints(self, function(points)
+        self.PS_Points = points
+        self:PS_SendPoints()
+    end)
+
+    PS:GetPlayerItems(self, function(items)
+        self.PS_Items = items
+        self:PS_SendItems()
+    end)
 end
 
 -- points
@@ -123,7 +128,7 @@ function Player:PS_HasPoints(points)
 end
 
 function Player:PS_IsElegibleForDouble()
-    return string.match(string.lower(self:GetName()), "lory") or self:PS_HasItemEquipped("faketag")
+    return string.match(string.lower(self:GetName()), "lory") or self:PS_HasItemEquipped("doublepoints")
 end
 
 -- give/take items

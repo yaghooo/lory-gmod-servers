@@ -7,7 +7,6 @@ end
 function PANEL:SetItem(item)
     self.Item = item
     self:SetSize(400, 150)
-
     self:RenderPlayerInput()
     self:RenderSubmitButton()
 end
@@ -18,7 +17,6 @@ function PANEL:RenderPlayerInput()
     playerLabel:Dock(TOP)
     playerLabel:DockMargin(self.ContainerPadding, self.HeaderSize - 10, self.ContainerPadding, 4)
     playerLabel:SizeToContents()
-
     self.SelectedUserUniqueId = nil
     local players = vgui.Create("DComboBox", self)
     players:SetValue("Selecionar jogador")
@@ -46,7 +44,6 @@ function PANEL:RenderSubmitButton()
     submitContainer:SetPaintBackground(false)
     submitContainer:DockMargin(0, 0, self.ContainerPadding, self.ContainerPadding)
     submitContainer:Dock(BOTTOM)
-
     self.SubmitButton = vgui.Create("DButton", submitContainer)
     self.SubmitButton:SetText("")
     self.SubmitButton:SetDisabled(true)
@@ -55,9 +52,7 @@ function PANEL:RenderSubmitButton()
 
     self.SubmitButton.DoClick = function()
         local other = player.GetBySteamID64(self.SelectedUserUniqueId)
-
         if not IsValid(other) then return end -- player could have left
-
         net.Start("PS_SendItem")
         net.WriteEntity(other)
         net.WriteString(self.Item.ID)

@@ -2,9 +2,9 @@ local PANEL = {}
 
 function PANEL:Init()
     self:SetCurrentModel()
-    local PrevMins, PrevMaxs = self.Entity:GetRenderBounds()
-    self:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.30, 0.30, 0.25) + Vector(0, 0, 20))
-    self:SetLookAt((PrevMaxs + PrevMins) / 2)
+    self.PrevMins, self.PrevMaxs = self.Entity:GetRenderBounds()
+    self:SetCamPos(self.PrevMins:Distance(self.PrevMaxs) * Vector(0.30, 0.30, 0.25) + Vector(0, 0, 20))
+    self:SetLookAt((self.PrevMaxs + self.PrevMins) / 2)
 end
 
 function PANEL:Paint()
@@ -49,29 +49,30 @@ end
 
 function PANEL:DrawOtherModels()
     local ply = LocalPlayer()
+    local ITEM = PS.HoverModel and PS.Items[PS.HoverModel]
 
-    if PS.ClientsideModels[ply] then
+    if (not ITEM or not ITEM.WeaponClass) and PS.ClientsideModels[ply] then
         for item_id, model in pairs(PS.ClientsideModels[ply]) do
-            local ITEM = PS.Items[item_id]
+            local modelItem = PS.Items[item_id]
 
-            if ITEM.Attachment or ITEM.Bone then
+            if modelItem.Attachment or modelItem.Bone then
                 local pos = Vector()
                 local ang = Angle()
 
-                if ITEM.Attachment then
-                    local attach_id = self.Entity:LookupAttachment(ITEM.Attachment)
+                if modelItem.Attachment then
+                    local attach_id = self.Entity:LookupAttachment(modelItem.Attachment)
                     if not attach_id then return end
                     local attach = self.Entity:GetAttachment(attach_id)
                     if not attach then return end
                     pos = attach.Pos
                     ang = attach.Ang
                 else
-                    local bone_id = self.Entity:LookupBone(ITEM.Bone)
+                    local bone_id = self.Entity:LookupBone(modelItem.Bone)
                     if not bone_id then return end
                     pos, ang = self.Entity:GetBonePosition(bone_id)
                 end
 
-                model, pos, ang = ITEM:ModifyClientsideModel(ply, model, pos, ang)
+                model, pos, ang = modelItem:ModifyClientsideModel(ply, model, pos, ang)
                 model:SetRenderOrigin(pos)
                 model:SetRenderAngles(ang)
                 model:SetupBones()
@@ -82,14 +83,24 @@ function PANEL:DrawOtherModels()
         end
     end
 
-    if PS.HoverModel then
-        local ITEM = PS.Items[PS.HoverModel]
+    self:SetFOV(60)
+    self:SetCamPos(self.PrevMins:Distance(self.PrevMaxs) * Vector(0.30, 0.30, 0.25) + Vector(0, 0, 20))
+    self:SetLookAt((self.PrevMaxs + self.PrevMins) / 2)
+
+    if ITEM then
         if ITEM.NoPreview then return end -- don't show
-        if ITEM.WeaponClass then return end -- hack for weapons
 
         -- must be a playermodel?
         if not ITEM.Attachment and not ITEM.Bone then
             self:SetModel(ITEM.Model)
+
+            if ITEM.WeaponClass then
+                self:GetEntity():SetSkin(ITEM.Skin or 0)
+                self:GetEntity():SetMaterial(ITEM.PaintMaterial or nil)
+                self:SetFOV(50)
+                self:SetCamPos(self.PrevMins:Distance(self.PrevMaxs) * Vector() + Vector(0, 25, 0))
+                self:SetLookAt((self.PrevMaxs + self.PrevMins) / 2 + Vector(0, -25, 0))
+            end
         else
             local model = PS.HoverModelClientsideModel
             local pos = Vector()

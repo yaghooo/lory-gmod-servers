@@ -24,7 +24,7 @@ function PS:SetHoverItem(item_id)
     end
 end
 
-function PS:RemoveHoverItem()
+function PS:RemoveHoverItem(item_id)
     self.HoverModel = nil
     self.HoverModelClientsideModel = nil
 end

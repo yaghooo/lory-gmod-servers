@@ -128,13 +128,10 @@ function PANEL:Think()
 
         local curItemValue = math.floor((self.TapePosition + self.ItemPanSize) / self.ItemPanSize)
 
-        if curItemValue ~= self.PrevItemValue then
+        if curItemValue ~= self.PrevItemValue and self.Time > 0.1 then
+            LocalPlayer():EmitSound("pointshop/case_tick.mp3")
+            self.Time = 0
             self.PrevItemValue = curItemValue
-
-            if self.Time > 0.1 then
-                LocalPlayer():EmitSound("pointshop/case_tick.wav")
-                self.Time = 0
-            end
         end
 
         if math.floor(self.TapePosition) <= self.TapeWillStopAt then
@@ -142,11 +139,12 @@ function PANEL:Think()
 
             if IsValid(self) then
                 if self.WonItem or self.WonPoints then
-                    LocalPlayer():EmitSound("pointshop/case_opened.wav")
-
                     if self.WonItem then
+                        LocalPlayer():EmitSound("pointshop/case_opened2.mp3")
                         local unboxItem = vgui.Create("DPointshopUnboxItem")
                         unboxItem:SetData(self.WonItem, self.HasItem)
+                    else
+                        LocalPlayer():EmitSound("pointshop/case_opened1.mp3")
                     end
                 end
 
