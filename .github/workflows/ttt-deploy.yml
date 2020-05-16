@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: TTT
-        path: build/ttt/
+        path: build/ttt
    
   deploy:
     runs-on: ubuntu-18.04
@@ -46,6 +46,12 @@ jobs:
       with:
         name: TTT
         path: addons
+
+    - name: Reset Git
+      run: git reset --hard
+
+    - name: List output files
+      run: ls
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
