@@ -54,10 +54,10 @@ jobs:
       run: ls addons
 
     - name: Upload addons
-      uses: isthatcentered/dist-to-ftp@master
+      uses: SamKirkland/FTP-Deploy-Action@3.0.0
       with:
-        host: ${{ secrets.FTP_SERVER }}
-        user: ${{ secrets.DEATHRUN_FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        path: addons
-        into: ./garrysmod/addons
+        ftp-server: ${{ secrets.FTP_SERVER }}
+        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: addons
+        git-ftp-args: --insecure --remote-root ./garrysmod/addons
