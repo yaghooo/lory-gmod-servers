@@ -51,7 +51,7 @@ jobs:
       run: git reset --hard
 
     - name: List output files
-      run: ls
+      run: ls addons
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.0.0
