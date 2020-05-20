@@ -7,6 +7,10 @@ function PS:LoadSounds()
 end
 
 -- net hooks
+net.Receive("PS_BuyMarketplaceItem", function(lenght, ply)
+    ply:PS_BuyMarketplaceItem(net.ReadInt(32))
+end)
+
 net.Receive("PS_BuyItem", function(length, ply)
     ply:PS_BuyItem(net.ReadString())
 end)
@@ -96,17 +100,13 @@ net.Receive("PS_SendItem", function(length, ply)
 end)
 
 net.Receive("PS_CreateMarketplace", function(lenght, ply)
-    local id = net.ReadString()
+    local item_id = net.ReadString()
     local price = net.ReadInt(32)
 
-    for k, v in pairs(ply.PS_Items) do
-        if v.ID == id then
-            v.Announced = true
-            PS.DataProvider:SetAnnounce(id, os.time(), price)
-            ply:PS_SendItems()
-            return
-        end
-    end
+    if not item_id or price <= 0 then return end
+
+    PS.DataProvider:CreateAnnounce(ply:SteamID64(), item_id, price)
+    ply:PS_TakeItem(item_id)
 end)
 
 -- admin points
@@ -233,6 +233,14 @@ net.Receive("PS_ItemsData", function(length, ply)
     end
 end)
 
+net.Receive("PS_MarketplaceItems", function(lenght, ply)
+    PS.DataProvider:GetBuyableAnnounces(function(announces)
+        net.Start("PS_MarketplaceItems")
+        net.WriteTable(announces)
+        net.Send(ply)
+    end)
+end)
+
 -- hooks
 hook.Add("PlayerSpawn", "PS_PlayerSpawn", function(ply)
     ply:PS_PlayerSpawn()
@@ -305,6 +313,8 @@ util.AddNetworkString("PS_Points")
 util.AddNetworkString("PS_CreateMarketplace")
 util.AddNetworkString("PS_PlayersData")
 util.AddNetworkString("PS_ItemsData")
+util.AddNetworkString("PS_MarketplaceItems")
+util.AddNetworkString("PS_BuyMarketplaceItem")
 util.AddNetworkString("PS_BuyItem")
 util.AddNetworkString("PS_SellItem")
 util.AddNetworkString("PS_EquipItem")

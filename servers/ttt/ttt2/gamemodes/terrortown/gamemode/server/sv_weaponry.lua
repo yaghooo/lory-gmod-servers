@@ -112,7 +112,7 @@ end
 -- Cache subrole -> default-weapons table
 local loadout_weapons = {}
 
-local function GetLoadoutWeapons(subrole)
+local function GetLoadoutWeapons(ply, subrole)
 	local tmpLoadoutWeps = loadout_weapons[subrole]
 
 	if tmpLoadoutWeps then
@@ -147,7 +147,7 @@ local function GetLoadoutWeapons(subrole)
 	local default = {
 		"weapon_zm_carry",
 		"weapon_ttt_unarmed",
-		"weapon_zm_improvised"
+		ply.CustomKnife or table.Random({"csgo_default_knife", "csgo_default_t"})
 	}
 
 	for i = 1, #default do
@@ -183,7 +183,7 @@ end
 
 local function GiveLoadoutWeapons(ply)
 	local subrole = GetRoundState() == ROUND_PREP and ROLE_INNOCENT or ply:GetSubRole()
-	local weps = GetLoadoutWeapons(subrole)
+	local weps = GetLoadoutWeapons(ply, subrole)
 
 	if not weps then return end
 
@@ -198,7 +198,7 @@ end
 
 local function GetGiveLoadoutWeapons(ply)
 	local subrole = GetRoundState() == ROUND_PREP and ROLE_INNOCENT or ply:GetSubRole()
-	local weps = GetLoadoutWeapons(subrole)
+	local weps = GetLoadoutWeapons(ply, subrole)
 	local tmp = {}
 
 	if weps then
@@ -234,7 +234,7 @@ local function HasLoadoutWeapons(ply)
 	end
 
 	local subrole = GetRoundState() == ROUND_PREP and ROLE_INNOCENT or ply:GetSubRole()
-	local weps = GetLoadoutWeapons(subrole)
+	local weps = GetLoadoutWeapons(ply, subrole)
 
 	if not weps then
 		return true

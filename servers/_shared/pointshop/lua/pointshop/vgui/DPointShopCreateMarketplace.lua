@@ -23,6 +23,7 @@ function PANEL:RenderPointsInput()
 
     self.PointsInput.OnValueChanged = function(s, value)
         self.SelectedValue = tonumber(value)
+        self.SubmitButton:SetDisabled(self.SelectedValue >= PS.Items[self.ItemId].Price)
     end
 end
 

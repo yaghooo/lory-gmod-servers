@@ -6,4 +6,4 @@ name = "murder"
 
 [[servers]]
 name = "ttt"
-exclude = ["voicechat-meter", "voicechat-charger", "records", "rewards", "csgo-custom-knives", "pointshop"]
+exclude = ["voicechat-meter", "voicechat-charger"]
