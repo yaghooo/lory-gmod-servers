@@ -14,10 +14,11 @@ PS.Config.PointsOverTimeAmount = 250 -- And if so, how many points to give after
 PS.Config.AdminCanAccessAdminTab = false -- Can Admins access the Admin tab?
 PS.Config.CanPlayersGiveItems = true
 PS.Config.CanPlayersGivePoints = true -- Can players give points away to other players?
-PS.Config.IsMarketplaceEnabled = false
+PS.Config.IsMarketplaceEnabled = true
 PS.Config.PointsName = "Judeu" -- What are the points called?
 PS.Config.SortItemsBy = "Name" -- How are items sorted? Set to 'Price' to sort by price.
 PS.Config.UseMySql = false
+PS.Config.MarketplaceOverTimeHours = 24 * 5
 
 -- Edit below if you know what you're doing
 PS.Config.CalculateBuyPrice = function(ply, item)

@@ -177,6 +177,55 @@ function Player:PS_TakeItem(item_id)
 end
 
 -- buy/sell items
+function Player:PS_BuyMarketplaceItem(announce_id)
+    PS.DataProvider:GetBuyableAnnounces(function(announces)
+        for k, announce in ipairs(announces) do
+            if tonumber(announce.id) == announce_id then
+                local points = tonumber(announce.price)
+                local ITEM = PS.Items[announce.item_id]
+                if not self:PS_HasPoints(points) or not self:PS_CanEquipItem(ITEM) then return end
+
+                local allowed, message
+
+                if (type(ITEM.CanPlayerBuy) == "function") then
+                    allowed, message = ITEM:CanPlayerBuy(self)
+                elseif (type(ITEM.CanPlayerBuy) == "boolean") then
+                    allowed = ITEM.CanPlayerBuy
+                end
+
+                if not allowed then
+                    self:PS_Notify(message or "Você não pode comprar isso!")
+
+                    return
+                end
+
+                PS.DataProvider:SetAnnounceBuyer(announce.id, self:SteamID64())
+
+                self:PS_TakePoints(points)
+                self:PS_Notify("Comprou ", ITEM.Name, " por ", points, " ", PS.Config.PointsName)
+                local CATEGORY = PS:FindCategoryByName(ITEM.Category)
+
+                if ITEM.OnBuy then
+                    ITEM:OnBuy(self)
+                elseif CATEGORY.OnBuy then
+                    CATEGORY:OnBuy(self, ITEM)
+                end
+
+                hook.Call("PS_ItemPurchased", nil, self, announce.item_id)
+
+                self:PS_GiveItem(announce.item_id)
+
+                if not ITEM.SupressEquip then
+                    self:PS_EquipItem(announce.item_id)
+                end
+                return
+            end
+        end
+
+        self:PS_Notify("Anuncio não encontrado!")
+    end)
+end
+
 function Player:PS_BuyItem(item_id)
     local ITEM = PS.Items[item_id]
     if not ITEM then return false end

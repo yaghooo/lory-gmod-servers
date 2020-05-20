@@ -56,9 +56,7 @@ executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
     `sid64` STRING,
     `item_id` STRING,
     `modifiers` STRING,
-    `equipped` BOOLEAN,
-    `annouce_date` INTEGER,
-    `marketplace_price` INTEGER
+    `equipped` BOOLEAN
 )]], ITEMS_TABLE_NAME)
 
 function provider:GetItems(sid64, callback)
@@ -92,16 +90,37 @@ function provider:TakeItem(sid64, item_id)
     executeQuery(query, ITEMS_TABLE_NAME, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
 end
 
-function provider:SetAnnounce(id, date, price)
-    local query = [[UPDATE `%s` SET annouce_date = '%s', marketplace_price = '%s' WHERE id = '%s']]
-    executeQuery(query, ITEMS_TABLE_NAME, date, price, id)
-end
-
 function provider:GetItemsStats(callback)
     local query = [[
         SELECT item_id, COUNT(*) as total, COUNT(case when equipped = 1 then 1 else NULL end) as equipped FROM `%s` GROUP BY item_id
     ]]
     callback(executeQuery(query, ITEMS_TABLE_NAME))
+end
+
+-- MARKETPLACE
+local MARKETPLACE_TABLE_NAME = "pointshop_marketplace"
+executeQuery([[CREATE TABLE IF NOT EXISTS `%s` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `seller_sid64` STRING,
+    `buyer_sid64` STRING,
+    `item_id` STRING,
+    `date` INTEGER,
+    `price` INTEGER
+)]], MARKETPLACE_TABLE_NAME)
+
+function provider:CreateAnnounce(sid64, item_id, price)
+    local query = [[INSERT INTO `%s` (seller_sid64, item_id, date, price) VALUES('%s', '%s', '%s', '%s')]]
+    executeQuery(query, MARKETPLACE_TABLE_NAME, sid64, item_id, os.time(), price)
+end
+
+function provider:SetAnnounceBuyer(id, buyer_sid64)
+    local query = [[UPDATE `%s` SET buyer_sid64 = '%s' WHERE id = '%s']]
+    executeQuery(query, MARKETPLACE_TABLE_NAME, buyer_sid64, id)
+end
+
+function provider:GetBuyableAnnounces(callback)
+    local query = [[SELECT id, item_id, price FROM `%s` WHERE buyer_sid64 IS NULL]]
+    callback(executeQuery(query, MARKETPLACE_TABLE_NAME) or {})
 end
 
 PS.DataProvider = provider

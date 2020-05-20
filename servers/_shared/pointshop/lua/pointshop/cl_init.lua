@@ -123,6 +123,11 @@ net.Receive("PS_ItemsData", function(length)
     PS.ItemsData = data
 end)
 
+net.Receive("PS_MarketplaceItems", function(length)
+    local data = net.ReadTable()
+    PS.MarketplaceItems = data
+end)
+
 net.Receive("PS_AddClientsideModel", function(length)
     local ply = net.ReadEntity()
     local item_id = net.ReadString()

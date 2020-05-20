@@ -10,11 +10,11 @@ function ITEMMODEL:Init()
     self.InfoHeight = 14
 end
 
-function ITEMMODEL:SetItem(item, category, isInventory)
+function ITEMMODEL:SetItem(item, isInventory, price)
     self.Item = item
     self.Info = item.Name
-    self.Category = category
     self.IsInventory = isInventory
+    self.Price = price
 
     if item.Model then
         local model = vgui.Create("DModelPanel", self)
@@ -97,7 +97,7 @@ function ITEMMODEL:PaintOver()
         surface.DrawTexturedRect(5, 5, 16, 16)
     end
 
-    if client:PS_HasItemEquipped(self.Item.ID) and not self.Item.SupressEquip then
+    if self.IsInventory and client:PS_HasItemEquipped(self.Item.ID) and not self.Item.SupressEquip then
         surface.SetMaterial(equippedicon)
         surface.SetDrawColor(color_white)
         surface.DrawTexturedRect(self:GetWide() - 5 - 16, 5, 16, 16)
@@ -125,7 +125,7 @@ function ITEMMODEL:OnCursorEntered()
     if self.IsInventory and LocalPlayer():PS_HasItem(self.Item.ID) then
         self.Info = "+" .. PS.Config.CalculateSellPrice(LocalPlayer(), self.Item)
     else
-        self.Info = "-" .. PS.Config.CalculateBuyPrice(LocalPlayer(), self.Item)
+        self.Info = "-" .. (self.Price or PS.Config.CalculateBuyPrice(LocalPlayer(), self.Item))
     end
 end
 

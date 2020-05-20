@@ -13,8 +13,10 @@ function Player:PS_HasItemEquipped(item_id)
     return self:PS_HasItem(item_id) and self.PS_Items[item_id].Equipped
 end
 
-function Player:PS_HasItemAnnounced(item_id)
-    return self:PS_HasItem(item_id) and self.PS_Items[item_id].Announced
+function Player:PS_BuyMarketplaceItem(announce_id)
+    net.Start("PS_BuyMarketplaceItem")
+    net.WriteInt(announce_id, 32)
+    net.SendToServer()
 end
 
 function Player:PS_BuyItem(item_id)

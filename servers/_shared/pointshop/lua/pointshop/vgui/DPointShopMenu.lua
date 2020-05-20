@@ -7,7 +7,7 @@ MENU.Players = "Jogadores"
 MENU.ItemsStatistics = "Estatisticas dos items"
 MENU.Skins = "Skins"
 MENU.Settings = "Configurações"
-MENU.Marketplace = "Mercado"
+MENU.Marketplace = "Mercado [BETA]"
 MENU.OwnedItems = true
 MENU.UnownedItems = false
 
@@ -195,7 +195,7 @@ function MENU:RenderItems()
         local isInventory = self.CurrentTab == self.Inventory
 
         local getState = function(item)
-            if isInventory == client:PS_HasItem(item.ID) and not category.CanHaveMultiples and not client:PS_HasItemAnnounced(item.ID) then
+            if isInventory == client:PS_HasItem(item.ID) and not category.CanHaveMultiples then
                 return true
             elseif isInventory then
                 local currentItems = client:PS_GetItems()
@@ -207,7 +207,7 @@ function MENU:RenderItems()
 
         local addItem = function(item)
             local model = vgui.Create("DPointShopItem")
-            model:SetItem(item, category, isInventory, render)
+            model:SetItem(item, isInventory)
             model:SetSize(self.ItemSize - 4, self.ItemSize - 4)
             model.Menu = self
             model.State = getState(item)
@@ -235,7 +235,7 @@ function MENU:RenderItems()
         end
 
         for k, item in SortedPairsByMemberValue(PS.Items, PS.Config.SortItemsBy) do
-            if item.Category == category.Name and (category.CanHaveMultiples or isInventory == client:PS_HasItem(k)) and not client:PS_HasItemAnnounced(item.ID) then
+            if item.Category == category.Name and (category.CanHaveMultiples or isInventory == client:PS_HasItem(k)) then
                 if isInventory and category.CanHaveMultiples and client:PS_HasItem(k) then
                     for i = 1, #userItems[k] do
                         addItem(item)
@@ -359,18 +359,22 @@ function MENU:RenderActions()
                     if PS.Config.IsMarketplaceEnabled then
                         createButton("Anunciar no mercado", function()
                             local createMarketplace = vgui.Create("DPointShopCreateMarketplace")
-                            createMarketplace:SetItemId(client.PS_Items[self.CurrentItem.ID].ID)
+                            createMarketplace:SetItemId(self.CurrentItem.ID)
                         end, not client:PS_HasItemEquipped(self.CurrentItem.ID))
                     end
                 else
-                    local price = PS.Config.CalculateBuyPrice(client, self.CurrentItem)
+                    local price = self.CurrentCategory == self.Marketplace and self.CurrentPrice or PS.Config.CalculateBuyPrice(client, self.CurrentItem)
 
                     createButton("Comprar " .. self.CurrentItem.Name .. " (" .. price .. ")", function()
                         Derma_Query("Tem certeza que quer comprar " .. self.CurrentItem.Name .. "?", "Comprar item", "Sim", function()
-                            client:PS_BuyItem(self.CurrentItem.ID)
+                            if self.AnnounceId and self.CurrentCategory == self.Marketplace then
+                                client:PS_BuyMarketplaceItem(self.AnnounceId)
+                            else
+                                client:PS_BuyItem(self.CurrentItem.ID)
+                            end
                             self.CurrentItem = nil
                         end, "Não", function() end)
-                    end, client:PS_HasPoints(price))
+                    end, client:PS_HasPoints(price) and not client:PS_HasItem(self.CurrentItem.ID))
                 end
 
                 if isInventory and self.CurrentItem.CanPlayerEquip then
@@ -554,6 +558,52 @@ function MENU:RenderItemsStatistics()
     itemsData.Menu = self
 end
 
+function MENU:RenderMarketplace()
+    local itemsGrid = vgui.Create("DGrid", self.ItemsContainer)
+    itemsGrid:SetPos(0, 0)
+    itemsGrid:SetCols(math.floor(self.ItemsContainer:GetWide() / self.ItemSize))
+    itemsGrid:SetColWide(self.ItemSize)
+    itemsGrid:SetRowHeight(self.ItemSize)
+
+    local addItems = function()
+        local addItem = function(item)
+            local model = vgui.Create("DPointShopItem")
+            model:SetItem(PS.Items[item.item_id], false, item.price)
+            model:SetSize(self.ItemSize - 4, self.ItemSize - 4)
+            model.Menu = self
+
+            function model:DoClick()
+                if self.Menu.CurrentItem ~= PS.Items[item.item_id] then
+                    self.Menu.CurrentItem = PS.Items[item.item_id]
+                    self.Menu.CurrentPrice = tonumber(item.price)
+                    self.Menu.AnnounceId = item.id
+                    PS:SetHoverItem(item.item_id)
+                else
+                    self.Menu.CurrentItem = nil
+                    self.Menu.CurrentPrice = nil
+                    self.Menu.AnnounceId = nil
+                    PS:RemoveHoverItem()
+                end
+            end
+
+            itemsGrid:AddItem(model)
+        end
+
+        for k, item in ipairs(PS.MarketplaceItems) do
+            addItem(item)
+        end
+    end
+
+    local thinked = false
+
+    function itemsGrid:Think()
+        if PS.MarketplaceItems and not thinked then
+            thinked = true
+            addItems()
+        end
+    end
+end
+
 function MENU:RenderItemsContainer()
     -- Remove before render again, to avoid memory leaks
     if self.ItemsContainer then
@@ -598,6 +648,11 @@ function MENU:SetCategory(category)
             net.Start("PS_ItemsData")
             net.SendToServer()
             self:RenderItemsStatistics()
+        elseif self.CurrentCategory == self.Marketplace then
+            PS.MarketplaceItems = nil
+            net.Start("PS_MarketplaceItems")
+            net.SendToServer()
+            self:RenderMarketplace()
         end
     else
         self:RenderItems()
@@ -635,7 +690,7 @@ function MENU:UserHasItemOnCategory(category)
     if not category then return false end
 
     for k, item in pairs(userItems) do
-        if PS.Items[k] and PS.Items[k].Category == category.Name and not item.Announced then return true end
+        if PS.Items[k] and PS.Items[k].Category == category.Name then return true end
     end
 
     return false
