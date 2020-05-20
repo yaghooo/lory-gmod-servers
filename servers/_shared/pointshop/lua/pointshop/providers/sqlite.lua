@@ -119,7 +119,7 @@ function provider:SetAnnounceBuyer(id, buyer_sid64)
 end
 
 function provider:GetBuyableAnnounces(callback)
-    local query = [[SELECT id, item_id, price FROM `%s` WHERE buyer_sid64 IS NULL]]
+    local query = [[SELECT id, item_id, price, seller_sid64 FROM `%s` WHERE buyer_sid64 IS NULL]]
     callback(executeQuery(query, MARKETPLACE_TABLE_NAME) or {})
 end
 

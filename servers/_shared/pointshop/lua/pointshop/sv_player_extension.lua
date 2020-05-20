@@ -200,7 +200,7 @@ function Player:PS_BuyMarketplaceItem(announce_id)
                 end
 
                 PS.DataProvider:SetAnnounceBuyer(announce.id, self:SteamID64())
-
+                PS.DataProvider:GivePoints(announce.seller_sid64, points)
                 self:PS_TakePoints(points)
                 self:PS_Notify("Comprou ", ITEM.Name, " por ", points, " ", PS.Config.PointsName)
                 local CATEGORY = PS:FindCategoryByName(ITEM.Category)
