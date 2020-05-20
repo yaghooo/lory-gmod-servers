@@ -1,4 +1,6 @@
-local possibleSounds = {
+local push_force = CreateConVar("push_force", 100, FCVAR_NONE, "Push force", 1, 99999)
+
+local possible_sounds = {
     "physics/body/body_medium_impact_hard1.wav",
     "physics/body/body_medium_impact_hard2.wav",
     "physics/body/body_medium_impact_hard3.wav",
@@ -12,8 +14,8 @@ local possibleSounds = {
 local pushs = {}
 
 function PushEntity(originator, ent)
-    originator:EmitSound(table.Random(possibleSounds), 100, math.random(90, 110))
-    ent:SetVelocity(originator:EyeAngles():Forward() * 100)
+    originator:EmitSound(table.Random(possible_sounds), 100, math.random(90, 110))
+    ent:SetVelocity(originator:EyeAngles():Forward() * push_force:GetInt())
     ent:ViewPunch(Angle(math.random(-20, 20), math.random(-20, 20), 0))
 
     pushs[originator:UserID()] = true
