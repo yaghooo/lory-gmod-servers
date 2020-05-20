@@ -289,9 +289,10 @@ if PS.Config.PointsOverTime then
     timer.Create("PS_PointsOverTime", PS.Config.PointsOverTimeDelay * 60, 0, function()
         for _, ply in ipairs(player.GetAll()) do
             if IsValid(ply) and not ply.Spectating then
-                ply:PS_GivePoints(PS.Config.PointsOverTimeAmount)
-                ply:PS_Notify("Você ganhou ", PS.Config.PointsOverTimeAmount, " ", PS.Config.PointsName, " por jogar!")
-                local amt = PS.Config.PointsOverTimeAmount * 0.5
+                local amt = PS.Config.PointsOverTimeAmount
+
+                ply:PS_GivePoints(amt)
+                ply:PS_Notify("Você ganhou ", amt, " ", PS.Config.PointsName, " por jogar!")
 
                 if ply:PS_IsElegibleForDouble() then
                     ply:PS_GivePoints(amt)
