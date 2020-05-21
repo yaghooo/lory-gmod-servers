@@ -2,6 +2,29 @@ util.AddNetworkString("mu_death")
 local PlayerMeta = FindMetaTable("Player")
 local EntityMeta = FindMetaTable("Entity")
 
+local function generateSpawnEntities(spawnList)
+    local function isValid()
+        return true
+    end
+
+    local function getPos(self)
+        return self.pos
+    end
+
+    local table_insert = table.insert
+    local tbl = {}
+
+    for _, pos in pairs(spawnList) do
+        local t = {}
+        t.IsValid = isValid
+        t.GetPos = getPos
+        t.pos = pos
+        table_insert(tbl, t)
+    end
+
+    return tbl
+end
+
 function GM:PlayerInitialSpawn(ply)
     ply.LootCollected = 0
     ply.MurdererChance = 1
@@ -20,9 +43,11 @@ function GM:PlayerInitialSpawn(ply)
 end
 
 function GM:PlayerSpawn(ply)
+    local team = ply:Team()
+
     -- If the player doesn't have a team
     -- then spawn him as a spectator
-    if ply:Team() == 1 or ply:Team() == TEAM_UNASSIGNED then
+    if team == 1 or team == TEAM_UNASSIGNED then
         GAMEMODE:PlayerSpawnAsSpectator(ply)
 
         return
@@ -42,7 +67,9 @@ function GM:PlayerSpawn(ply)
 
     ply:CalculateSpeed()
     ply:SetupHands()
-    local spawnPoint = self:PlayerSelectTeamSpawn(ply:Team(), ply)
+    self.MapSpawnPoints = generateSpawnEntities(TeamSpawns["spawns"])
+    local spawnPoint = self:PlayerSelectTeamSpawn(team, ply)
+    self.MapSpawnPoints = nil
 
     if IsValid(spawnPoint) then
         ply:SetPos(spawnPoint:GetPos())
@@ -185,40 +212,15 @@ function PlayerMeta:CalculateSpeed()
     self:SetJumpPower(jumppower)
 end
 
-local function isValid()
-    return true
-end
-
-local function getPos(self)
-    return self.pos
-end
-
-local function generateSpawnEntities(spawnList)
-    local table_insert = table.insert
-    local tbl = {}
-
-    for _, pos in pairs(spawnList) do
-        local t = {}
-        t.IsValid = isValid
-        t.GetPos = getPos
-        t.pos = pos
-        table_insert(tbl, t)
-    end
-
-    return tbl
-end
-
 function GM:PlayerSelectTeamSpawn(teamId, ply)
-    local spawnPoints = generateSpawnEntities(TeamSpawns["spawns"])
-    if not spawnPoints or table.Count(spawnPoints) == 0 then return end
-    local chosenSpawnPoint = nil
+    if not self.MapSpawnPoints or table.Count(self.MapSpawnPoints) == 0 then return end
 
-    for i = 0, 6 do
-        chosenSpawnPoint = table.Random(spawnPoints)
-        if GAMEMODE:IsSpawnpointSuitable(ply, chosenSpawnPoint, i == 6) then break end
+    local spawnPointKey = math.random(#self.MapSpawnPoints)
+    local chosenSpawnPoint = table.remove(self.MapSpawnPoints, spawnPointKey)
+
+    if GAMEMODE:IsSpawnpointSuitable(ply, chosenSpawnPoint, false) then
+        return chosenSpawnPoint
     end
-
-    return chosenSpawnPoint
 end
 
 function GM:PlayerDeathSound()
