@@ -211,14 +211,14 @@ end
 function GM:PlayerSelectTeamSpawn(teamId, ply)
     local spawnPoints = generateSpawnEntities(TeamSpawns["spawns"])
     if not spawnPoints or table.Count(spawnPoints) == 0 then return end
-    local ChosenSpawnPoint = nil
+    local chosenSpawnPoint = nil
 
     for i = 0, 6 do
-        ChosenSpawnPoint = table.Random(spawnPoints)
-        if GAMEMODE:IsSpawnpointSuitable(ply, ChosenSpawnPoint, i == 6) then break end
+        chosenSpawnPoint = table.Random(spawnPoints)
+        if GAMEMODE:IsSpawnpointSuitable(ply, chosenSpawnPoint, i == 6) then break end
     end
 
-    return ChosenSpawnPoint
+    return chosenSpawnPoint
 end
 
 function GM:PlayerDeathSound()
