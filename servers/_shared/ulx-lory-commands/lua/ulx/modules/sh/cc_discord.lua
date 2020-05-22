@@ -4,7 +4,13 @@ local discordrank = ulx.command(CATEGORY_NAME, "ulx discordrank", function(ply, 
     group = group:lower()
     local sid64 = DISCORD:GetSid64ById(discordId)
     print("Add user to rank " .. group .. " with discord '" .. discordId .. "' and id '" .. sid64 .. "'")
-    ULib.ucl.addUser(util.SteamIDFrom64(sid64), nil, nil, group)
+
+    local steamid = util.SteamIDFrom64(sid64)
+    if group == "user" then
+        ULib.ucl.removeUser(steamid)
+    else
+        ULib.ucl.addUser(steamid, nil, nil, group)
+    end
 end)
 
 discordrank:addParam{
