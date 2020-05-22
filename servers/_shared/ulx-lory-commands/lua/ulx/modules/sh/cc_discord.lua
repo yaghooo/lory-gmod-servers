@@ -50,7 +50,7 @@ discordpoints:help("Adiciona pontos pelo id do discord. Necessário pointshop.")
 local discordban = ulx.command(CATEGORY_NAME, "ulx discordban", function(ply, discordId, hours, reason)
     local sid64 = DISCORD:GetSid64ById(discordId)
     print("Banned user with discord '" .. discordId .. "' and id '" .. sid64 .. "' for " .. hours .. " hours")
-    ulx.banid(nil, util.SteamIDFrom64(sid64), hours * 60, reason)
+    ULib.addBan(util.SteamIDFrom64(sid64), hours * 60, reason)
 end)
 
 discordban:addParam{
