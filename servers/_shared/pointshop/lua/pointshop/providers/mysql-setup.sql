@@ -8,7 +8,14 @@ CREATE TABLE IF NOT EXISTS `pointshop_items` (
     `sid64` VARCHAR(17),
     `item_id` VARCHAR(30),
     `modifiers` VARCHAR(200),
-    `equipped` BOOLEAN,
-    `annouce_date` INTEGER,
-    `marketplace_price` INTEGER
+    `equipped` BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS `pointshop_marketplace` (
+    `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+    `seller_sid64` VARCHAR(17),
+    `buyer_sid64` VARCHAR(17),
+    `item_id` VARCHAR(30),
+    `date` INTEGER,
+    `price` INTEGER
 );

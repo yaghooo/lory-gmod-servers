@@ -82,19 +82,32 @@ function provider:TakeItem(sid64, item_id)
     executeQuery(nil, query, ITEMS_TABLE_NAME, sid64, sql.SQLStr(item_id))
 end
 
-function provider:SetAnnounce(id, date, price)
-    local query = [[UPDATE `%s` SET annouce_date = '%s', marketplace_price = '%s' WHERE id = '%s']]
-    executeQuery(nil, query, ITEMS_TABLE_NAME, date, price, id)
-end
-
 function provider:GetItemsStats(callback)
     local query = [[
         SELECT item_id, COUNT(*) as total, COUNT(case when equipped = 1 then 1 else NULL end) as equipped FROM `%s` GROUP BY item_id
     ]]
 
+    executeQuery(callback, query, ITEMS_TABLE_NAME)
+end
+
+-- MARKETPLACE
+local MARKETPLACE_TABLE_NAME = "pointshop_marketplace"
+
+function provider:CreateAnnounce(sid64, item_id, price)
+    local query = [[INSERT INTO `%s` (seller_sid64, item_id, date, price) VALUES('%s', '%s', '%s', '%s')]]
+    executeQuery(nil, query, MARKETPLACE_TABLE_NAME, sid64, item_id, os.time(), price)
+end
+
+function provider:SetAnnounceBuyer(id, buyer_sid64)
+    local query = [[UPDATE `%s` SET buyer_sid64 = '%s' WHERE id = '%s']]
+    executeQuery(nil, query, MARKETPLACE_TABLE_NAME, buyer_sid64, id)
+end
+
+function provider:GetBuyableAnnounces(callback)
+    local query = [[SELECT id, item_id, price, seller_sid64 FROM `%s` WHERE buyer_sid64 IS NULL]]
     executeQuery(function(result)
-        callback(result)
-    end, query, ITEMS_TABLE_NAME)
+        callback(result or {})
+    end, query, MARKETPLACE_TABLE_NAME)
 end
 
 PS.DataProvider = provider
