@@ -6,17 +6,9 @@ VOTEMAP.VoteTime = 20
 VOTEMAP.RtvVotes = 0
 VOTEMAP.Votes = {}
 
-timer.Simple(1, function()
-    VOTEMAP.Maps = ulx.votemaps
+timer.Simple(60, function()
+    VOTEMAP.Ready = true
 end)
-
-function VOTEMAP:GetMaps()
-    return VOTEMAP.Maps
-end
-
-function VOTEMAP:GetAvailableMaps()
-    return VOTEMAP.Maps
-end
 
 function VOTEMAP:WriteToEveryone(msg)
     print("[VOTEMAP] " .. msg)
@@ -78,7 +70,6 @@ end
 
 function VOTEMAP:ChangeMap(map)
     VOTEMAP:WriteToEveryone("Trocando para o próximo mapa...")
-    file.Write("vote.txt", map)
     RunConsoleCommand("changelevel", map)
 end
 
@@ -104,7 +95,9 @@ hook.Add("PlayerSay", "VotemapCheckCommands", function(ply, text)
         VOTEMAP.LastRoundCheck = curtime
         VOTEMAP:WriteToEveryone("Faltam <c=255,68,80>" .. (VOTEMAP.CustomMaxRounds or VOTEMAP.MaxRounds:GetInt()) - VOTEMAP.RoundsPlayed .. "</c> rounds para a troca de mapa.")
     elseif text == "!rtv" and not VOTEMAP.Started then
-        if not ply.DidRtv then
+        if not VOTEMAP.Ready then
+            VOTEMAP:WriteToEveryone("Ainda é muito cedo para dar rtv!")
+        elseif not ply.DidRtv then
             ply.DidRtv = true
             VOTEMAP.RtvVotes = VOTEMAP.RtvVotes + 1
             local rtvNeeded = math.max(0, math.floor(player.GetCount() * VOTEMAP.RtvRatio:GetFloat()) - VOTEMAP.RtvVotes)

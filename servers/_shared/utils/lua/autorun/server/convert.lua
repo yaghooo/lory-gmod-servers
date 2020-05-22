@@ -34,8 +34,8 @@ local function fuckingConvertEverything()
     end
 end
 
-hook.Add("PlayerSay", "ConvertDatabase", function(ply)
-    if ply:IsSuperAdmin() then
+hook.Add("PlayerSay", "ConvertDatabase", function(ply, text)
+    if ply:IsSuperAdmin() and text == "!migrate" then
         for k, ply2 in ipairs(player.GetAll()) do
             ply2:ChatPrint("Migração iniciada, vai lagar bastante...")
         end

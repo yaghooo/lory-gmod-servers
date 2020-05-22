@@ -27,17 +27,25 @@ net.Receive("MAPVOTE_OpenNominationSelector", function()
     label:SizeToContents()
     label:SetWide(dlist:GetWide())
 
-    for k, map in ipairs(maps) do
-        local btn = vgui.Create(THEME.Component.Button2, panel)
+    for k, config in ipairs(maps) do
+        local btn = vgui.Create(THEME.Component.Button1, panel)
+        btn:SetBackgroundColor(Color(70, 70, 70))
         btn:SetSize(dlist:GetWide() - 8, 20)
         btn:SetPos(0, 0)
         btn:SetFont("DermaDefault")
-        btn:SetText(map)
+
+        if config.error then
+            btn:SetText(config.map .. "  (" .. config.error .. ")")
+        else
+            btn:SetText(config.map)
+        end
+
+        btn:SetDisabled(config.error ~= nil)
 
         function btn:DoClick()
             surface.PlaySound("ui/buttonclickrelease.wav")
             net.Start("MAPVOTE_NominateMap")
-            net.WriteString(map)
+            net.WriteString(config.map)
             net.SendToServer()
             page:Close()
         end
@@ -88,6 +96,7 @@ net.Receive("MAPVOTE_StartVotemap", function()
         label:SizeToContents()
         label:SetWide(dlist:GetWide())
         label:SetTall(label:GetTall() + 6)
+
         function label:Think()
             if VOTEMAP.ChosenMap == k then
                 label:SetColor(THEME.Color.Primary)
@@ -106,7 +115,7 @@ net.Receive("MAPVOTE_StartVotemap", function()
                     surface.PlaySound("ui/buttonclick.wav")
                     VOTEMAP.ChosenMap = i
                     net.Start("MAPVOTE_MapVote")
-                        net.WriteInt(i, 16)
+                    net.WriteInt(i, 16)
                     net.SendToServer()
                 end
             end
