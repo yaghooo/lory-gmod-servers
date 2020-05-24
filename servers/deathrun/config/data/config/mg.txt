@@ -1,0 +1,2 @@
+deathrun_max_deaths "0"
+deathrun_respawn_duration "30"
