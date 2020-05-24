@@ -431,7 +431,7 @@ PowerRounds.AddRound({
             PowerRounds.CurrentPR.SetZombieModel(Ply)
         end
 
-        timer.Simple(10, function()
+        timer.Simple(20, function()
             if IsValid(Ply) and not Ply:IsMurderer() then
                 Ply:Give("weapon_mu_magnum")
             end
@@ -509,7 +509,7 @@ PowerRounds.AddRound({
             Ply:StripWeapon("weapon_mu_magnum")
         end
 
-        timer.Simple(10, function()
+        timer.Simple(20, function()
             if IsValid(Ply) and not Ply:IsMurderer() then
                 Ply:Give("weapon_mu_magnum")
             end
