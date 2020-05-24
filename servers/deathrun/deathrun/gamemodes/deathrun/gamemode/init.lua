@@ -116,6 +116,7 @@ function GM:PlayerLoadout(ply)
     ply:SetRunSpeed(250)
     ply:SetWalkSpeed(250)
     ply:SetJumpPower(290)
+    ply:SetGravity(1)
 
     if ply:Team() == TEAM_DEATH then
         ply:SetRunSpeed(650)
