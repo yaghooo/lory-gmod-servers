@@ -6,11 +6,11 @@ local playermodels = {"models/player/group01/male_01.mdl", "models/player/group0
 
 hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
     if ROUND:GetTimer() > DR.RoundDuration:GetInt() - DR.RespawnDuration:GetInt() then
-        ply.FirstSpawn = true
-        ply:SetTeam(TEAM_SPECTATOR)
-    else
         ply:SetTeam(TEAM_RUNNER)
         ply:Spawn()
+    else
+        ply.FirstSpawn = true
+        ply:SetTeam(TEAM_SPECTATOR)
     end
 end)
 
