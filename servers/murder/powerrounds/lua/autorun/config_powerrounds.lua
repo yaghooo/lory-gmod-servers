@@ -228,6 +228,48 @@ PowerRounds.AddRound({
 })
 
 PowerRounds.AddRound({
+    Name = "Quake",
+    Gamemode = "Murder",
+    Description = "Atire primeiro, pergunte depois! Último em pé vence!",
+    CustomRoundEnd = true,
+    PlayerDeath = function() return true end,
+    PlayerCanPickupWeapon = function() return true end,
+    PlayerUpdate = function(Ply)
+        local alivePlayers = PowerRounds.Players(2, Ply)
+
+        if #alivePlayers < 2 then
+            if IsValid(alivePlayers[1]) then
+                local points = 250
+                PowerRounds.Chat("All", "<hsv>" .. alivePlayers[1]:Name() .. " venceu a rodada e levou " .. points .. " " .. PS.Config.PointsName .. "!</hsv>")
+                alivePlayers[1]:PS_GivePoints(points)
+                alivePlayers[1]:PS_Notify("Você ganhou ", points, " ", PS.Config.PointsName, " por vencer o power round!")
+            end
+
+            PowerRounds.EndRound(PR_WIN_GOOD, alivePlayers[1])
+        end
+    end,
+    PlayersStart = function(Ply)
+        if IsValid(Ply) then
+            Ply:SetMurderer(false)
+
+            if Ply:HasWeapon("weapon_mu_magnum") then
+                Ply:StripWeapon("weapon_mu_magnum")
+            end
+
+            Ply:StripWeapon("weapon_mu_hands")
+            Ply:Give("weapon_stunstick")
+            Ply:Give("weapon_shotgun")
+            Ply:SetAmmo(50, 7)
+            Ply:Give("weapon_crossbow")
+            Ply:SetAmmo(30, 6)
+            Ply:SetRunSpeed(450)
+            Ply:SetWalkSpeed(450)
+        end
+    end,
+    AllowRDM = true
+})
+
+PowerRounds.AddRound({
     Name = "Gato e ratos",
     Gamemode = "Murder",
     Description = "Nenhum inocente pega armas, mas o assassino pega uma faca e uma arma, mas ele só tem 2 minutos para matar todo mundo antes dos inocentes vencerem!",
@@ -254,17 +296,13 @@ PowerRounds.AddRound({
         end
     end,
     STIMER_120_1_RoundEnd = function()
-        local Players = PowerRounds.Players(1)
+        local murderer = GAMEMODE:GetMurderer()
 
-        for _, v in pairs(Players) do
-            if v:IsMurderer() then
-                PowerRounds.EndRound(PR_WIN_GOOD, v)
-
-                return
-            end
+        if IsValid(murderer) then
+            PowerRounds.EndRound(PR_WIN_GOOD, murderer)
+        else
+            PowerRounds.EndRound(PR_WIN_GOOD)
         end
-
-        PowerRounds.EndRound(PR_WIN_GOOD) -- Just in case murderer is not here?
     end
 })
 
@@ -382,15 +420,22 @@ PowerRounds.AddRound({
 PowerRounds.AddRound({
     Name = "Infecção zumbi",
     Gamemode = "Murder",
-    Description = "Quando o assassino esfaqueia alguem, este se torna um assassino também. Todos os inocentes tem armas",
+    Description = "Quando o assassino esfaqueia alguem, este se torna um assassino também. Todos os inocentes ganharão armas em 10 segundos.",
     CustomRoundEnd = true,
     PlayersStart = function(Ply)
-        if not Ply:IsMurderer() then
-            Ply:Give("weapon_mu_magnum")
+        if Ply:HasWeapon("weapon_mu_magnum") then
+            Ply:StripWeapon("weapon_mu_magnum")
         end
-    end,
-    DoPlayerDeath = function(Ply, Attacker)
-        if IsValid(Attacker) and Attacker:IsMurderer() then return false end
+
+        if Ply:IsMurderer() then
+            PowerRounds.CurrentPR.SetZombieModel(Ply)
+        end
+
+        timer.Simple(10, function()
+            if IsValid(Ply) and not Ply:IsMurderer() then
+                Ply:Give("weapon_mu_magnum")
+            end
+        end)
     end,
     PlayerDeath = function(Ply, Attacker)
         if Ply:IsMurderer() then
@@ -403,6 +448,7 @@ PowerRounds.AddRound({
                 Ply:SetMurderer(true)
                 Ply:CalculateSpeed()
                 Ply:Give(Ply:GetKnife())
+                PowerRounds.CurrentPR.SetZombieModel(Ply)
             end)
 
             return false
@@ -429,10 +475,142 @@ PowerRounds.AddRound({
             PowerRounds.EndRound(PR_WIN_BAD, anyMurderer)
         end
     end,
+    SetZombieModel = function(Ply)
+        local zombieModels = {"models/player/soldier_stripped.mdl", "models/player/corpse1.mdl", "models/player/charple.mdl", "models/player/zombie_classic.mdl", "models/player/zombie_fast.mdl", "models/player/zombie_soldier.mdl"}
+
+        timer.Simple(0.5, function()
+            if IsValid(Ply) then
+                Ply:SetModel(table.Random(zombieModels))
+            end
+        end)
+    end,
     SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker)
         local murderKillingMurder = Ply:IsMurderer() and IsValid(Attacker) and Attacker:IsPlayer() and Attacker:IsMurderer()
 
         return not murderKillingMurder
+    end
+})
+
+PowerRounds.AddRound({
+    Name = "Infecção zoio",
+    Gamemode = "Murder",
+    Description = "Quando um zoio marreta alguem, este se torna um zoio também. Todos os inocentes ganharão armas em 10 segundos.",
+    CustomRoundEnd = true,
+    PlayersStart = function(Ply)
+        if Ply:IsMurderer() then
+            PowerRounds.CurrentPR.SetZoioModel(Ply)
+
+            if Ply:HasWeapon(Ply:GetKnife()) then
+                Ply:StripWeapon(Ply:GetKnife())
+            end
+
+            Ply:Give("marreta_do_zoio")
+        elseif Ply:HasWeapon("weapon_mu_magnum") then
+            Ply:StripWeapon("weapon_mu_magnum")
+        end
+
+        timer.Simple(10, function()
+            if IsValid(Ply) and not Ply:IsMurderer() then
+                Ply:Give("weapon_mu_magnum")
+            end
+        end)
+    end,
+    PlayerDeath = function(Ply, Attacker)
+        if Ply:IsMurderer() then
+            Ply:SetMurderer(false)
+
+            return false
+        elseif IsValid(Attacker) and Attacker:IsPlayer() and Attacker:IsMurderer() then
+            timer.Simple(0.5, function()
+                Ply:Spawn()
+                Ply:SetMurderer(true)
+                Ply:CalculateSpeed()
+                Ply:Give("marreta_do_zoio")
+                PowerRounds.CurrentPR.SetZoioModel(Ply)
+            end)
+
+            return false
+        end
+    end,
+    PlayerUpdate = function(Ply)
+        local alivePlayers = PowerRounds.Players(2, Ply)
+        local anyMurderer
+        local murderers = 0
+        local bystanders = 0
+
+        for _, v in ipairs(alivePlayers) do
+            if v:IsMurderer() then
+                murderers = murderers + 1
+                anyMurderer = v
+            else
+                bystanders = bystanders + 1
+            end
+        end
+
+        if murderers == 0 then
+            PowerRounds.EndRound(PR_WIN_GOOD, alivePlayers[1])
+        elseif bystanders == 0 then
+            PowerRounds.EndRound(PR_WIN_BAD, anyMurderer)
+        end
+    end,
+    SetZoioModel = function(Ply)
+        timer.Simple(0.5, function()
+            if IsValid(Ply) then
+                Ply:SetModel("models/eversonzoio/eversonzoio.mdl")
+            end
+        end)
+    end,
+    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker)
+        local murderKillingMurder = Ply:IsMurderer() and IsValid(Attacker) and Attacker:IsPlayer() and Attacker:IsMurderer()
+
+        return not murderKillingMurder
+    end
+})
+
+PowerRounds.AddRound({
+    Name = "Duplo perigo",
+    Gamemode = "Murder",
+    Description = "Existem 2 assassinos a solta!",
+    ServerStart = function()
+        local murderer = GAMEMODE:GetMurderer()
+        local anotherMurderer = table.Random(PowerRounds.Players(2, murderer))
+        anotherMurderer:SetMurderer(true)
+        anotherMurderer:CalculateSpeed()
+        anotherMurderer:Give(anotherMurderer:GetKnife())
+        murderer:SetNWEntity("OtherMurderer", anotherMurderer)
+        anotherMurderer:SetNWEntity("OtherMurderer", murderer)
+    end,
+    RunCondition = function() return #team.GetPlayers(2) > 10 end,
+    CHOOK_PreDrawMurderHalos = function(Add)
+        local client = LocalPlayer()
+        local ply = client:Alive() and client or client:GetObserverTarget()
+        local otherMurderer = ply:GetNWEntity("OtherMurderer")
+
+        if IsValid(otherMurderer) and otherMurderer:Alive() then
+            Add({
+                {
+                    ent = otherMurderer,
+                    color = 1
+                }
+            }, {Color(220, 0, 0)}, 5, 5, 5, true, false)
+        end
+    end,
+    SHOOK_PlayerShouldTakeDamage = function(Ply, Attacker)
+        local murderKillingMurder = Ply:IsMurderer() and IsValid(Attacker) and Attacker:IsPlayer() and Attacker:IsMurderer()
+
+        return not murderKillingMurder
+    end
+})
+
+PowerRounds.AddRound({
+    Name = "Comunicação localizada",
+    Gamemode = "Murder",
+    Description = "Só as pessoas próximas poderão lhe escutar.",
+    ServerStart = function()
+        RunConsoleCommand("mu_localchat", "1")
+    end,
+    ServerEnd = function()
+        RunConsoleCommand("mu_localchat", "0")
     end
 })
 

@@ -345,6 +345,11 @@ function Player:PS_EquipItem(item_id)
 
     if type(ITEM.CanPlayerEquip) == "function" then
         allowed = ITEM:CanPlayerEquip(self)
+
+        if isstring(allowed) then
+            self:PS_Notify(allowed)
+            return
+        end
     elseif type(ITEM.CanPlayerEquip) == "boolean" then
         allowed = ITEM.CanPlayerEquip
     end

@@ -12,6 +12,8 @@ function ENT:Initialize()
         self:SetSkin(knife.SkinIndex or knife:GetSkin() or 0)
     end
 
+    knife:Remove()
+
     self:PhysicsInit(SOLID_VPHYSICS)
     self:SetMoveType(MOVETYPE_VPHYSICS)
     self:SetSolid(SOLID_VPHYSICS)
