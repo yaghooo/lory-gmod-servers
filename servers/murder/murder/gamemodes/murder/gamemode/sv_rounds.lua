@@ -292,7 +292,7 @@ function GM:StartNewRound()
             ply:SetMurderer(true)
         end
 
-        local color = ColorRand()
+        local color = ply.PlayerColor or ColorRand()
         ply:SetPlayerColor(Vector(color.r / 255, color.g / 255, color.b / 255))
         ply.LootCollected = 0
         ply.HasMoved = false

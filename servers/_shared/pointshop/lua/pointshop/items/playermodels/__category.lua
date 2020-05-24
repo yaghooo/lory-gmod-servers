@@ -8,7 +8,7 @@ function CATEGORY:OnEquip(ply, modifications, item)
         ply.OldModel = ply:GetModel()
     end
 
-    timer.Simple(1, function()
+    timer.Simple(0.2, function()
         ply:SetModel(item.Model)
         ply:SetupHands()
 
