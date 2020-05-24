@@ -5,16 +5,19 @@ end
 
 local function runConfigFile(fileName)
     local content = file.Read("config/" .. fileName .. ".txt")
+    local loaded = false
+
     if content then
-        print("Loading configuration for: " .. fileName)
         content = content .. "\n"
         game.ConsoleCommand(content)
+        loaded = true
     end
+
+    print("Loading configuration for '" .. fileName .. "': " .. tostring(loaded))
 end
 
 local currentMap = game.GetMap()
 local mapPrefix = string.Split(currentMap, "_")[1]
-
 runConfigFile("global")
 runConfigFile(mapPrefix)
 runConfigFile(currentMap)
