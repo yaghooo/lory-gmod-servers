@@ -93,26 +93,32 @@ function GM:RoundCheckForWin()
     end
 
     local table_insert = table.insert
-    local murderer = self:GetMurderer()
+    local murderers = {}
     local survivors = {}
 
     for _, v in pairs(players) do
-        if v:Alive() and v ~= murderer then
-            table_insert(survivors, v)
+        if v:IsMurderer() then
+            table_insert(murderers, v)
+        else
+            if v:Alive() then
+                table_insert(survivors, v)
+            end
         end
     end
 
     -- check we have a murderer
-    if not IsValid(murderer) then
-        self:EndTheRound(3, murderer)
+    if #murderers == 0 then
+        self:EndTheRound(3)
         -- has the murderer killed everyone?
     elseif #survivors < 1 then
-        self:EndTheRound(1, murderer)
-    elseif not murderer:Alive() then
-        -- is the murderer dead?
-        self:EndTheRound(2, murderer)
+        self:EndTheRound(1, murderers[1])
+    else -- is the murderer dead?
+        for k, murderer in ipairs(murderers) do
+            if murderer:Alive() then return end -- keep playing.
+        end
+
+        self:EndTheRound(2, murderers[1])
     end
-    -- keep playing.
 end
 
 function GM:DoRoundDeaths(dead, attacker)
@@ -229,7 +235,6 @@ function GM:EndTheRound(reason, murderer)
     self.MurdererLastKill = nil
     hook.Call("OnEndRound")
     hook.Run("OnEndRoundResult", reason)
-
     self:SetRound(2)
 end
 
@@ -250,7 +255,6 @@ function GM:StartNewRound()
     ct:SendAll()
     self:SetRound(1)
     self.RoundUnFreezePlayers = CurTime() + 10
-
     game.CleanUpMap()
     self:InitPostEntityAndMapCleanup()
     self:ClearAllFootsteps()
