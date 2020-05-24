@@ -2,6 +2,7 @@ DR.PointshopFinishReward = CreateConVar("deathrun_pointshop_finish_reward", 10, 
 DR.PointshopKillReward = CreateConVar("deathrun_pointshop_kill_reward", 5, FCVAR_NONE, "How many points to award the player when they kill another player.")
 DR.PointshopWinReward = CreateConVar("deathrun_pointshop_win_reward", 3, FCVAR_NONE, "How many points to award the player when their team wins.")
 DR.PointshopRewardMessage = CreateConVar("deathrun_pointshop_notify", 1, FCVAR_NONE, "Enable chat messages or notifications when rewards are received")
+DR.RespawnDuration = CreateConVar("deathrun_respawn_duration", 0, FCVAR_NONE, "How many seconds players can respawn")
 DR.RoundDuration = CreateConVar("deathrun_round_duration", 60 * 5, FCVAR_NONE, "How many seconds each round should last, not including preptime.")
 DR.PrepDuration = CreateConVar("deathrun_preptime_duration", 5, FCVAR_NONE, "How many seconds preptime should go for.")
 DR.FinishDuration = CreateConVar("deathrun_finishtime_duration", 6, FCVAR_NONE, "How many seconds to wait before starting a new round.")

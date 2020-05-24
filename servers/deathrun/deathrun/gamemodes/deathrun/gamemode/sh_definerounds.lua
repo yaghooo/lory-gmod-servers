@@ -173,7 +173,7 @@ end, function()
 
         if (#deaths == 0 and #runners == 0) or ROUND:GetTimer() == 0 then
             ROUND:FinishRound(WIN_STALEMATE)
-        elseif #deaths == 0 then
+        elseif #deaths == 0 and DR.DeathMax:GetInt() ~= 0 then
             ROUND:FinishRound(WIN_RUNNER)
         elseif #runners == 0 then
             ROUND:FinishRound(WIN_DEATH)

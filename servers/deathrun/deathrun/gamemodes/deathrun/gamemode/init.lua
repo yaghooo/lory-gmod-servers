@@ -5,8 +5,13 @@ util.AddNetworkString("DeathrunForceSpectator")
 local playermodels = {"models/player/group01/male_01.mdl", "models/player/group01/male_02.mdl", "models/player/group01/male_03.mdl", "models/player/group01/male_04.mdl", "models/player/group01/male_05.mdl", "models/player/group01/male_06.mdl", "models/player/group01/male_07.mdl", "models/player/group01/male_08.mdl", "models/player/group01/male_09.mdl", "models/player/group01/female_01.mdl", "models/player/group01/female_02.mdl", "models/player/group01/female_03.mdl", "models/player/group01/female_04.mdl", "models/player/group01/female_05.mdl", "models/player/group01/female_06.mdl"}
 
 hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
-    ply.FirstSpawn = true
-    ply:SetTeam(TEAM_SPECTATOR)
+    if ROUND:GetTimer() > DR.RoundDuration:GetInt() - DR.RespawnDuration:GetInt() then
+        ply.FirstSpawn = true
+        ply:SetTeam(TEAM_SPECTATOR)
+    else
+        ply:SetTeam(TEAM_RUNNER)
+        ply:Spawn()
+    end
 end)
 
 hook.Add("PlayerSpawn", "DeathrunSetPlayerModels", function(ply)
@@ -141,30 +146,36 @@ function GM:PlayerDeath(ply, inflictor, attacker)
         return
     end
 
-    timer.Simple(5, function()
+    local shouldRespawn = ROUND:GetTimer() > DR.RoundDuration:GetInt() - DR.RespawnDuration:GetInt()
+
+    timer.Simple(shouldRespawn and 1 or 5, function()
         if not IsValid(ply) then return end -- incase they die and disconnect, prevents console errors.
 
         if not ply:Alive() then
-            ply.JustDied = true
-            ply:BeginSpectate()
-            local pool = {}
+            if shouldRespawn then
+                ply:Spawn()
+            else
+                ply.JustDied = true
+                ply:BeginSpectate()
+                local pool = {}
 
-            for k, ply2 in ipairs(player.GetAll()) do
-                if ply2:Alive() and not ply2:GetSpectate() then
-                    table.insert(pool, ply2)
+                for k, ply2 in ipairs(player.GetAll()) do
+                    if ply2:Alive() and not ply2:GetSpectate() then
+                        table.insert(pool, ply2)
+                    end
                 end
-            end
 
-            if #pool > 0 then
-                local randplay = table.Random(pool)
-                ply:SpectateEntity(randplay)
-                ply:SetupHands(randplay)
-                ply:SetObserverMode(OBS_MODE_IN_EYE)
-                ply:SetPos(randplay:GetPos())
-            end
+                if #pool > 0 then
+                    local randplay = table.Random(pool)
+                    ply:SpectateEntity(randplay)
+                    ply:SetupHands(randplay)
+                    ply:SetObserverMode(OBS_MODE_IN_EYE)
+                    ply:SetPos(randplay:GetPos())
+                end
 
-            ply.JustDied = nil
-            hook.Call("DeathrunDeadToSpectator", GAMEMODE, ply)
+                ply.JustDied = nil
+                hook.Call("DeathrunDeadToSpectator", GAMEMODE, ply)
+            end
         end
     end)
 end
