@@ -7,7 +7,7 @@ function VOTEMAP:InitializeMaps()
     local lastPlayedMaps = lastPlayedMapsJson and util.JSONToTable(lastPlayedMapsJson) or {}
 
     while #lastPlayedMaps > self.MapCooldown do
-        table.remove(lastPlayedMaps, 0)
+        table.remove(lastPlayedMaps, 1)
     end
 
     local currentMap = game.GetMap()
