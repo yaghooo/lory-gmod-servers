@@ -2,7 +2,7 @@ ITEM.Name = "Bunker Gun"
 ITEM.Price = 5000
 ITEM.Model = "models/props_combine/bunker_gun01.mdl"
 ITEM.Bone = "ValveBiped.Bip01_Spine2"
-ITEM.AllowedUserGroups = {"superadmin", "vip", "admin", "operator"}
+ITEM.AllowedUserGroups = {"superadmin", "admin", "vip", "operator", "contributor"}
 
 function ITEM:ModifyClientsideModel(ply, model, pos, ang)
     model:SetModelScale(1, 0)

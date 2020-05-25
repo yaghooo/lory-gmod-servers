@@ -2,7 +2,7 @@ ITEM.Name = "Foguete"
 ITEM.Price = 6250
 ITEM.Model = "models/props_phx/rocket1.mdl"
 ITEM.Bone = "ValveBiped.Bip01_Pelvis"
-ITEM.AllowedUserGroups = {"superadmin", "vip", "admin", "operator"}
+ITEM.AllowedUserGroups = {"superadmin", "admin", "vip", "operator", "contributor"}
 
 function ITEM:ModifyClientsideModel(ply, model, pos, ang)
     local Size = Vector(0.10000000149012, 0.10000000149012, 0.10000000149012)
