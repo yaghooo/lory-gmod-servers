@@ -39,18 +39,6 @@ function Player:GetSpectate()
     return self.Spectating
 end
 
-local function getSpectablePlayers()
-    local pool = {}
-
-    for k, ply in ipairs(player.GetAll()) do
-        if ply:Alive() and not ply:GetSpectate() and not ply:IsGhost() then
-            table.insert(pool, ply)
-        end
-    end
-
-    return pool
-end
-
 function Player:ChangeSpectate()
     if not self:GetSpectate() then return end
 
@@ -79,7 +67,7 @@ function Player:ChangeSpectate()
 
     if self.ObsMode2 > 0 then
         --this means we are spectating a player
-        local pool = getSpectablePlayers()
+        local pool = DR:GetSpectablePlayers()
 
         --check if they don't already have a spectator target
         local target = self:GetObserverTarget()
@@ -97,7 +85,7 @@ end
 
 function Player:SpecModify(n)
     self.SpecEntIdx = self.SpecEntIdx or 1
-    local pool = getSpectablePlayers()
+    local pool = DR:GetSpectablePlayers()
 
     self.SpecEntIdx = self.SpecEntIdx + n
 

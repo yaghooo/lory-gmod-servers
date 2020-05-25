@@ -132,6 +132,18 @@ hook.Add("AcceptInput", "DeathrunKillers", function(ent, input, activator, calle
     ent.LastCaller = caller
 end)
 
+function DR:GetSpectablePlayers()
+    local pool = {}
+
+    for k, ply in ipairs(player.GetAll()) do
+        if ply:Alive() and not ply:GetSpectate() and not ply:IsGhost() then
+            table.insert(pool, ply)
+        end
+    end
+
+    return pool
+end
+
 function GM:PlayerDeath(ply, inflictor, attacker)
     ply:Extinguish()
     -- some death sounds
@@ -158,13 +170,8 @@ function GM:PlayerDeath(ply, inflictor, attacker)
             else
                 ply.JustDied = true
                 ply:BeginSpectate()
-                local pool = {}
 
-                for k, ply2 in ipairs(player.GetAll()) do
-                    if ply2:Alive() and not ply2:GetSpectate() then
-                        table.insert(pool, ply2)
-                    end
-                end
+                local pool = DR:GetSpectablePlayers()
 
                 if #pool > 0 then
                     local randplay = table.Random(pool)
