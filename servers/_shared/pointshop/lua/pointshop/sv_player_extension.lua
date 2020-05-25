@@ -453,12 +453,6 @@ function Player:PS_CanEquipItem(ITEM)
 
     local CATEGORY = PS:FindCategoryByName(ITEM.Category)
 
-    if (ITEM.ShouldBeAlive or CATEGORY.ShouldBeAlive) and not self:Alive() then
-        self:PS_Notify("Você precisa estar vivo para usar isso!")
-
-        return false
-    end
-
     if CATEGORY.AllowedUserGroups and #CATEGORY.AllowedUserGroups > 0 and not table.HasValue(CATEGORY.AllowedUserGroups, self:GetUserGroup()) then
         self:PS_Notify("Você precisa ser vip para usar isso!")
 

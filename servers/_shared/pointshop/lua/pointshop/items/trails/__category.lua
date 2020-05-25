@@ -2,7 +2,6 @@ CATEGORY.Name = "Trails"
 CATEGORY.Icon = "rainbow"
 CATEGORY.AllowedEquipped = 2
 CATEGORY.Order = 5
-CATEGORY.ShouldBeAlive = true
 
 function CATEGORY:OnEquip(ply, modifications, item)
     if not ply.ActiveTrails then
@@ -10,6 +9,10 @@ function CATEGORY:OnEquip(ply, modifications, item)
     end
 
     if GhostMode and ply:IsGhost() then
+        return
+    end
+
+    if not ply:Alive() then
         return
     end
 
