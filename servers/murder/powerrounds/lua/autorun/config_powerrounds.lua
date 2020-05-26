@@ -525,6 +525,9 @@ PowerRounds.AddRound({
                 Ply:Spawn()
                 Ply:SetMurderer(true)
                 Ply:CalculateSpeed()
+		if Ply:HasWeapon(Ply:GetKnife()) then
+                    Ply:StripWeapon(Ply:GetKnife())
+                end
                 Ply:Give("marreta_do_zoio")
                 PowerRounds.CurrentPR.SetZoioModel(Ply)
             end)
