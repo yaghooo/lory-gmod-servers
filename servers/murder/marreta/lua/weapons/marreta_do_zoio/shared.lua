@@ -97,8 +97,8 @@ function SWEP:PrimaryAttack()
         bullet.Dir = self.Owner:GetAimVector()
         bullet.Spread = Vector(0, 0, 0)
         bullet.Tracer = 0
-        bullet.Force = 3
-        bullet.Damage = 60
+        bullet.Force = 900
+        bullet.Damage = self.Primary.Damage
         self.Owner:DoAttackEvent()
         self.Owner:FireBullets(bullet)
         self:EmitSound("marreta/caraio.wav")
