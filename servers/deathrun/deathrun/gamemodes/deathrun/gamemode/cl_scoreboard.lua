@@ -1,5 +1,5 @@
-local columns = {"Name", "blank", "blank", "Rank", "Ping"}
-local columnFunctions = {function(ply) return ply:Nick() end, nil, nil, function(ply) return string.upper(ply:GetUserGroup()) end, function(ply) return ply:Ping() end} -- empty space to even the spacings out
+local columns = {"Name", "blank", "Frag", "Rank", "Ping"}
+local columnFunctions = {function(ply) return ply:Nick() end, nil, function(ply) return ply:Frags() end, function(ply) return string.upper(ply:GetUserGroup()) end, function(ply) return ply:Ping() end} -- empty space to even the spacings out
 
 function DR:CreateScoreboard()
     local scoreboard = DR.ScoreboardPanel
