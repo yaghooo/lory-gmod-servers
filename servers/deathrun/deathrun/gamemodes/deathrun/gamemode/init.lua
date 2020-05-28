@@ -15,28 +15,23 @@ hook.Add("PlayerInitialSpawn", "DeathrunPlayerInitialSpawn", function(ply)
 end)
 
 hook.Add("PlayerSpawn", "DeathrunSetPlayerModels", function(ply)
-    if ply:Team() == TEAM_DEATH then
+    local model
+
+    if ply.CustomModel then
+        model = ply.CustomModel
+    elseif ply:Team() == TEAM_DEATH then
         local mdl = DR.DeathModel:GetString()
 
         if string.sub(mdl, -4, -1) == ".mdl" then
-            ply:SetModel(mdl)
+            model = mdl
         else
             print("The default death model is not a valid .mdl file ('" .. mdl .. "'). Please change the deathrun_death_model ConVar.")
         end
     elseif ply:Team() == TEAM_RUNNER then
-        ply:SetModel(table.Random(playermodels))
+        model = table.Random(playermodels)
     end
 
-    local mdl = hook.Call("ChangePlayerModel", nil, ply)
-
-    if mdl then
-        ply:SetModel(mdl)
-    else
-        -- don't override the current set model if there is one
-        if not ply:GetModel() or ply:GetModel() == "models/player.mdl" then
-            ply:SetModel(table.Random(playermodels))
-        end
-    end
+    ply:SetModel(model)
 end)
 
 local function SpawnSpectator(ply)
