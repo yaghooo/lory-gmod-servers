@@ -130,9 +130,9 @@ end)
 
 DR:AddChatCommand("spec", function(ply, args)
     if ply:ShouldStaySpectating() then
-        ply:ConCommand("deathrun_spectate_only 0")
+        ply:ConCommand("deathrun_set_spectate 0")
     else
-        ply:ConCommand("deathrun_spectate_only 1")
+        ply:ConCommand("deathrun_set_spectate 1")
     end
 end)
 

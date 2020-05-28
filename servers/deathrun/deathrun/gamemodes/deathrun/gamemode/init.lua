@@ -329,16 +329,10 @@ end)
 net.Receive("DeathrunForceSpectator", function(len, ply)
     if DR:CanAccessCommand(ply, "deathrun_force_spectate") then
         local targID = net.ReadString()
-        local targ = nil
-
-        for _, v in ipairs(player.GetAll()) do
-            if targID == v:SteamID() then
-                targ = v
-            end
-        end
+        local targ = player.GetBySteamID(targID)
 
         if targ ~= nil then
-            targ:ConCommand("deathrun_spectate_only 1")
+            targ:ConCommand("deathrun_set_spectate 1")
             ply:DeathrunChatPrint("Forced " .. targ:Nick() .. " to the spectator team!")
         end
     else
