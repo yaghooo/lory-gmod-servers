@@ -1,0 +1,11 @@
+DR.HudPos = CreateClientConVar("deathrun_hud_position", 6, true, false) -- 0 topleft, 1 topcenter, 2 topright, 3 centerleft, 4 centercenter, 5 centerright, 6 bottomleft, 7 bottomcenter, 8 bottomright
+DR.HudAmmoPos = CreateClientConVar("deathrun_hud_ammo_position", 8, true, false)
+DR.ThirdpersonOn = CreateClientConVar("deathrun_thirdperson_enabled", 0, true, false)
+DR.ThirdpersonX = CreateClientConVar("deathrun_thirdperson_offset_x", 0, true, false)
+DR.ThirdpersonY = CreateClientConVar("deathrun_thirdperson_offset_y", 0, true, false)
+DR.ThirdpersonZ = CreateClientConVar("deathrun_thirdperson_offset_z", 0, true, false)
+DR.ThirdpersonPitch = CreateClientConVar("deathrun_thirdperson_offset_pitch", 0, true, false)
+DR.ThirdpersonYaw = CreateClientConVar("deathrun_thirdperson_offset_yaw", 0, true, false)
+DR.ThirdpersonRoll = CreateClientConVar("deathrun_thirdperson_offset_roll", 0, true, false)
+DR.ThirdpersonOpacity = CreateClientConVar("deathrun_thirdperson_opacity", 255, true, false)
+DR.TeamFadeDistance = CreateClientConVar("deathrun_teammate_fade_distance", 75, true, false)

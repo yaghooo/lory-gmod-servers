@@ -3,6 +3,11 @@ name: Deploy deathrun
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'servers/_shared/**'
+      - 'servers/deathrun/**'
+      - '.github/workflows/deathrun-deploy.yml'
+      - '.git-ftp-include'
 
 jobs:
   build:
@@ -10,19 +15,24 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v1.1.0
+      with:
+        version: '12.x'
 
-    - name: Build
+    - name: Build deathrun
       run: |
-        mkdir garrysmod
-        cp -R ./servers/_shared/* garrysmod/
-        cp -R ./servers/deathrun/* garrysmod/
+        cd tool
+        npm install
+        node index deathrun
+        ls ../build
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v2
       with:
-        name: Deathrun distributable
-        path: garrysmod
-
+        name: Deathrun
+        path: build/deathrun
    
   deploy:
     runs-on: ubuntu-18.04
@@ -31,26 +41,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Download artifact
-      uses: actions/download-artifact@v1.0.0
+    - name: Download addons
+      uses: actions/download-artifact@v2
       with:
-        name: Deathrun distributable
-        path: garrysmod
+        name: Deathrun
+        path: addons
+
+    - name: Reset Git
+      run: git reset --hard
+
+    - name: List output files
+      run: ls addons
 
     - name: Upload addons
-      uses: SamKirkland/FTP-Deploy-Action@3.0.0
+      uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:
-        ftp-server: ${{ secrets.DEATHRUN_FTP_SERVER }}
+        ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: garrysmod/addons
+        local-dir: addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons
-        
-    - name: Upload gamemode
-      uses: SamKirkland/FTP-Deploy-Action@3.0.0
-      with:
-        ftp-server: ${{ secrets.DEATHRUN_FTP_SERVER }}
-        ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
-        ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: garrysmod/gamemodes/deathrun
-        git-ftp-args: --insecure --remote-root ./garrysmod/gamemodes/deathrun

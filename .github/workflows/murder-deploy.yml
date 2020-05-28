@@ -1,0 +1,63 @@
+name: Deploy murder
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'servers/_shared/**'
+      - 'servers/murder/**'
+      - '.github/workflows/murder-deploy.yml'
+      - '.git-ftp-include'
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v1.1.0
+      with:
+        version: '12.x'
+
+    - name: Build murder
+      run: |
+        cd tool
+        npm install
+        node index murder
+        ls ../build
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Murder
+        path: build/murder
+   
+  deploy:
+    runs-on: ubuntu-18.04
+    needs: [build]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Download addons
+      uses: actions/download-artifact@v2
+      with:
+        name: Murder
+        path: addons
+
+    - name: Reset Git
+      run: git reset --hard
+
+    - name: List output files
+      run: ls addons
+
+    - name: Upload addons
+      uses: SamKirkland/FTP-Deploy-Action@3.1.0
+      with:
+        ftp-server: ${{ secrets.FTP_SERVER }}
+        ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: addons
+        git-ftp-args: --insecure --remote-root ./garrysmod/addons

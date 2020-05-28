@@ -1,0 +1,9 @@
+[[servers]]
+name = "deathrun"
+
+[[servers]]
+name = "murder"
+
+[[servers]]
+name = "ttt"
+exclude = ["voicechat-meter", "voicechat-charger"]

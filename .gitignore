@@ -1,2 +1,4 @@
 /build
-/stateful
+/tool/target/
+/tool/Cargo.lock
+/tool/**/*.rs.bk
