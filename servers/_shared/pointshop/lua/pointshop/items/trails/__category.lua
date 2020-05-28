@@ -32,6 +32,6 @@ function CATEGORY:Modify(modifications, item)
 end
 
 function CATEGORY:OnModify(ply, modifications, item)
-    self:OnHolster(ply, item)
+    self:OnHolster(ply, modifications, item)
     self:OnEquip(ply, modifications, item)
 end
