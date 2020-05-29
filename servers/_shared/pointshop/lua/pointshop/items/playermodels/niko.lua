@@ -1,3 +1,3 @@
 ITEM.Name = "Niko"
-ITEM.Price = 15000
+ITEM.Price = 20000
 ITEM.Model = "models/player/nullniko.mdl"

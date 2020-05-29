@@ -1,3 +1,3 @@
 ITEM.Name = "Papyrus"
-ITEM.Price = 25000
+ITEM.Price = 30000
 ITEM.Model = "models/papyrusplayer/papyrusplayer.mdl"
