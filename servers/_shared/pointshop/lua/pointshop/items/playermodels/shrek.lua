@@ -1,3 +1,3 @@
 ITEM.Name = "Shrek"
-ITEM.Price = 10000
+ITEM.Price = 15000
 ITEM.Model = "models/player/pyroteknik/shrek.mdl"
