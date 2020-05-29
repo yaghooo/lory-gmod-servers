@@ -27,7 +27,7 @@ hook.Add("PlayerSpawn", "DeathrunSetPlayerModels", function(ply)
         else
             print("The default death model is not a valid .mdl file ('" .. mdl .. "'). Please change the deathrun_death_model ConVar.")
         end
-    elseif ply:Team() == TEAM_RUNNER then
+    else
         model = table.Random(playermodels)
     end
 
