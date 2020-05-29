@@ -8,6 +8,6 @@ DR.PrepDuration = CreateConVar("deathrun_preptime_duration", 5, FCVAR_NONE, "How
 DR.FinishDuration = CreateConVar("deathrun_finishtime_duration", 6, FCVAR_NONE, "How many seconds to wait before starting a new round.")
 DR.DeathRatio = CreateConVar("deathrun_death_ratio", 0.15, FCVAR_NONE, "What fraction of players are Deaths.")
 DR.DeathMax = CreateConVar("deathrun_max_deaths", 2, FCVAR_NONE, "Maximum amount of players on the Death team at any given time.")
-DR.AutoSlay = CreateConVar("deathrun_autoslay_delay", 90, FCVAR_NONE, "How long to wait after a start of a round before slaying all the AFKs.")
+DR.DeathCanSprint = CreateConVar("deathrun_death_sprint", 1, FCVAR_NONE, "Deaths can sprint")
 DR.InfiniteAmmo = CreateConVar("deathrun_infinite_ammo", 1, FCVAR_NONE, "Should ammo automatically replenish.")
 DR.DeathModel = CreateConVar("deathrun_death_model", "models/gonzo/lordkermit/lordkermit.mdl", FCVAR_NONE, "The default model for the Deaths.")

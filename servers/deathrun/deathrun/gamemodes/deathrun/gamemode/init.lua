@@ -113,7 +113,7 @@ function GM:PlayerLoadout(ply)
     ply:SetJumpPower(290)
     ply:SetGravity(1)
 
-    if ply:Team() == TEAM_DEATH then
+    if ply:Team() == TEAM_DEATH and DR.DeathCanSprint:GetBool() then
         ply:SetRunSpeed(650)
     end
 

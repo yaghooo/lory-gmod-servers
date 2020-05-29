@@ -1,3 +1,4 @@
 deathrun_max_deaths "0"
 deathrun_respawn_duration "30"
 deathrun_pointshop_kill_reward "0"
+deathrun_death_sprint "0"

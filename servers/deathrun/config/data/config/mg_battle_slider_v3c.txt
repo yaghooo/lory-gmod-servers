@@ -1,0 +1,3 @@
+deathrun_respawn_duration "0"
+deathrun_death_ratio "0.5"
+deathrun_max_deaths "100"

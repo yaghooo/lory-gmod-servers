@@ -1,0 +1,3 @@
+votemap_round_limit "3"
+deathrun_respawn_duration "600"
+deathrun_round_duration "600"
