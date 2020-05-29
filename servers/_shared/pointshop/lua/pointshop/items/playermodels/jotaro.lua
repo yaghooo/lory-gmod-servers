@@ -1,3 +1,3 @@
 ITEM.Name = "Jotaro"
-ITEM.Price = 6000
+ITEM.Price = 40000
 ITEM.Model = "models/player/jojo3/jtr.mdl"
