@@ -1,0 +1,32 @@
+; List of maps that are either included in the votemap command or excluded from it
+; Make sure to set votemapMapmode in config.txt to what you want.
+cs_assault
+cs_compound
+cs_havana
+cs_italy
+cs_militia
+cs_office
+de_aztec
+de_cbble
+de_chateau
+de_dust
+de_dust2
+de_inferno
+de_nuke
+de_piranesi
+de_port
+de_prodigy
+de_tides
+de_train
+gm_construct
+gm_flatgrass
+gm_gecasino
+gm_gtav_mp_apa_06_no_props
+gm_mttresort
+mu_alpinnacle
+mu_bistro
+test_hardware
+test_speakers
+ttt_aircraft_ccf_r2_fix2
+ttt_lego
+ttt_lttp_kakariko_a4
