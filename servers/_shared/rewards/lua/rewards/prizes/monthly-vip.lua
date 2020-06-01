@@ -1,7 +1,7 @@
 PRIZE.Title = "VIP MENSAL"
 PRIZE.Description = "Ganha 50.000 " .. PS.Config.PointsName
 PRIZE.Image = "star"
-PRIZE.Points = 50000
+PRIZE.Points = 60000
 
 function PRIZE:GetStatus(ply)
     if not ply:IsUserGroup("vip") then
