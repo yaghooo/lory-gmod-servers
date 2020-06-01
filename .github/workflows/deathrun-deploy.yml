@@ -38,17 +38,12 @@ jobs:
     runs-on: ubuntu-18.04
     needs: [build]
 
-    steps:
-    - uses: actions/checkout@v2
-    
+    steps:    
     - name: Download addons
       uses: actions/download-artifact@v2
       with:
         name: Deathrun
         path: addons
-
-    - name: Reset Git
-      run: git reset --hard
 
     - name: List output files
       run: ls addons
