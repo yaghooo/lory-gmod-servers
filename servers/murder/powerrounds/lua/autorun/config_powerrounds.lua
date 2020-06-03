@@ -132,6 +132,13 @@ PowerRounds.AddRound({
         end
 
     end,
+    PlayersEnd = function(Ply)
+        if Ply:IsMurderer() then
+            Ply:SetRenderMode(RENDERMODE_NORMAL)
+	    Ply:SetColor(color_white)
+        end
+
+    end,
     ServerStart = function()
         RunConsoleCommand("mu_murderer_fogtime", "10")
     end,
