@@ -118,6 +118,28 @@ end
 
 		Other standalone useful functions can be found in sh_powerrounds.lua line 358
 ]]
+
+PowerRounds.AddRound({
+    Name = "Assassino invisível",
+    Gamemode = "Murder",
+    Description = "O assassino é invísivel, mas sua localização é revelada de 10 em 10 segundos. Todos inocentes têm a arma.",
+    PlayersStart = function(Ply)
+        if Ply:IsMurderer() then
+            Ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+            Ply:SetColor(color_transparent)
+        else
+            Ply:Give("weapon_mu_magnum")
+        end
+
+    end,
+    ServerStart = function()
+        RunConsoleCommand("mu_murderer_fogtime", "10")
+    end,
+    ServerEnd = function()
+        RunConsoleCommand("mu_murderer_fogtime", "240")
+    end
+})
+
 PowerRounds.AddRound({
     Name = "Sem comunicação",
     Gamemode = "Any",
