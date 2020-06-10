@@ -1,16 +1,6 @@
 -- This module holds any type of chatting functions
 CATEGORY_NAME = "Chat"
 
------------------------------- Psay ------------------------------
-function ulx.psay(calling_ply, target_ply, message)
-	ulx.fancyLog({target_ply, calling_ply}, "#P to #P: " .. message, calling_ply, target_ply)
-end
-local psay = ulx.command(CATEGORY_NAME, "ulx psay", ulx.psay, "!p", true)
-psay:addParam {type = ULib.cmds.PlayerArg, target = "!^", ULib.cmds.ignoreCanTarget}
-psay:addParam {type = ULib.cmds.StringArg, hint = "message", ULib.cmds.takeRestOfLine}
-psay:defaultAccess(ULib.ACCESS_ALL)
-psay:help("Send a private message to target.")
-
 ------------------------------ Asay ------------------------------
 local seeasayAccess = "ulx seeasay"
 if SERVER then
@@ -41,6 +31,24 @@ local asay = ulx.command(CATEGORY_NAME, "ulx asay", ulx.asay, "@", true, true)
 asay:addParam {type = ULib.cmds.StringArg, hint = "message", ULib.cmds.takeRestOfLine}
 asay:defaultAccess(ULib.ACCESS_ALL)
 asay:help("Send a message to currently connected admins.")
+
+------------------------------ Psay ------------------------------
+function ulx.psay(calling_ply, target_ply, message)
+	local players = player.GetAll()
+	for i = #players, 1, -1 do
+		local v = players[i]
+		if not ULib.ucl.query(v, seeasayAccess) and v ~= calling_ply and v ~= target_ply then -- Calling player always gets to see the echo
+			table.remove(players, i)
+		end
+	end
+
+	ulx.fancyLog(players, "#P to #P: " .. message, calling_ply, target_ply)
+end
+local psay = ulx.command(CATEGORY_NAME, "ulx psay", ulx.psay, "!p", true)
+psay:addParam {type = ULib.cmds.PlayerArg, target = "!^", ULib.cmds.ignoreCanTarget}
+psay:addParam {type = ULib.cmds.StringArg, hint = "message", ULib.cmds.takeRestOfLine}
+psay:defaultAccess(ULib.ACCESS_ALL)
+psay:help("Send a private message to target.")
 
 ------------------------------ Tsay ------------------------------
 function ulx.tsay(calling_ply, message)
