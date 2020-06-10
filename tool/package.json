@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "del": "^5.1.0",
-    "recursive-copy": "^2.0.10"
+    "rimraf": "3.0.2",
+    "toml": "3.0.0",
+    "recursive-copy": "2.0.10"
   }
 }

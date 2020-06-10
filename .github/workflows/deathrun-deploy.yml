@@ -24,7 +24,7 @@ jobs:
     - name: Build deathrun
       run: |
         cd tool
-        npm install
+        npm ci
         node index deathrun
         ls ../build
 
@@ -41,23 +41,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Download addons
+    - name: Download build
       uses: actions/download-artifact@v2
       with:
         name: Deathrun
-        path: addons
+        path: build
 
-    - name: Reset Git
-      run: git reset --hard
-
-    - name: List output files
-      run: ls addons
-
+    # TODO: Upload data folder too
     - name: Upload addons
-      uses: SamKirkland/FTP-Deploy-Action@3.1.0
+      uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.DEATHRUN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: addons
+        local-dir: build/addons
         git-ftp-args: --insecure --remote-root ./garrysmod/addons

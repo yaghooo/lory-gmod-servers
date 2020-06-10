@@ -1,2 +1,0 @@
-cargo build --release --all-features --bins --target=x86_64-unknown-linux-musl --out-dir ../bin -Z unstable-options
-cmd.exe /k "cargo build --release --all-features --bins --out-dir ../bin -Z unstable-options && exit"

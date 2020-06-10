@@ -1,5 +1,3 @@
 /build
 /addons
-/tool/target/
-/tool/Cargo.lock
-/tool/**/*.rs.bk
+/tool/node_modules

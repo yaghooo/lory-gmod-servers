@@ -18,18 +18,15 @@ Our file structure consists in that way:
 
 ## How to run
 
+Install [NodeJS](https://nodejs.org/en/download/)
+
 Download or clone this repository.
 
-We have a tool to help building the server addons, to use it enter on the repo root path and run the following command in command line:
-```
-# windows:
-cd bin && lory.exe build {server}
+We have a tool to help building the server addons, to use it enter on the tool path and run:
 
-# linux:
-cd bin && lory build {server}
-```
+    $: npm install && node index {server}
 
 Where `{server}` means to what server you want to build.
 
-After built, your server addons will be in path `build/{server}`, just install it in your addons folder on [your server](https://wiki.facepunch.com/gmod/Downloading_a_Dedicated_Server) or your gmod.
+After built, your server addons will be in path `build/{server}`, just install it in [your server](https://wiki.facepunch.com/gmod/Downloading_a_Dedicated_Server) folder or your gmod.
 
