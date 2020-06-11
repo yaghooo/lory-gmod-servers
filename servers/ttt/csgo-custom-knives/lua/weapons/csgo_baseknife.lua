@@ -119,6 +119,8 @@ SWEP.Kind = WEAPON_EQUIP
 -- be spawned as a random weapon.
 SWEP.AutoSpawnable = false
 
+SWEP.InLoadoutFor = {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE}
+
 -- The AmmoEnt is the ammo entity that can be picked up when carrying this gun.
 -- SWEP.AmmoEnt = "item_ammo_smg1_ttt"
 
