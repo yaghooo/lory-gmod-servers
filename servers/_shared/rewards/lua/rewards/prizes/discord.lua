@@ -1,7 +1,7 @@
 PRIZE.Title = "REGISTRE-SE NO DISCORD ~ DIGITE !registrar"
-PRIZE.Description = "Ganha 3.000 " .. PS.Config.PointsName .. " e uma caixa aleatória"
+PRIZE.Points = 5000
+PRIZE.Description = "Ganha " .. PRIZE.Points .. " " .. PS.Config.PointsName .. " e uma caixa aleatória"
 PRIZE.Image = "discord"
-PRIZE.Points = 3000
 
 function PRIZE:GetStatus(ply)
     return ply:GetPData("rewards:discord") or (ply.DiscordPrizeSessionLock and "NÃO REGISTRADO") or "RESGATAR"

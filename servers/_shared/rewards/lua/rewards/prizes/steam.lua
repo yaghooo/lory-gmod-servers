@@ -1,8 +1,8 @@
 PRIZE.Title = "ENTRE NO GRUPO STEAM ~ DIGITE !grupo"
-PRIZE.Description = "Ganha 3.000 " .. PS.Config.PointsName .. " e uma caixa aleatória"
+PRIZE.Points = 5000
+PRIZE.Description = "Ganha " .. PRIZE.Points .. " " .. PS.Config.PointsName .. " e uma caixa aleatória"
 PRIZE.Image = "calendar"
 PRIZE.GroupId = "lorybr"
-PRIZE.Points = 3000
 
 function PRIZE:GetStatus(ply)
     local status = ply:GetPData("rewards:steam") or "RESGATAR"
