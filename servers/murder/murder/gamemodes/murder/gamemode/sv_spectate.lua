@@ -70,7 +70,7 @@ function GM:SpectateNext(ply, direction)
         local ent = players[index]
 
         if IsValid(ent) then
-            ply:CSpectate(OBS_MODE_IN_EYE, ent)
+            ply:CSpectate(ply:GetCSpectateMode(), ent)
         else
             if IsValid(ply:GetRagdollEntity()) then
                 if ply:GetCSpectating() ~= ply:GetRagdollEntity() then
@@ -87,7 +87,7 @@ end
 
 function GM:ChooseSpectatee(ply)
     if not ply.SpectateTime or ply.SpectateTime < CurTime() then
-        if ply:KeyPressed(IN_JUMP) and ply.Spectatee then
+        if ply:KeyPressed(IN_JUMP) then
             local mode
             if ply.SpectateMode == OBS_MODE_IN_EYE then
                 mode = OBS_MODE_CHASE
@@ -95,7 +95,7 @@ function GM:ChooseSpectatee(ply)
                 mode = OBS_MODE_IN_EYE
             end
 
-            ply:CSpectate(mode, ply.Spectatee)
+            ply:CSpectate(mode, ply:GetCSpectatee())
         else
             local direction
 

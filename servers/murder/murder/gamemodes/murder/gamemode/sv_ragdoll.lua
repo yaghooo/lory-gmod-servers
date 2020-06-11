@@ -78,9 +78,12 @@ function PlayerMeta:CreateRagdoll(attacker, dmginfo)
 
         if IsValid(phys) then
             local pos, ang = self:GetBonePosition(ent:TranslatePhysBoneToBone(bone))
-            phys:SetPos(pos)
-            phys:SetAngles(ang)
-            phys:AddVelocity(vel)
+
+            if pos and ang and vel then
+                phys:SetPos(pos)
+                phys:SetAngles(ang)
+                phys:AddVelocity(vel)
+            end
         end
     end
 end

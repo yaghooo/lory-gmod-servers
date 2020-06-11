@@ -407,14 +407,16 @@ concommand.Add("mu_jointeam", function(ply, com, args)
         ply:SetTeam(newTeam)
         GAMEMODE:PlayerOnChangeTeam(ply, newTeam, curTeam)
 
+        local isSpec = newTeam == TEAM_SPECTATOR
+
         local msgs = Translator:AdvVarTranslate(translate.changeTeam, {
             player = {
                 text = ply:Nick(),
                 color = team.GetColor(curTeam)
             },
             team = {
-                text = team.GetName(newTeam),
-                color = team.GetColor(newTeam)
+                text = isSpec and translate.teamSpectators or team.GetName(newTeam),
+                color = isSpec and Color(150, 150, 150) or team.GetColor(newTeam)
             }
         })
 
