@@ -323,7 +323,6 @@
 		"ulx rules"
 		"ulx steamgroup"
 		"ulx thetime"
-		"ulx thirdperson"
 		"ulx usermanagementhelp"
 		"ulx version"
 		"ulx vip"
