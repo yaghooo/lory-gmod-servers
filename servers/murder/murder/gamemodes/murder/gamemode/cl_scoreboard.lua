@@ -88,7 +88,9 @@ local function addPlayerItem(self, mlist, ply, pteam)
     end
 
     function but:DoClick()
-        GAMEMODE:DoScoreboardActionPopup(ply)
+        if IsValid(ply) then
+            GAMEMODE:DoScoreboardActionPopup(ply)
+        end
     end
 
     mlist:AddItem(but)
