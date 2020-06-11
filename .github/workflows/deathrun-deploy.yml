@@ -47,6 +47,9 @@ jobs:
         name: Deathrun
         path: build
 
+    - name: Log
+      run: git status -uno --porcelain && ls build/addons && ls build/data
+
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:

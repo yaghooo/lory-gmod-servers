@@ -47,7 +47,7 @@ jobs:
         name: TTT
         path: build
 
-    - name: git status
+    - name: Log
       run: git status -uno --porcelain && ls build/addons && ls build/data
 
     - name: Upload addons
