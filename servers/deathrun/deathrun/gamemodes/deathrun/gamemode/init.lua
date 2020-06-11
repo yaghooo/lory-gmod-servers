@@ -86,9 +86,6 @@ hook.Add("PlayerSpawn", "DeathrunPlayerSpawn", function(ply)
     end
 end)
 
--- if ply:GetSpectate() or ply:Team() == TEAM_SPECTATOR or ply:GetObserverMode() ~= OBS_MODE_NONE then
--- 	return SpawnSpectator( ply )
--- end
 function GM:PlayerSpawn(ply)
     return self.BaseClass:PlayerSpawn(ply)
 end

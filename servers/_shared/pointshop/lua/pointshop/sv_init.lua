@@ -268,7 +268,7 @@ timer.Create("PS_Loots", 60 * PS.Config.LootDropDelay, 0, function()
     end
 
     for _, v in pairs(player.GetAll()) do
-        if not IsValid(v) or v.Spectating then return end
+        if not IsValid(v) or v:Team() == TEAM_SPECTATOR then return end
         local chance = PS.Config.LootChance
 
         if v:PS_IsElegibleForDouble() then
@@ -288,21 +288,21 @@ end)
 if PS.Config.PointsOverTime then
     timer.Create("PS_PointsOverTime", PS.Config.PointsOverTimeDelay * 60, 0, function()
         for _, ply in ipairs(player.GetAll()) do
-            if IsValid(ply) and not ply.Spectating then
-                local amt = PS.Config.PointsOverTimeAmount
+            if not IsValid(ply) or ply:Team() == TEAM_SPECTATOR then return end
 
+            local amt = PS.Config.PointsOverTimeAmount
+
+            ply:PS_GivePoints(amt)
+            ply:PS_Notify("Você ganhou ", amt, " ", PS.Config.PointsName, " por jogar!")
+
+            if ply:PS_IsElegibleForDouble() then
                 ply:PS_GivePoints(amt)
-                ply:PS_Notify("Você ganhou ", amt, " ", PS.Config.PointsName, " por jogar!")
+                ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
+            end
 
-                if ply:PS_IsElegibleForDouble() then
-                    ply:PS_GivePoints(amt)
-                    ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ter a tag LORY!")
-                end
-
-                if ply:IsUserGroup("vip") then
-                    ply:PS_GivePoints(amt)
-                    ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ser vip!")
-                end
+            if ply:IsUserGroup("vip") then
+                ply:PS_GivePoints(amt)
+                ply:PS_Notify("Você ganhou mais ", amt, " ", PS.Config.PointsName, " por ser vip!")
             end
         end
     end)

@@ -208,7 +208,7 @@ function GM:EndTheRound(reason, murderer)
     for _, ply in pairs(players) do
         if not ply.HasMoved and not ply.Frozen and self.AFKMoveToSpec:GetBool() then
             local oldTeam = ply:Team()
-            ply:SetTeam(1)
+            ply:SetTeam(TEAM_SPECTATOR)
             GAMEMODE:PlayerOnChangeTeam(ply, 1, oldTeam)
 
             local msgs = Translator:AdvVarTranslate(translate.teamMovedAFK, {
@@ -282,7 +282,6 @@ function GM:StartNewRound()
     local noobs = {}
 
     for _, ply in pairs(players) do
-        ply.Spectating = false
         ply:UnSpectate()
         ply:StripWeapons()
         ply:KillSilent()

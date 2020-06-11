@@ -65,14 +65,14 @@ function Player:ChangeSpectate()
         self:Spectate(OBS_MODE_IN_EYE)
     end
 
+    --this means we are spectating a player
     if self.ObsMode2 > 0 then
-        --this means we are spectating a player
-        local pool = DR:GetSpectablePlayers()
-
         --check if they don't already have a spectator target
         local target = self:GetObserverTarget()
-
+        
         if not target then
+            local pool = DR:GetSpectablePlayers()
+
             local tidx = math.random(#pool)
             self:SpectateEntity(pool[tidx]) -- iff they don't then give em one
             self:SetupHands(pool[tidx])

@@ -47,7 +47,7 @@ function GM:PlayerSpawn(ply)
 
     -- If the player doesn't have a team
     -- then spawn him as a spectator
-    if team == 1 or team == TEAM_UNASSIGNED then
+    if team == TEAM_SPECTATOR or team == TEAM_UNASSIGNED then
         GAMEMODE:PlayerSpawnAsSpectator(ply)
 
         return
@@ -426,7 +426,7 @@ concommand.Add("mu_movetospectate", function(ply, com, args)
     local curTeam = ent:Team()
 
     if 1 ~= curTeam then
-        ent:SetTeam(1)
+        ent:SetTeam(TEAM_SPECTATOR)
         GAMEMODE:PlayerOnChangeTeam(ent, 1, curTeam)
 
         local msgs = Translator:AdvVarTranslate(translate.teamMoved, {
