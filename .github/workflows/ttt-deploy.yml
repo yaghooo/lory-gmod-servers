@@ -47,6 +47,9 @@ jobs:
         name: TTT
         path: build
 
+    - name: git status
+      run: git status -uno --porcelain
+
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:
