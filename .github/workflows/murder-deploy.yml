@@ -47,12 +47,11 @@ jobs:
         name: Murder
         path: build
 
-    # TODO: Upload data folder too
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
         ftp-username: ${{ secrets.MURDER_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: build/addons
-        git-ftp-args: --insecure --remote-root ./garrysmod/addons
+        local-dir: build
+        git-ftp-args: --insecure --remote-root ./garrysmod
