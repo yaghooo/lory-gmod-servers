@@ -48,7 +48,7 @@ jobs:
         path: build
 
     - name: git status
-      run: git status -uno --porcelain
+      run: git status -uno --porcelain && ls build/addons && ls build/data
 
     - name: Upload addons
       uses: SamKirkland/FTP-Deploy-Action@3.1.0
