@@ -10,6 +10,7 @@ else
         file.CreateDir("votemap")
     end
 
+    include("votemap/sv_state.lua")
     include("votemap/sv_votemap.lua")
     include("votemap/sv_maps.lua")
     include("votemap/sv_nominate.lua")
