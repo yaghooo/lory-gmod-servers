@@ -285,45 +285,23 @@ end)
 
 -- stop people whoring the weapons
 hook.Add("PlayerCanPickupWeapon", "StopWeaponAbuseAustraliaSaysNo", function(ply, wep)
-    if ply:Team() == TEAM_GHOST then return false end
+    if ply:Team() == TEAM_GHOST then
+        return false
+    end
+
     local class = wep:GetClass()
-    local weps = ply:GetWeapons()
+	local weps = ply:GetWeapons()
+
     local wepsclasses = {}
-    local slot1, slot3 = 0, 0
+	local filledslots = {}
 
     for k, v in ipairs(weps) do
-        table.insert(wepsclasses, v:GetClass())
-
-        if v.Slot ~= nil then
-            if v.Slot == 1 then
-                slot1 = slot1 + 1
-            end
-
-            if v.Slot == 3 then
-                slot3 = slot3 + 1
-            end
-        end
+		table.insert(wepsclasses, v:GetClass())
     end
 
-    if wep.Slot == 1 and slot1 > 0 then return false end
-    if wep.Slot == 3 and slot3 > 0 then return false end
-    if table.HasValue(wepsclasses, class) then return false end
-end)
-
--- Something to check how long it's been since the player last did something
-hook.Add("SetupMove", "DeathrunIdleCheck", function(ply, mv)
-    ply.LastActiveTime = ply.LastActiveTime or CurTime()
-    -- when the player stands still, mv:GetButtons() == 0, at least in binary
-    -- so we can check when no keys are being pressed, or when they keys haven't changed for a while
-    ply.LastButtons = ply.LastButtons or mv:GetButtons()
-
-    if (mv:GetButtons() ~= ply.LastButtons) or (ply:GetObserverMode() ~= OBS_MODE_NONE) then
-        -- if there's a change in buttons, then they must not be afk.
-        -- sometimes they can type +forward, but we know they are afk because it's constant +forward and no other keys
-        ply.LastActiveTime = CurTime()
+    if table.HasValue(wepsclasses, class) then
+        return false
     end
-
-    ply.LastButtons = mv:GetButtons()
 end)
 
 net.Receive("DeathrunForceSpectator", function(len, ply)
