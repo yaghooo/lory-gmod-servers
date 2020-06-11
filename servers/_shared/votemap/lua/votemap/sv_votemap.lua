@@ -77,7 +77,7 @@ end
 
 local hookName
 
-if TTT or TTT2 then
+if GAMEMODE_NAME == "terrortown" then
     hookName = "TTTEndRound"
 else
     hookName = "OnEndRound"
