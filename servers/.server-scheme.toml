@@ -1,5 +1,6 @@
 [[servers]]
 name = "deathrun"
+exclude = ["double-jump"]
 
 [[servers]]
 name = "murder"
