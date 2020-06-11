@@ -20,13 +20,6 @@ de_tides
 de_train
 gm_construct
 gm_flatgrass
-gm_gecasino
 gm_gtav_mp_apa_06_no_props
-gm_mttresort
-mu_alpinnacle
-mu_bistro
 test_hardware
 test_speakers
-ttt_aircraft_ccf_r2_fix2
-ttt_lego
-ttt_lttp_kakariko_a4
