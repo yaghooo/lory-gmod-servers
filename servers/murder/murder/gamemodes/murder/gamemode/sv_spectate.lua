@@ -88,7 +88,7 @@ end
 function GM:ChooseSpectatee(ply)
     if not ply.SpectateTime or ply.SpectateTime < CurTime() then
         if ply:KeyPressed(IN_JUMP) then
-            ply:CSpectate(ply.SpectateMode == OBS_MODE_IN_EYE and OBS_MODE_CHASE or OBS_MODE_IN_EYE)
+            ply:CSpectate(ply.SpectateMode == OBS_MODE_IN_EYE and OBS_MODE_CHASE or OBS_MODE_IN_EYE, ply.Spectatee)
         else
             local direction
 
