@@ -196,7 +196,14 @@ function INFOPANEL:Think()
 
     self.total:SetText(timeToStr(ply:GetUTime() + CurTime() - ply:GetUTimeStart()))
     self.session:SetText(timeToStr(CurTime() - ply:GetUTimeStart()))
-    self.nick:SetText(ply:Nick())
+
+    local nick = ply.GetBystanderName and ply:GetBystanderName() or ply:Nick()
+    self.nick:SetText(nick)
+    
+    local color = ply:GetPlayerColor():ToColor() or color_black
+    if color then
+        self.nick:SetTextColor(color)
+    end
 end
 
 -----------------------------------------------------------
