@@ -154,10 +154,16 @@ addModel("hostage03", "male")
 addModel("hostage04", "male")
 
 function GM:PlayerSetModel(ply)
-    local playerModel = table.Random(playerModels)
-    local modelname = player_manager.TranslatePlayerModel(playerModel.model)
-    ply.MurderModel = modelname
-    ply.ModelSex = playerModel.sex
+    local modelname = ply.CustomModel
+    local modelsex = ply.CustomModelSex
+
+    if not modelname then
+        local playerModel = table.Random(playerModels)
+        modelname = player_manager.TranslatePlayerModel(playerModel.model)
+        modelsex = playerModel.sex
+    end
+
+    ply.ModelSex = modelsex
     ply:SetModel(modelname)
 end
 
