@@ -15,8 +15,9 @@ const addAddons = async (serverName, addonsPath, exclude) => {
     }
 
     for (const addon of addons) {
-        // TODO: Remove data folder from addon
-        await copy(path.resolve(addonsPath, addon), path.resolve(__dirname, `../build/${serverName}/addons/${addon}`))
+        await copy(path.resolve(addonsPath, addon), path.resolve(__dirname, `../build/${serverName}/addons/${addon}`), {
+            filter: /^(?!data).*$/
+        })
 
         const dataPath = path.resolve(addonsPath, addon, 'data')
         if (fs.existsSync(dataPath)) {
