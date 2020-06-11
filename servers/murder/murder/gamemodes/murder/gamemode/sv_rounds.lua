@@ -209,7 +209,7 @@ function GM:EndTheRound(reason, murderer)
         if not ply.HasMoved and not ply.Frozen and self.AFKMoveToSpec:GetBool() then
             local oldTeam = ply:Team()
             ply:SetTeam(TEAM_SPECTATOR)
-            GAMEMODE:PlayerOnChangeTeam(ply, 1, oldTeam)
+            GAMEMODE:PlayerOnChangeTeam(ply, TEAM_SPECTATOR, oldTeam)
 
             local msgs = Translator:AdvVarTranslate(translate.teamMovedAFK, {
                 player = {
@@ -217,7 +217,7 @@ function GM:EndTheRound(reason, murderer)
                     color = ply:GetPlayerColor():ToColor()
                 },
                 team = {
-                    text = team.GetName(1),
+                    text = team.GetName(TEAM_SPECTATOR),
                     color = team.GetColor(2)
                 }
             })

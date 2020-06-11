@@ -403,7 +403,7 @@ concommand.Add("mu_jointeam", function(ply, com, args)
     local curTeam = ply:Team()
     local newTeam = tonumber(args[1] or "") or 0
 
-    if newTeam >= 1 and newTeam <= 2 and newTeam ~= curTeam then
+    if newTeam ~= curTeam then
         ply:SetTeam(newTeam)
         GAMEMODE:PlayerOnChangeTeam(ply, newTeam, curTeam)
 
@@ -433,7 +433,7 @@ concommand.Add("mu_movetospectate", function(ply, com, args)
 
     if 1 ~= curTeam then
         ent:SetTeam(TEAM_SPECTATOR)
-        GAMEMODE:PlayerOnChangeTeam(ent, 1, curTeam)
+        GAMEMODE:PlayerOnChangeTeam(ent, TEAM_SPECTATOR, curTeam)
 
         local msgs = Translator:AdvVarTranslate(translate.teamMoved, {
             player = {
@@ -441,8 +441,8 @@ concommand.Add("mu_movetospectate", function(ply, com, args)
                 color = team.GetColor(curTeam)
             },
             team = {
-                text = team.GetName(1),
-                color = team.GetColor(1)
+                text = team.GetName(TEAM_SPECTATOR),
+                color = team.GetColor(TEAM_SPECTATOR)
             }
         })
 
