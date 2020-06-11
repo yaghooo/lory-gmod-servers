@@ -276,15 +276,17 @@ function GM:DrawGameHUD(ply)
         surface.DrawTexturedRect(x + bord, screenH - h - size * 0.2 + bord, (w - bord * 2) * charge, h - bord * 2)
     end
 
-    local name = translate.bystander
-    color = bystander_color
+    if client == ply then
+        local name = translate.bystander
+        color = bystander_color
 
-    if client == ply and self:IsMurderer() then
-        name = translate.murderer
-        color = murderer_color
+        if client == ply and self:IsMurderer() then
+            name = translate.murderer
+            color = murderer_color
+        end
+
+        drawTextShadow(name, "MersRadial", screenW - 20, screenH - 10, color, 2, TEXT_ALIGN_BOTTOM)
     end
-
-    drawTextShadow(name, "MersRadial", screenW - 20, screenH - 10, color, 2, TEXT_ALIGN_BOTTOM)
 end
 
 function GM:GUIMousePressed(code, vector)
