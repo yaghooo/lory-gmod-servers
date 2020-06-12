@@ -250,7 +250,7 @@ end
 
 
 function GM:PlayerSetModel(ply)
-   local mdl = GAMEMODE.playermodel or "models/player/phoenix.mdl"
+   local mdl = ply.CustomModel or GAMEMODE.playermodel or "models/player/phoenix.mdl"
    util.PrecacheModel(mdl)
    ply:SetModel(mdl)
 
