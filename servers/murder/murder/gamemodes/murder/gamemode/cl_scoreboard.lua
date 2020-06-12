@@ -18,21 +18,15 @@ local function addPlayerItem(self, mlist, ply, pteam)
     but.ctime = CurTime()
     but:SetTall(40)
     but:SetText("")
+
     local av = vgui.Create("AvatarImage", but)
     av:SetSize(32, 32)
-    av:SetPos(4, 4)
     av:SetPlayer(ply, 32)
-    av.ply = ply
 
-    function av:Think()
-        if self.LastThink and self.LastThink > CurTime() - 1 then return end
-        self.LastThink = CurTime()
-
-        if (GAMEMODE:IsMurderer() or GAMEMODE:IsCSpectating()) and IsValid(ply) and not self.ply:Alive() then
-            self:SetPos(-128, 0)
-        else
-            self:SetPos(4, 4)
-        end
+    if (GAMEMODE:IsMurderer() or GAMEMODE:IsCSpectating()) and IsValid(ply) and not ply:Alive() then
+        av:SetPos(-128, 0)
+    else
+        av:SetPos(4, 4)
     end
 
     function but:Paint(w, h)
@@ -216,7 +210,7 @@ local function makeTeamList(parent, pteam)
 
     function pnl:Think()
         if not self.RefreshWait or self.RefreshWait < CurTime() then
-            self.RefreshWait = CurTime() + 1
+            self.RefreshWait = CurTime() + 2
             doPlayerItems(self, mlist, pteam)
         end
     end
