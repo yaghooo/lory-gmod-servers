@@ -35,7 +35,7 @@ if SERVER then
     function RemoveGhost(ply)
         ply:KillSilent()
         ply:SetBloodColor(0)
-        ply:SetCollisionGroup(0)
+        ply:SetCollisionGroup(COLLISION_GROUP_NONE)
         ply:SetTeam(TEAM_RUNNER)
         ply:BeginSpectate()
     end
@@ -44,7 +44,7 @@ if SERVER then
         ply:SetTeam(TEAM_GHOST)
         ply:Spawn()
         ply:SetBloodColor(-1)
-        ply:SetCollisionGroup(10)
+        ply:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
         ply.SpawnSet = false
     end
 

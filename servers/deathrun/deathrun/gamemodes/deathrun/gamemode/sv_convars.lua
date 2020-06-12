@@ -11,3 +11,4 @@ DR.DeathMax = CreateConVar("deathrun_max_deaths", 2, FCVAR_NONE, "Maximum amount
 DR.DeathCanSprint = CreateConVar("deathrun_death_sprint", 1, FCVAR_NONE, "Deaths can sprint")
 DR.InfiniteAmmo = CreateConVar("deathrun_infinite_ammo", 1, FCVAR_NONE, "Should ammo automatically replenish.")
 DR.DeathModel = CreateConVar("deathrun_death_model", "models/gonzo/lordkermit/lordkermit.mdl", FCVAR_NONE, "The default model for the Deaths.")
+DR.ShouldEnemiesCollide = CreateConVar("deathrun_enemies_collide", 1, FCVAR_NONE, "Should enemy players collide")

@@ -55,6 +55,7 @@ hook.Add("PlayerSpawn", "DeathrunPlayerSpawn", function(ply)
     ply:AllowFlashlight(true)
     ply:SetMoveType(MOVETYPE_WALK)
     ply:SetNoCollideWithTeammates(true) -- so we don't block eachother's bhopes
+    ply:SetCollisionGroup(DR.ShouldEnemiesCollide:GetBool() and COLLISION_GROUP_NONE or COLLISION_GROUP_WEAPON)
 
     if ply.FirstSpawn == true then
         ply.FirstSpawn = false
