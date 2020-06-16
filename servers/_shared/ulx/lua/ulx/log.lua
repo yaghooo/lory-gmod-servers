@@ -51,6 +51,7 @@ local logJoinLeaveEcho =
 	ULib.ACCESS_SUPERADMIN
 )
 local logDir = ulx.convar("logDir", "ulx_logs", "The log dir under garrysmod/data", ULib.ACCESS_SUPERADMIN)
+local logDiscordHook = ulx.convar("logDiscordHook", "ulx_logs", "The log discord hook", ULib.ACCESS_SUPERADMIN)
 
 local hiddenechoAccess = "ulx hiddenecho"
 ULib.ucl.registerAccess(hiddenechoAccess, ULib.ACCESS_SUPERADMIN, "Ability to see hidden echoes", "Other") -- Give superadmins access to see hidden echoes by default
@@ -204,6 +205,15 @@ function ulx.logString(str, log_to_main)
 end
 
 function ulx.logWriteln(str)
+	local discordHook = logDiscordHook:GetString()
+	if discordHook and discordHook ~= "" then
+		HTTP({
+			url = discordHook,
+			method = "POST",
+			body = util.TableToJSON({ content = str })
+		})
+	end
+
 	if not ulx.log_file then
 		return
 	end
