@@ -210,7 +210,8 @@ function ulx.logWriteln(str)
 		HTTP({
 			url = discordHook,
 			method = "POST",
-			body = util.TableToJSON({ content = str })
+			body = util.TableToJSON({ content = str }),
+			type = "application/json"
 		})
 	end
 
