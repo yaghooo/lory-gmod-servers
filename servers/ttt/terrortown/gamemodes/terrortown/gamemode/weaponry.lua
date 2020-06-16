@@ -63,6 +63,11 @@ local function GiveLoadoutWeapons(ply)
          ply:Give(cls)
       end
    end
+
+   local defaultKnives = {"csgo_default_knife", "csgo_default_t"}
+   local userKnife = ply.CustomKnife or table.Random(defaultKnives)
+
+   ply:Give(userKnife)
 end
 
 local function HasLoadoutWeapons(ply)
