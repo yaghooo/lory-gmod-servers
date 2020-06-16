@@ -75,13 +75,22 @@ function VOTEMAP:ChangeMap(map)
     RunConsoleCommand("changelevel", map)
 end
 
-local hookName
+function VOTEMAP:ComputeRoundEnd()
+    self.RoundsPlayed = self.RoundsPlayed + 1
+    local maxRounds = self.CustomMaxRounds or self.MaxRounds:GetInt()
 
-if GAMEMODE_NAME == "terrortown" then
-    hookName = "TTTEndRound"
-else
-    hookName = "OnEndRound"
+    if self.RoundsPlayed >= maxRounds and self.CurrentState == self.READY then
+        self:StartMapVote()
+    end
 end
+
+hook.Add("OnEndRound", "ComputeRoundEnd", function()
+    VOTEMAP:ComputeRoundEnd()
+end)
+
+hook.Add("TTTEndRound", "ComputeRoundEndTTT", function()
+    VOTEMAP:ComputeRoundEnd()
+end)
 
 hook.Add(hookName, "CheckStartMapVote", function()
     VOTEMAP.RoundsPlayed = VOTEMAP.RoundsPlayed + 1
