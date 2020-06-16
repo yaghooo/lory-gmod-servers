@@ -134,7 +134,7 @@ SWEP.InLoadoutFor = nil
 SWEP.LimitedStock = false
 
 -- If AllowDrop is false, players can't manually drop the gun with Q
-SWEP.AllowDrop = true
+SWEP.AllowDrop = false
 
 -- If IsSilent is true, victims will not scream upon death.
 SWEP.IsSilent = true
@@ -145,6 +145,10 @@ SWEP.NoSights = true
 -- This sets the icon shown for the weapon in the DNA sampler, search window,
 -- equipment menu (if buyable), etc.
 SWEP.Icon = "vgui/ttt/icon_nades" -- most generic icon I guess
+
+function SWEP:OnDrop()
+    self:Remove()
+ end 
 
 function SWEP:SetupDataTables() --This also used for variable declaration and SetVar/GetVar getting work
     self:NetworkVar("Float", 0, "InspectTime")
