@@ -1,4 +1,4 @@
 ITEM.Name = "Udyr Tigrão"
-ITEM.Price = 40000
+ITEM.Price = 20000
 ITEM.Model = "models/udyr/udyr_tiger.mdl"
 ITEM.Sex = "male"
