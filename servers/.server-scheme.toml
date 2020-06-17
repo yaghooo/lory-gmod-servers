@@ -6,5 +6,5 @@ exclude = ["double-jump"]
 name = "murder"
 
 [[servers]]
-name = "ttt"
+name = "terrortown"
 exclude = ["voicechat-meter", "voicechat-charger", "crosshair-creator"]

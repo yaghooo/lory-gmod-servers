@@ -1,12 +1,12 @@
-name: Deploy ttt
+name: Deploy terrortown
 
 on:
   push:
     branches: [ master ]
     paths:
       - 'servers/_shared/**'
-      - 'servers/ttt/**'
-      - '.github/workflows/ttt-deploy.yml'
+      - 'servers/terrortown/**'
+      - '.github/workflows/terrortown-deploy.yml'
       - '.git-ftp-include'
 
 jobs:
@@ -21,18 +21,18 @@ jobs:
       with:
         version: '12.x'
 
-    - name: Build ttt
+    - name: Build terrortown
       run: |
         cd tool
         npm ci
-        node index ttt
+        node index terrortown
         ls ../build
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: TTT
-        path: build/ttt
+        name: TerrorTown
+        path: build/terrortown
    
   deploy:
     runs-on: ubuntu-18.04
@@ -44,7 +44,7 @@ jobs:
     - name: Download build
       uses: actions/download-artifact@v2
       with:
-        name: TTT
+        name: TerrorTown
         path: build
 
     - name: Log
@@ -54,7 +54,7 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@3.1.0
       with:
         ftp-server: ${{ secrets.FTP_SERVER }}
-        ftp-username: ${{ secrets.TTT_FTP_USERNAME }}
+        ftp-username: ${{ secrets.TERRORTOWN_FTP_USERNAME }}
         ftp-password: ${{ secrets.FTP_PASSWORD }}
         local-dir: build
         git-ftp-args: --insecure --remote-root ./garrysmod
