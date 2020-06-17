@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const rimraf = require('rimraf')
 const copy = require('recursive-copy')
+const glob = require('glob');
 
 const deleteIfExists = pathToCheck =>
     new Promise(resolve => rimraf(pathToCheck, resolve))
@@ -13,6 +14,8 @@ const addAddons = async (serverName, addonsPath, exclude) => {
     if (exclude) {
         addons = addons.filter(addon => !exclude.includes(addon))
     }
+    
+    const buildDataPath = path.resolve(__dirname, `../build/${serverName}/data`)
 
     for (const addon of addons) {
         await copy(path.resolve(addonsPath, addon), path.resolve(__dirname, `../build/${serverName}/addons/${addon}`), {
@@ -20,9 +23,29 @@ const addAddons = async (serverName, addonsPath, exclude) => {
         })
 
         const dataPath = path.resolve(addonsPath, addon, 'data')
+
         if (fs.existsSync(dataPath)) {
-            await copy(dataPath, path.resolve(__dirname, `../build/${serverName}/data`))
+            await copy(dataPath, buildDataPath)
         }
+    }
+}
+
+const replaceVariables = async (serverName) => {
+    const getAllTextFiles = dir => new Promise(resolve => {
+        glob(dir + '/**/*.txt', {}, (err, files) => {
+            resolve(files);
+        })
+    });
+
+    const buildDataPath = path.resolve(__dirname, `../build/${serverName}/data`)
+    const textFiles = await getAllTextFiles(buildDataPath);
+
+    for (const file of textFiles) {
+        const content = await fs.promises.readFile(file, 'utf-8');
+        const newContent = content.replace(/\{\{(.*)\}\}/g, (_, variable) => {
+            return process.env[variable];
+        })
+        await fs.promises.writeFile(file, newContent, 'utf-8');
     }
 }
 
@@ -42,6 +65,8 @@ const addAddons = async (serverName, addonsPath, exclude) => {
 
         await addAddons(server, path.resolve(__dirname, '../servers', '_shared'), config.exclude)
         await addAddons(server, path.resolve(__dirname, '../servers', server), config.exclude)
+
+        await replaceVariables(server);
 
         console.log(`Build for ${server} succeed`)
     }
