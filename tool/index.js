@@ -43,7 +43,11 @@ const replaceVariables = async (serverName) => {
     for (const file of textFiles) {
         const content = await fs.promises.readFile(file, 'utf-8');
         const newContent = content.replace(/\{\{(.*)\}\}/g, (_, variable) => {
-            return process.env[variable];
+            const environmentVariable = process.env[variable];
+            if (environmentVariable === undefined) {
+                console.warn(`Environment variable not found for key '${variable}'`);
+            }
+            return environmentVariable;
         })
         await fs.promises.writeFile(file, newContent, 'utf-8');
     }

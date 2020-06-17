@@ -22,6 +22,8 @@ jobs:
         version: '12.x'
 
     - name: Build terrortown
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
       run: |
         cd tool
         npm ci
