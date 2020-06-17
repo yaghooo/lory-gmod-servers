@@ -31,6 +31,8 @@ if GAMEMODE then
 end
 
 function GM:Think()
+    local curTime = CurTime()
+
     for _, ply in ipairs(player.GetAll()) do
         if ply:Alive() and ply:GetNWBool("MurdererFog") then
             if not ply.FogEmitter then
