@@ -24,6 +24,8 @@ jobs:
     - name: Build deathrun
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        MYSQL_HOSTNAME: ${{ secrets.MYSQL_HOSTNAME }}
+        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
       run: |
         cd tool
         npm ci
