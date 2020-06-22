@@ -118,6 +118,8 @@ net.Receive("PS_GivePoints", function(length, ply)
     if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_GivePoints(points)
         other:PS_Notify(ply:Nick(), " deu a você ", points, " ", PS.Config.PointsName, ".")
+
+        ulx.logString(ply:Nick() .. " gave " .. points .. " " .. PS.Config.PointsName .. " to " .. other:Nick() .. "(" .. ply:SteamID64() .. ", " .. other:SteamID64() .. ")")
     end
 end)
 
@@ -129,6 +131,8 @@ net.Receive("PS_TakePoints", function(length, ply)
     if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_TakePoints(points)
         other:PS_Notify(ply:Nick(), " pegou ", points, " ", PS.Config.PointsName, " de você.")
+
+        ulx.logString(ply:Nick() .. " took " .. points .. " " .. PS.Config.PointsName .. " of " .. other:Nick() .. "(" .. ply:SteamID64() .. ", " .. other:SteamID64() .. ")")
     end
 end)
 
@@ -140,6 +144,8 @@ net.Receive("PS_SetPoints", function(length, ply)
     if allowed and other and points and IsValid(other) and other:IsPlayer() then
         other:PS_SetPoints(points)
         other:PS_Notify(ply:Nick(), " setou seu saldo de ", PS.Config.PointsName, " para ", points, ".")
+
+        ulx.logString(ply:Nick() .. " set to " .. points .. " " .. PS.Config.PointsName .. " on " .. other:Nick() .. "(" .. ply:SteamID64() .. ", " .. other:SteamID64() .. ")")
     end
 end)
 
@@ -151,6 +157,8 @@ net.Receive("PS_GiveItem", function(length, ply)
 
     if allowed and other and item_id and PS.Items[item_id] and IsValid(other) and other:IsPlayer() and not other:PS_HasItem(item_id) then
         other:PS_GiveItem(item_id)
+
+        ulx.logString(ply:Nick() .. " gave " .. item_id .. " to " .. other:Nick() .. "(" .. ply:SteamID64() .. ", " .. other:SteamID64() .. ")")
     end
 end)
 
@@ -172,6 +180,7 @@ net.Receive("PS_TakeItem", function(length, ply)
         end
 
         other:PS_TakeItem(item_id)
+        ulx.logString(ply:Nick() .. " took " .. item_id .. " of " .. other:Nick() .. "(" .. ply:SteamID64() .. ", " .. other:SteamID64() .. ")")
     end
 end)
 
