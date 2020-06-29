@@ -262,7 +262,7 @@ local function playerInitialSpawn(ply)
 	local seconds = os.time() - (joinTimer[ip] or mapStartTime)
 	joinTimer[ip] = nil
 
-	local txt = string.format('Client "%s" spawned in server <%s> (took %i seconds).', ply:Nick(), ply:SteamID(), seconds)
+	local txt = string.format('Client "%s" spawned in server <%s> (took %i seconds). IP: %s', ply:Nick(), ply:SteamID(), seconds, ip)
 	if logEvents:GetBool() then
 		ulx.logString(txt)
 	end
