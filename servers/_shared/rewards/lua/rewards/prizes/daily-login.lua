@@ -16,9 +16,10 @@ function PRIZE:GetStatus(ply)
 end
 
 function PRIZE:Redeem(ply)
-    ply:SetPData("rewards:daily-login", today()))
-    local loot = REWARDS:GetRandomLoot()
-    ply:PS_GiveItem(loot.ID)
-    ply:PS_Notify("Você resgatou seu bonus diario e ganhou uma " .. loot.Name .. "!")
-    ulx.logString(ply:Nick() .. " received a " .. loot.Name .. " from daily login")
+    if ply:SetPData("rewards:daily-login", today()) then
+        local loot = REWARDS:GetRandomLoot()
+        ply:PS_GiveItem(loot.ID)
+        ply:PS_Notify("Você resgatou seu bonus diario e ganhou uma " .. loot.Name .. "!")
+        ulx.logString(ply:Nick() .. " received a " .. loot.Name .. " from daily login")
+    end
 end

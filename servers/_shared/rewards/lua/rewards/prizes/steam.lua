@@ -19,14 +19,14 @@ function PRIZE:Redeem(ply)
     ply:SetPData("rewards:steam", "VERIFICANDO")
 
     self:FindSteamUser(ply, 1, function()
-        ply:SetPData("rewards:steam", "RESGATADO")
+        if ply:SetPData("rewards:steam", "RESGATADO") then
+            local loot = REWARDS:GetRandomLoot()
+            ply:PS_GiveItem(loot.ID)
+            ply:PS_GivePoints(self.Points)
+            ply:PS_Notify("Você resgatou " .. self.Points .. " " .. PS.Config.PointsName .. " e ganhou uma " .. loot.Name .. " por entrar no nosso grupo steam!")
 
-        local loot = REWARDS:GetRandomLoot()
-        ply:PS_GiveItem(loot.ID)
-        ply:PS_GivePoints(self.Points)
-        ply:PS_Notify("Você resgatou " .. self.Points .. " " .. PS.Config.PointsName .. " e ganhou uma " .. loot.Name .. " por entrar no nosso grupo steam!")
-
-        REWARDS:SendPrizes(ply)
+            REWARDS:SendPrizes(ply)
+        end
     end, function()
         ply:RemovePData("rewards:steam")
     end)

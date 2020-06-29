@@ -11,8 +11,7 @@ function PRIZE:Redeem(ply)
     ply.DiscordPrizeSessionLock = true
     local isRegistered = DISCORD:IsRegistered(ply:SteamID64())
 
-    if isRegistered then
-        ply:SetPData("rewards:discord", "RESGATADO")
+    if isRegistered and ply:SetPData("rewards:discord", "RESGATADO") then
         local loot = REWARDS:GetRandomLoot()
         ply:PS_GiveItem(loot.ID)
         ply:PS_GivePoints(self.Points)

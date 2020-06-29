@@ -21,7 +21,8 @@ function PRIZE:GetStatus(ply)
 end
 
 function PRIZE:Redeem(ply)
-    ply:SetPData("rewards:monthly-vip", currentMonth()))
-    ply:PS_GivePoints(self.Points)
-    ply:PS_Notify("Você resgatou seu bonus vip de " .. self.Points ..  " " .. PS.Config.PointsName .. "!")
+    if ply:SetPData("rewards:monthly-vip", currentMonth()) then
+        ply:PS_GivePoints(self.Points)
+        ply:PS_Notify("Você resgatou seu bonus vip de " .. self.Points ..  " " .. PS.Config.PointsName .. "!")
+    end
 end
