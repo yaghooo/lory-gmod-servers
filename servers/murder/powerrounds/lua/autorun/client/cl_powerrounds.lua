@@ -145,12 +145,12 @@ hook.Add("HUDPaint", "PowerRoundsHUDPaint", function()
         local color = PowerRounds.NextClr
 
         if PowerRounds.RoundsLeft == 0 then
-            DrawText = PowerRounds.CurrentPR.Name or PowerRounds.NextTextCurrent
+            DrawText = PowerRounds.CurrentPR and PowerRounds.CurrentPR.Name or PowerRounds.NextTextCurrent
             color = Color(255, 0, 0)
         elseif PowerRounds.RoundsLeft == 1 then
             DrawText = string.gsub(PowerRounds.NextTextOne, "{Num}", PowerRounds.RoundsLeft)
         elseif PowerRounds.RoundsLeft == -1 then
-            DrawText = PowerRounds.CurrentPR.Name or PowerRounds.NextTextForced
+            DrawText = PowerRounds.CurrentPR and PowerRounds.CurrentPR.Name or PowerRounds.NextTextForced
             color = Color(255, 0, 0)
         else
             DrawText = string.gsub(PowerRounds.NextTextMultiple, "{Num}", PowerRounds.RoundsLeft)
