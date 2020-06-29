@@ -21,7 +21,7 @@ hook.Add("SetupMove", "Multi Jump", function(ply, mv)
         return
     elseif not mv:KeyPressed(IN_JUMP) then
         return
-    elseif not ply:PS_HasItemEquipped("doublejump") then
+    elseif PS and not ply:PS_HasItemEquipped("doublejump") then
         return
     end
 
