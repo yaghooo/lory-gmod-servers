@@ -1,5 +1,25 @@
 local CATEGORY_NAME = "Lory"
 
+local resetinventory = ulx.command(CATEGORY_NAME, "ulx resetinventory", function(ply, discordId)
+    local sid64 = DISCORD:GetSid64ById(discordId)
+    print("Reset inventory with discord '" .. discordId .. "' and id '" .. sid64 .. "'")
+
+    PS.DataProvider:SetPoints(sid64, 0)
+    PS.DataProvider:GetItems(sid64, function(plainItems)
+        for k, v in ipairs(plainItems) do
+            PS.DataProvider:TakeItem(sid64, v.item_id)
+        end
+    end)
+end)
+
+resetinventory:addParam{
+    type = ULib.cmds.StringArg,
+    hint = "Discord id"
+}
+
+resetinventory:defaultAccess(ULib.ACCESS_SUPERADMIN)
+resetinventory:help("Reseta inventário pelo id do discord.")
+
 local discordrank = ulx.command(CATEGORY_NAME, "ulx discordrank", function(ply, discordId, group)
     group = group:lower()
     local sid64 = DISCORD:GetSid64ById(discordId)
