@@ -20,4 +20,5 @@ function PRIZE:Redeem(ply)
     local loot = REWARDS:GetRandomLoot()
     ply:PS_GiveItem(loot.ID)
     ply:PS_Notify("Você resgatou seu bonus diario e ganhou uma " .. loot.Name .. "!")
+    ulx.logString(ply:Nick() .. " received a " .. loot.Name .. " from daily login")
 end
