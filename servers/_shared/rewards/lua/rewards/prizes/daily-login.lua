@@ -3,7 +3,7 @@ PRIZE.Description = "Ganha uma caixa aleatória"
 PRIZE.Image = "calendar"
 
 local function today()
-    return os.date("%d/%m/%Y", os.time()
+    return os.date("%d/%m/%Y", os.time())
 end
 
 function PRIZE:GetStatus(ply)

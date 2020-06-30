@@ -4,7 +4,7 @@ PRIZE.Description = "Ganha " .. PRIZE.Points .. " " .. PS.Config.PointsName
 PRIZE.Image = "star"
 
 local function currentMonth()
-    return os.date("%m/%Y", os.time()
+    return os.date("%m/%Y", os.time())
 end
 
 function PRIZE:GetStatus(ply)
