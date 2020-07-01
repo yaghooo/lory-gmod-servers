@@ -13,7 +13,7 @@ function PRIZE:GetStatus(ply)
     end
 
     local lastRedemption = ply:GetPData("rewards:monthly-vip")
-    if not lastRedemption or lastRedemption != currentMonth()) then
+    if not lastRedemption or lastRedemption != currentMonth() then
         return "RESGATAR"
     end
 

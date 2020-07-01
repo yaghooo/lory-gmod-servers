@@ -8,7 +8,7 @@ end
 
 function PRIZE:GetStatus(ply)
     local lastRedemption = ply:GetPData("rewards:daily-login")
-    if not lastRedemption or lastRedemption != today()) then
+    if not lastRedemption or lastRedemption != today() then
         return "RESGATAR"
     end
 
