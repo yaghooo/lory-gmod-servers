@@ -8,6 +8,9 @@ function CATEGORY:OnEquip(ply, modifications, item)
         ply.OldModel = ply:GetModel()
     end
 
+    ply.CustomModel = item.Model
+    ply.CustomModelSex = item.Sex
+
     timer.Simple(0.2, function()
         ply:SetModel(item.Model)
         ply:SetupHands()
