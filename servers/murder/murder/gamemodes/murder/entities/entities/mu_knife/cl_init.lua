@@ -13,8 +13,7 @@ function ENT:Think()
     local pos = self:GetPos()
     local client = LocalPlayer()
 
-    if self.NextPart < CurTime() then
-        if client:GetPos():Distance(pos) > 1000 then return end
+    if self.NextPart < CurTime() and client:GetPos():Distance(pos) <= 1000 and IsValid(self.Emitter) then
         self.Emitter:SetPos(pos)
         self.NextPart = CurTime() + math.Rand(0, 0.02)
         local vec = VectorRand() * 3

@@ -61,8 +61,10 @@ function GM:PlayerSpawn(ply)
     player_manager.RunClass(ply, "Spawn")
 
     timer.Simple(0.1, function()
-        hook.Call("PlayerLoadout", GAMEMODE, ply)
-        hook.Call("PlayerSetModel", GAMEMODE, ply)
+        if IsValid(ply) then
+            hook.Call("PlayerLoadout", GAMEMODE, ply)
+            hook.Call("PlayerSetModel", GAMEMODE, ply)
+        end
     end)
 
     ply:CalculateSpeed()

@@ -39,7 +39,7 @@ SWEP.ScopedFOV = 25
 -- secondary primary attack so we don't override the default base one
 function SWEP:PrimaryAttack2()
     timer.Simple(self.Primary.Delay * 0.9, function()
-        if self then
+        if IsValid(self) then
             self:SendWeaponAnim(ACT_VM_IDLE)
         end
     end)

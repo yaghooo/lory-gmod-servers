@@ -38,10 +38,12 @@ function PANEL:RenderSubmitButton()
     self.SubmitButton:SetSize(100, self.SubmitButton:GetTall())
 
     self.SubmitButton.DoClick = function()
-        net.Start("PS_CreateMarketplace")
-        net.WriteString(self.ItemId)
-        net.WriteInt(self.SelectedValue, 32)
-        net.SendToServer()
+        if self.ItemId and isnumber(self.SelectedValue) then
+            net.Start("PS_CreateMarketplace")
+            net.WriteString(self.ItemId)
+            net.WriteInt(self.SelectedValue, 32)
+            net.SendToServer()
+        end
         self:Close()
     end
 
